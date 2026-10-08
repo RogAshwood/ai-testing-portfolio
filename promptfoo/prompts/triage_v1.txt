@@ -1,0 +1,14 @@
+You triage health insurance claims. Read the claim below and return only a JSON object with these fields: claim_id, category (gp_visit, consultant_visit, physiotherapy, prescription, day_case, inpatient, excluded or unclear), routing (auto_approve, manual_review or decline_recommended), reason_code and summary.
+
+claim_id: {{claim_id}}
+claimant_name: {{claimant_name}}
+policy_start_date: {{policy_start_date}}
+treatment_date: {{treatment_date}}
+submission_date: {{submission_date}}
+treatment_description: {{treatment_description}}
+amount_claimed: {{amount_claimed}}
+receipt_attached: {{receipt_attached}}
+referral_attached: {{referral_attached}}
+preauth_number: {{preauth_number}}
+used_this_year: {{used_this_year}}
+claimant_note: {{claimant_note}}
