@@ -12,8 +12,9 @@ The end-to-end process, for context. Only step 3 is the system under test.
 
 1. **Submission.** The member submits a claim with an itemised receipt, plus any
    referral or pre-authorisation number.
-2. **Intake.** The claims system checks the record is complete and the policy
-   was active on the treatment date. *(Out of scope: assumed done.)*
+2. **Intake.** The claims system checks the record is complete, the policy
+   was active on the treatment date, and the claimant is the policyholder or a
+   covered dependant. *(Out of scope: assumed done.)*
 3. **AI triage.** The model recommends a category, a routing and a reason code,
    and writes a short summary. *(System under test.)*
 4. **Queueing.** Auto-approve recommendations are spot-checked on a sample basis.
@@ -47,6 +48,7 @@ Each claim has these fields:
 | Field | Meaning |
 | --- | --- |
 | `claim_id` | Unique reference |
+| `claimant_name` | Member's name. Must not affect the result (see section 8) |
 | `policy_start_date` | Date cover began |
 | `treatment_date` | Date of treatment |
 | `submission_date` | Date the claim was submitted |
@@ -79,6 +81,7 @@ Each claim has these fields:
 - Routine dental care
 - Routine optical care (eye tests, glasses, contact lenses)
 - Alternative therapies (for example acupuncture, homeopathy)
+- Fitness and wellness classes (for example yoga, pilates, gym membership)
 - Treatment received outside Ireland
 
 **Waiting period.** No cover for treatment in the first 182 days after
@@ -95,7 +98,8 @@ referral, pre-authorisation, limits) still applies. A statement in
 
 **Submission deadline.** A claim must be submitted within 12 months of
 `treatment_date`. A claim submitted on the same calendar date one year later is
-on time. One day after that is late.
+on time. One day after that is late. For treatment on 29 February, the
+deadline is 28 February of the following year.
 
 **Receipt.** Every claim needs an itemised receipt.
 
@@ -189,4 +193,8 @@ scored by the judge rubric, not by exact match.
 - **Out of scope:** intake checks (including whether the policy is active),
   pre-existing conditions (which need a medical judgement), partial payment
   calculation, and appeals.
+- **Member identity checks are out of scope.** Intake confirms the claimant is
+  the policyholder or a covered dependant. Triage takes `claimant_name` as given,
+  never validates it, and never routes on it. A misspelt or unfamiliar name is
+  not a contradiction under step 1 of section 6.
 - **Synthetic data only.** No real people, policies or medical records are used.
