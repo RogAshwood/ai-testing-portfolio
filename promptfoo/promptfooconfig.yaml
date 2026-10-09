@@ -8,15 +8,19 @@
 #   2026-10-08  Smoke test fix: JavaScript checks rewritten as two-line scripts (they errored as one-liners).
 #   2026-10-08  Smoke test fix: judge (summary_quality) now sees the full claim record; it was
 #               failing correct summaries because it could not see the receipt, referral or plan rules.
+#   2026-10-09  Added prompt v3: same as v2, plus date facts pre-calculated by an "intake" step
+#               (transformVars below), to test whether date arithmetic was the cause of v2's date failures.
 
-description: Harbourlight Health claim triage - prompt v1 vs v2 across two models
+description: Harbourlight Health claim triage - prompt v1 vs v2 vs v3 across two models
 
-# What is under test: two prompt versions
+# What is under test: three prompt versions
 prompts:
   - id: file://prompts/triage_v1.txt
     label: v1-baseline
   - id: file://prompts/triage_v2.txt
     label: v2-rules
+  - id: file://prompts/triage_v3.txt
+    label: v3-rules-dates
 
 # Where it runs: a cheaper and a stronger model.
 # JSON mode makes the model return a JSON object (both prompts ask for JSON).
@@ -38,12 +42,37 @@ tests: file://../datasets/claim_triage.csv
 # Applied to every test
 defaultTest:
   vars:
-    # Single source of truth: the rules file is inserted into prompt v2
+    # Single source of truth: the rules file is inserted into prompts v2 and v3
     plan_rules: file://../datasets/plan_rules.md
 
   options:
     # The judge model for llm-rubric
     provider: openai:chat:gpt-6-sol
+
+    # Simulated intake step: pre-calculates date facts before each prompt is filled in.
+    # Only prompt v3 uses these fields; v1 and v2 never see them, so their prompts are unchanged.
+    #   days_since_policy_start: treatment_date - policy_start_date, in days
+    #   days_since_treatment:    submission_date - treatment_date, in days
+    #   submitted_on_time:       yes / no per the deadline rule in section 5 of the plan rules
+    #                            (same calendar date one year later; 29 February -> 28 February),
+    #                            or "invalid" if the claim was submitted before the treatment date
+    transformVars: |
+      const toUtc = (s) => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+      const dayMs = 24 * 60 * 60 * 1000;
+      const start = toUtc(vars.policy_start_date);
+      const treat = toUtc(vars.treatment_date);
+      const sub = toUtc(vars.submission_date);
+      const [ty, tm, td] = vars.treatment_date.split('-').map(Number);
+      const deadline = (tm === 2 && td === 29) ? Date.UTC(ty + 1, 1, 28) : Date.UTC(ty + 1, tm - 1, td);
+      let onTime;
+      if (sub < treat) onTime = 'invalid (submission date is before treatment date)';
+      else onTime = sub <= deadline ? 'yes' : 'no';
+      return {
+        ...vars,
+        days_since_policy_start: Math.round((treat - start) / dayMs),
+        days_since_treatment: Math.round((sub - treat) / dayMs),
+        submitted_on_time: onTime,
+      };
 
   assert:
     # 1. Format: valid JSON with the agreed fields and allowed values
