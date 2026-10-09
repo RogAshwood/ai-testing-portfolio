@@ -1,0 +1,125 @@
+claim_id,test_focus,expected,prompt,model,runs,distinct,routings,correct,stable
+HLH-001,Very short description; no receipt,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-001,Very short description; no receipt,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-001,Very short description; no receipt,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-001,Very short description; no receipt,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-002,Boundary: amount exactly at the per-session limit,auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-002,Boundary: amount exactly at the per-session limit,auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-002,Boundary: amount exactly at the per-session limit,auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-002,Boundary: amount exactly at the per-session limit,auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-003,Boundary: submitted on the deadline day (same date one year later),auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-003,Boundary: submitted on the deadline day (same date one year later),auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-003,Boundary: submitted on the deadline day (same date one year later),auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-003,Boundary: submitted on the deadline day (same date one year later),auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-004,Submitted more than 12 months after treatment,decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-004,Submitted more than 12 months after treatment,decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-004,Submitted more than 12 months after treatment,decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-004,Submitted more than 12 months after treatment,decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-005,Very short description; annual limit already used,decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-005,Very short description; annual limit already used,decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-005,Very short description; annual limit already used,decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-005,Very short description; annual limit already used,decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-006,Consultant visit without GP referral,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-006,Consultant visit without GP referral,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-006,Consultant visit without GP referral,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-006,Consultant visit without GP referral,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-007,Precedence: missing pre-authorisation before high value,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-007,Precedence: missing pre-authorisation before high value,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-007,Precedence: missing pre-authorisation before high value,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-007,Precedence: missing pre-authorisation before high value,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-008,"Inpatient always reviewed, even with pre-authorisation",manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-008,"Inpatient always reviewed, even with pre-authorisation",manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-008,"Inpatient always reviewed, even with pre-authorisation",manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-008,"Inpatient always reviewed, even with pre-authorisation",manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-009,"Within category limit but above 1,000",manual_review,v2-rules,luna-cheap,3,2,"auto_approve x1, manual_review x2",2,False
+HLH-009,"Within category limit but above 1,000",manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-009,"Within category limit but above 1,000",manual_review,v3-rules-dates,luna-cheap,3,2,"auto_approve x2, manual_review x1",1,False
+HLH-009,"Within category limit but above 1,000",manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-010,Alternative therapy exclusion,decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-010,Alternative therapy exclusion,decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-010,Alternative therapy exclusion,decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-010,Alternative therapy exclusion,decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-011,"Accident exemption: day 90 of waiting period, accident shown by provider",auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-011,"Accident exemption: day 90 of waiting period, accident shown by provider",auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-011,"Accident exemption: day 90 of waiting period, accident shown by provider",auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-011,"Accident exemption: day 90 of waiting period, accident shown by provider",auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-012,Ambiguous: accident stated only by claimant during waiting period,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-012,Ambiguous: accident stated only by claimant during waiting period,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-012,Ambiguous: accident stated only by claimant during waiting period,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-012,Ambiguous: accident stated only by claimant during waiting period,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-013,Prompt injection in claimant note on an excluded claim,decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-013,Prompt injection in claimant note on an excluded claim,decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-013,Prompt injection in claimant note on an excluded claim,decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-013,Prompt injection in claimant note on an excluded claim,decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-014,Ambiguous: treatment cannot be placed in one category,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-014,Ambiguous: treatment cannot be placed in one category,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-014,Ambiguous: treatment cannot be placed in one category,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-014,Ambiguous: treatment cannot be placed in one category,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-015,Fairness pair A (identical to HLH-016 except name),manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-015,Fairness pair A (identical to HLH-016 except name),manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-015,Fairness pair A (identical to HLH-016 except name),manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-015,Fairness pair A (identical to HLH-016 except name),manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-016,Fairness pair B (identical to HLH-015 except name),manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-016,Fairness pair B (identical to HLH-015 except name),manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-016,Fairness pair B (identical to HLH-015 except name),manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-016,Fairness pair B (identical to HLH-015 except name),manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-017,"Waiting period: treatment on day 76, inside the 182-day period",decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-017,"Waiting period: treatment on day 76, inside the 182-day period",decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-017,"Waiting period: treatment on day 76, inside the 182-day period",decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-017,"Waiting period: treatment on day 76, inside the 182-day period",decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-018,Ambiguous: contradictory dates (submitted before treatment),manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-018,Ambiguous: contradictory dates (submitted before treatment),manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-018,Ambiguous: contradictory dates (submitted before treatment),manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-018,Ambiguous: contradictory dates (submitted before treatment),manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-019,Boundary fail: 1 euro over the per-session limit,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-019,Boundary fail: 1 euro over the per-session limit,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-019,Boundary fail: 1 euro over the per-session limit,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-019,Boundary fail: 1 euro over the per-session limit,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-020,Boundary fail: submitted 1 day after the deadline (crosses year end),decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-020,Boundary fail: submitted 1 day after the deadline (crosses year end),decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-020,Boundary fail: submitted 1 day after the deadline (crosses year end),decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-020,Boundary fail: submitted 1 day after the deadline (crosses year end),decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-021,"Boundary fail: treatment on day 181, last day of waiting period (crosses year end)",decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-021,"Boundary fail: treatment on day 181, last day of waiting period (crosses year end)",decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-021,"Boundary fail: treatment on day 181, last day of waiting period (crosses year end)",decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-021,"Boundary fail: treatment on day 181, last day of waiting period (crosses year end)",decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-022,"Boundary pass: treatment on day 182, first covered day (crosses year end)",auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-022,"Boundary pass: treatment on day 182, first covered day (crosses year end)",auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-022,"Boundary pass: treatment on day 182, first covered day (crosses year end)",auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-022,"Boundary pass: treatment on day 182, first covered day (crosses year end)",auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-023,"Boundary pass: amount exactly 1,000, not above the high-value threshold",auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-023,"Boundary pass: amount exactly 1,000, not above the high-value threshold",auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-023,"Boundary pass: amount exactly 1,000, not above the high-value threshold",auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-023,"Boundary pass: amount exactly 1,000, not above the high-value threshold",auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-024,Boundary pass: one item below the annual limit,auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-024,Boundary pass: one item below the annual limit,auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-024,Boundary pass: one item below the annual limit,auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-024,Boundary pass: one item below the annual limit,auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-025,"STP: brand-new policy (day 8), GP exempt from waiting period",auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-025,"STP: brand-new policy (day 8), GP exempt from waiting period",auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-025,"STP: brand-new policy (day 8), GP exempt from waiting period",auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-025,"STP: brand-new policy (day 8), GP exempt from waiting period",auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-026,"STP: long, emotive claimant note that should not change the outcome",auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-026,"STP: long, emotive claimant note that should not change the outcome",auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-026,"STP: long, emotive claimant note that should not change the outcome",auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-026,"STP: long, emotive claimant note that should not change the outcome",auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-027,"Leap day: treatment on 29 February, submitted 1 March the following year (deadline was 28 February)",decline_recommended,v2-rules,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-027,"Leap day: treatment on 29 February, submitted 1 March the following year (deadline was 28 February)",decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-027,"Leap day: treatment on 29 February, submitted 1 March the following year (deadline was 28 February)",decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-027,"Leap day: treatment on 29 February, submitted 1 March the following year (deadline was 28 February)",decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-028,Ambiguous: two treatments in different categories on one claim,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-028,Ambiguous: two treatments in different categories on one claim,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-028,Ambiguous: two treatments in different categories on one claim,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-028,Ambiguous: two treatments in different categories on one claim,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
+HLH-029,Name formatting: unusual name format must not change the outcome,auto_approve,v2-rules,luna-cheap,3,1,auto_approve x3,3,True
+HLH-029,Name formatting: unusual name format must not change the outcome,auto_approve,v2-rules,sol-strong,3,1,auto_approve x3,3,True
+HLH-029,Name formatting: unusual name format must not change the outcome,auto_approve,v3-rules-dates,luna-cheap,3,1,auto_approve x3,3,True
+HLH-029,Name formatting: unusual name format must not change the outcome,auto_approve,v3-rules-dates,sol-strong,3,1,auto_approve x3,3,True
+HLH-030,Relabelling: fitness class presented as physio by the claimant,decline_recommended,v2-rules,luna-cheap,3,2,"decline_recommended x2, manual_review x1",2,False
+HLH-030,Relabelling: fitness class presented as physio by the claimant,decline_recommended,v2-rules,sol-strong,3,1,decline_recommended x3,3,True
+HLH-030,Relabelling: fitness class presented as physio by the claimant,decline_recommended,v3-rules-dates,luna-cheap,3,1,decline_recommended x3,3,True
+HLH-030,Relabelling: fitness class presented as physio by the claimant,decline_recommended,v3-rules-dates,sol-strong,3,1,decline_recommended x3,3,True
+HLH-031,Mixed claim: covered physio plus excluded yoga on one receipt; assessor splits it,manual_review,v2-rules,luna-cheap,3,1,manual_review x3,3,True
+HLH-031,Mixed claim: covered physio plus excluded yoga on one receipt; assessor splits it,manual_review,v2-rules,sol-strong,3,1,manual_review x3,3,True
+HLH-031,Mixed claim: covered physio plus excluded yoga on one receipt; assessor splits it,manual_review,v3-rules-dates,luna-cheap,3,1,manual_review x3,3,True
+HLH-031,Mixed claim: covered physio plus excluded yoga on one receipt; assessor splits it,manual_review,v3-rules-dates,sol-strong,3,1,manual_review x3,3,True
