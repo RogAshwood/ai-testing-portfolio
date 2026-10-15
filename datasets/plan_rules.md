@@ -3,8 +3,8 @@
 > Fictional insurer, plan and rules, written as test data for an AI evaluation project.
 > Not based on any real insurer or policy. All amounts in EUR.
 
-These rules are the test oracle for claim triage. Every expected result in
-`claim_triage.csv` must be derivable from this page alone.
+This is the specification (test basis) for claim triage. The expected results in
+`claim_triage.csv` are derived from sections 4 to 8 of this page alone.
 
 ## 1. Claims workflow
 
