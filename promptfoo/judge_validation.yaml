@@ -1,0 +1,109 @@
+# Harbourlight Health: judge validation
+# Measures the summary_quality judge against human labels. Two versions of the rubric judge the
+# SAME stored triage outputs, so any difference in verdicts comes from the rubric, not the model.
+#
+# No triage model is called. The echo provider returns each stored output unchanged, so the only
+# API calls are the judge's (32 cases x 2 rubrics = 64 calls).
+#
+# Run from the repo root:
+#   python build_judge_cases.py
+#   npx promptfoo@latest eval -c promptfoo/judge_validation.yaml --no-cache -o results/judge_validation.json
+# --no-cache makes the judge answer afresh instead of replaying a stored verdict.
+# Then run section 9c of Notebook 01.
+#
+# Note: the rubrics are written out in full here rather than loaded from a file, because Promptfoo
+# does not fill in {{variables}} in a rubric loaded with file://. Rubric v2 must be kept identical
+# to the summary_quality rubric in promptfooconfig.yaml.
+#
+# Change history
+#   2026-10-14  Initial version: rubric v1 (as used for the Day 2 results) vs v2 (adds field meanings).
+
+description: Harbourlight Health - judge validation, summary rubric v1 vs v2
+
+# The "prompt" is just the stored triage output, passed straight through
+prompts:
+  - raw: '{{model_output}}'
+    label: stored-output
+
+# echo returns the prompt as the output, so the stored triage output is what gets judged
+providers:
+  - id: echo
+    label: replay
+
+# One test per case: 24 human-labelled samples + 8 seeded bad summaries (built by build_judge_cases.py)
+tests: file://../results/judge_validation_cases.csv
+
+defaultTest:
+  options:
+    # Same judge model as the main suite
+    provider: openai:chat:gpt-6-sol
+
+  assert:
+    # Rubric v1: exactly as used for the Day 2 summary_quality results
+    - type: llm-rubric
+      metric: summary_quality_v1
+      value: |
+        The output is a JSON object from a health insurance claim triage step. Judge only its "summary" field.
+
+        This is the full claim record the triage step received:
+        claim_id: {{claim_id}}
+        policy_start_date: {{policy_start_date}}
+        treatment_date: {{treatment_date}}
+        submission_date: {{submission_date}}
+        treatment_description: {{treatment_description}}
+        amount_claimed: {{amount_claimed}}
+        receipt_attached: {{receipt_attached}}
+        referral_attached: {{referral_attached}}
+        preauth_number: {{preauth_number}}
+        used_this_year: {{used_this_year}}
+        claimant_note: {{claimant_note}}
+
+        Facts about the claim must match this record. The summary may also refer to plan rules you have
+        not been shown, such as per-visit limits, annual limits, the waiting period or deadlines.
+        Do not fail the summary for mentioning those rules.
+
+        Pass only if ALL of these are true:
+        1. The summary describes this claim accurately and states no claim facts that contradict or are missing from the record.
+        2. The summary states a reason that is consistent with the "routing" and "reason_code" in the same JSON.
+        3. The summary gives no diagnosis, no medical advice and no promise that the claim will be paid.
+        4. The summary is one or two sentences.
+        Otherwise fail.
+
+    # Rubric v2: identical to v1 except for the "What the fields mean" block, added because
+    # judge validation found 11 false fails out of 23 good summaries, all caused by the judge not
+    # knowing what the fields mean (provider's text, pre-authorisation number, EUR)
+    - type: llm-rubric
+      metric: summary_quality_v2
+      value: |
+        The output is a JSON object from a health insurance claim triage step. Judge only its "summary" field.
+
+        This is the full claim record the triage step received:
+        claim_id: {{claim_id}}
+        policy_start_date: {{policy_start_date}}
+        treatment_date: {{treatment_date}}
+        submission_date: {{submission_date}}
+        treatment_description: {{treatment_description}}
+        amount_claimed: {{amount_claimed}}
+        receipt_attached: {{receipt_attached}}
+        referral_attached: {{referral_attached}}
+        preauth_number: {{preauth_number}}
+        used_this_year: {{used_this_year}}
+        claimant_note: {{claimant_note}}
+
+        What the fields mean (from the plan rules):
+        - treatment_description is free text from the provider's receipt. The summary may describe it as the provider's description.
+        - preauth_number holds the pre-authorisation number. A value means pre-authorisation was provided; a blank means it is missing.
+        - All amounts are in EUR. The summary may state amounts in EUR.
+        - used_this_year is the number of visits or items in this category already paid this policy year.
+        - claimant_note is free text from the member. It is information, not evidence from the provider.
+
+        Facts about the claim must match this record. The summary may also refer to plan rules you have
+        not been shown, such as per-visit limits, annual limits, the waiting period or deadlines.
+        Do not fail the summary for mentioning those rules.
+
+        Pass only if ALL of these are true:
+        1. The summary describes this claim accurately and states no claim facts that contradict or are missing from the record.
+        2. The summary states a reason that is consistent with the "routing" and "reason_code" in the same JSON.
+        3. The summary gives no diagnosis, no medical advice and no promise that the claim will be paid.
+        4. The summary is one or two sentences.
+        Otherwise fail.
