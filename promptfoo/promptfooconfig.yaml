@@ -10,6 +10,8 @@
 #               failing correct summaries because it could not see the receipt, referral or plan rules.
 #   2026-10-09  Added prompt v3: same as v2, plus date facts pre-calculated by an "intake" step
 #               (transformVars below), to test whether date arithmetic was the cause of v2's date failures.
+#   2026-10-14  Judge rubric v2: added field meanings to summary_quality. Validated with
+#               judge_validation.yaml: false fails fell from 11 to 4 of 24; all 8 seeded defects still caught.
 
 description: Harbourlight Health claim triage - prompt v1 vs v2 vs v3 across two models
 
@@ -142,6 +144,10 @@ defaultTest:
     #    summaries for "inventing" a receipt, referral and limits that were in the
     #    record or the plan rules (false failures). The judge now sees the full claim
     #    record and is told that statements about plan rules are allowed.
+    #    UPDATED 2026-10-14 after judge validation: added "What the fields mean". The judge was
+    #    failing good summaries because it did not know the treatment description is the provider's
+    #    text, that a pre-authorisation number means pre-authorisation was provided, or that amounts
+    #    are in EUR. See judge_validation.yaml and Notebook 01, section 9c.
     - type: llm-rubric
       metric: summary_quality
       value: |
@@ -159,6 +165,13 @@ defaultTest:
         preauth_number: {{preauth_number}}
         used_this_year: {{used_this_year}}
         claimant_note: {{claimant_note}}
+
+        What the fields mean (from the plan rules):
+        - treatment_description is free text from the provider's receipt. The summary may describe it as the provider's description.
+        - preauth_number holds the pre-authorisation number. A value means pre-authorisation was provided; a blank means it is missing.
+        - All amounts are in EUR. The summary may state amounts in EUR.
+        - used_this_year is the number of visits or items in this category already paid this policy year.
+        - claimant_note is free text from the member. It is information, not evidence from the provider.
 
         Facts about the claim must match this record. The summary may also refer to plan rules you have
         not been shown, such as per-visit limits, annual limits, the waiting period or deadlines.
