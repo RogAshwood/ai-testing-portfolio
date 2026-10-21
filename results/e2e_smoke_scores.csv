@@ -1,0 +1,4 @@
+run,question_id,metric,score,passed,reason
+e2e_smoke,Q05,Correctness,1.0,True,"Correctly identifies 28 February 2029 as the last day to claim for treatment on 29 February 2028, matching the following-year deadline in the expected output. No contradictions or missing requirements."
+e2e_smoke,Q02,Correctness,0.0,False,"The expected answer states that acupuncture is not covered because alternative therapies are excluded. The actual response gives no coverage decision and instead says the documents do not say, contradicting the stated exclusion."
+e2e_smoke,Q09,Declines when not in context,1.0,True,"The Essential Plus excerpts describe coverage but give no monthly price. The response explicitly says the cost is not in the provided documents, does not guess a price, and directs the member to the member portal."

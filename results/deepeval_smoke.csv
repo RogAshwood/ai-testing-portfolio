@@ -1,0 +1,4 @@
+run,question_id,metric,score,passed,reason
+smoke,Q01,ContextualRecallMetric,1.0,True,"The score is 1.00 because sentence 1 is fully supported by node 3 in retrieval context: it confirms 60 per GP visit, up to 8 visits per policy year, with no referral needed. Great coverage!"
+smoke,Q02,ContextualRecallMetric,0.0,False,"The score is 0.00 because node(s) in retrieval context do not support sentence 1: node 1 says only that some treatments are never covered, without mentioning acupuncture or alternative therapies."
+smoke,Q05,ContextualRecallMetric,1.0,True,"The score is 1.00 because node 1 in retrieval context directly supports both sentences: the deadline is 28 February 2029, and treatment on 29 February has a deadline of 28 February the following year. Great match!"
