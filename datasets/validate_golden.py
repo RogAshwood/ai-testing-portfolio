@@ -15,6 +15,11 @@ Checks:
   4. Unanswerable questions have no expected source and no key facts, and none
      of their absent_terms appears in ANY document, so they really are
      unanswerable from the corpus.
+  5. Content and behaviour are kept apart. expected_answer holds only facts the
+     documents can support; expected_behaviour holds how the bot should act
+     (decline, ignore an injected instruction, give no medical advice).
+     Standard questions have no expected_behaviour; every other type has one.
+     expected_answer must not describe the assistant ("The assistant ...").
 
 Key facts and absent terms are matched as case-insensitive substrings after
 whitespace is normalised, so "gym membership" also matches "Gym Membership".
@@ -34,6 +39,14 @@ Change history:
                     consultant") and Q15 ("referral from your GP") so the
                     derived correct context covers every detail in their
                     expected answers. Total key facts 25 -> 27.
+  2026-10-19  v1.3  check 5 added. Golden set: new expected_behaviour column
+                    (Q09-Q15); expected_answer reduced to document-supported
+                    facts, with bare verdict sentences ("No.", "It can be.")
+                    folded into the factual sentence. Key facts added to Q07
+                    ("reply to the decision letter") and Q08 ("bank statement").
+                    Total key facts 27 -> 29. Prompted by the first DeepEval
+                    contextual-recall run, which could not attribute behaviour
+                    sentences to any document.
 """
 
 import csv
@@ -46,7 +59,8 @@ GOLDEN = HERE / "rag_golden.csv"
 
 REQUIRED_COLUMNS = [
     "question_id", "question_type", "test_focus", "question",
-    "expected_answer", "expected_sources", "key_facts", "absent_terms",
+    "expected_answer", "expected_behaviour", "expected_sources", "key_facts",
+    "absent_terms",
 ]
 ALLOWED_TYPES = {"standard", "unanswerable", "adversarial", "refusal"}
 
@@ -92,6 +106,16 @@ def main() -> int:
         if qtype not in ALLOWED_TYPES:
             errors.append(f"{qid}: question_type '{qtype}' not allowed")
             continue
+
+        # Check 5: content and behaviour kept apart
+        behaviour = r.get("expected_behaviour", "").strip()
+        if qtype == "standard" and behaviour:
+            errors.append(f"{qid}: standard question should have no expected_behaviour")
+        if qtype != "standard" and not behaviour:
+            errors.append(f"{qid}: {qtype} question needs an expected_behaviour")
+        if "the assistant" in normalise(r["expected_answer"]):
+            errors.append(f"{qid}: expected_answer describes the assistant; "
+                          "move that to expected_behaviour")
 
         # Check 2: sources exist
         for s in sources:
