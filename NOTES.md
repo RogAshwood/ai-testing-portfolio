@@ -11,6 +11,7 @@ The README presents the results; this file records how I got there, including th
   and the LLM Evals FAQ, and the OWASP Top 10 for LLM Applications.
 - Environment: conda (conda-forge) env `ai-testing` with Python 3.11, Node.js 22.22+, JupyterLab, pandas,
   matplotlib, python-dotenv; DeepEval installed with pip. Promptfoo runs through `npx`.
+  Day 3 added scikit-learn and ipywidgets, and pinned `deepeval==4.2.8`.
 
 | Issue | Cause | Fix |
 | --- | --- | --- |
@@ -87,7 +88,84 @@ given.** Defects 5, 6 and 8 show that the human and the test definitions need ch
 
 ## Day 3: DeepEval, member-help chatbot (RAG)
 
-_Not started._
+### Decisions
+
+| Decision | Why |
+| --- | --- |
+| 10 member-facing documents, written from `plan_rules.md` but without reason codes or routing order | Members see outcomes, not triage mechanics; the documents must not contradict the Day 2 specification |
+| Golden set with key facts, plus a validator (`validate_golden.py`) | Same idea as Day 2's reference implementation: check the oracle against the test basis before any model runs |
+| `absent_terms` for unanswerable questions | Proves no document answers them, so a bot that answers is guessing |
+| TF-IDF retriever (scikit-learn) | Free, deterministic and easy to break on purpose; weaker than semantic search, recorded as a design note |
+| Code in modules (`rag_pipeline.py`, `rag_metrics.py`, later `rag_judges.py`), not in the notebook | The notebook and the CI tests import the same code, so they cannot drift apart |
+| Key-fact recall as the main retriever measure, doc hit@k as secondary | Doc hit counts the right document even when the wrong chunk of it arrives (Q02) |
+| Generator tested alone through a stub (`golden_context()`): correct chunks chosen by rule | Separates generator failures from retriever failures; the rule is repeatable and cannot be tuned by hand |
+| Three G-Eval criteria (correctness, declines, safe conduct), each written as fixed steps | One criterion could not cover facts, declining and conduct; fixed steps make the judge apply the same test every time |
+| End to end repeated 3 times; faults and fix run once | The baseline variation (at most 0.2 on correctness) sets what counts as a real change |
+| Option A (k=3) first, then Option B (k=5) as fix and retest | Shows the full defect loop: find, diagnose, fix, confirmation test, regression test |
+| Golden set frozen at v1.3; the Q15 gap flagged, not fixed | Results stay comparable across the notebook; changing the oracle after every run would undermine it |
+| Pass mark 0.75, and correctness not used as a release gate on its own | Calibration showed DeepEval's 0.5 is too lenient and the judge measures something different from a human |
+| Every paid step behind a `RUN_... = False` switch, with results files named by golden-set version | "Restart and run all" is free and never overwrites a run |
+
+### Problems found in the test setup
+
+As on Day 2, the test setup needed as much testing as the chatbot.
+
+| # | Symptom | Cause | Fix |
+| --- | --- | --- | --- |
+| 1 | The validator failed 3 key facts that were in the documents | Markdown wraps phrases across lines ("gym" / "membership") | Normalise whitespace and bold marks before matching |
+| 2 | Contextual recall capped at 0.67 on Q12 to Q15 however good the retrieval | Expected answers mixed facts with bot behaviour ("the assistant ignores the instruction"), which no document can support | New `expected_behaviour` column; golden set v1.3; the validator now rejects expected answers that describe the assistant |
+| 3 | The judge found missing information on Q07 and Q08 that key-fact recall scored as complete | Key facts too narrow | Key facts widened; the same gap on Q15 found later and left flagged |
+| 4 | A "re-run" of the retriever judge gave identical scores to the first run | It ran with the old golden set still loaded in the kernel | Restart the kernel; check a known number (19/29 facts) before reading results |
+| 5 | The "before" results file turned out to be a second run against the new oracle | The old notebook wrote to the same file name, and a rename step assumed what it contained | Results named by golden-set version; first-run scores kept in the notebook; nothing renamed automatically |
+| 6 | Safe conduct failed a perfect answer (Q15: 0.00) | The judge was not shown the documents, so a correct limit looked invented | Version 2 shows the documents; re-scored on saved answers; then had to fail 4 rule-breaking seeded answers |
+| 7 | Hallucination scores read the opposite way to the documentation | DeepEval 4.2.8 changed the score's direction (higher is now better) | Confirmed in the source code; noted wherever the metric appears |
+| 8 | The same input scored 0.50 in one run and 0.75 in another (Q08) | The judge is not fully repeatable | Three repeats; ranges reported; changes within the noise not credited to the fix |
+| 9 | Step 2.6 crashed on a fresh copy of the repo | It read a saved file without checking it existed | Every "show saved results" branch checks first and skips cleanly |
+| 10 | Every judge call after step 6.3 would have failed | A loop variable named `judge` overwrote the judge model | Renamed; caught by running the notebook with a stand-in judge |
+| 11 | The judge agreed with my labels on only 6 of 10 answers | It checks that the expected facts are present; I judged the answer as a member would | Recorded; correctness not used as a gate on its own; the definition of a good answer comes first next time |
+| 12 | A wrong claim condition scored 0.5, a pass at DeepEval's default | One averaged score lets the rest of a good answer outweigh a critical error | Pass mark 0.75; critical conditions should become binary checks |
+
+Pattern: problems 2, 3 and 6 were Day 2's lesson again, **a grader only knows what it is given**, this time
+in the oracle and in a test definition. Problems 4, 5 and 9 were about managing results, not about AI at all,
+and were fixed with ordinary engineering: versioned names, switches and existence checks.
+
+### Problems found in the chatbot
+
+Recorded in full in section 8 of the notebook. In short: the right chunk ranked just below the cut-off (k=3);
+TF-IDF cannot link "three months" to "182 days"; summary pages outrank detailed ones; the generator drops
+lower-priority details and once wrote "documentation" where the policy requires "the provider's description";
+the document cleaning strips the currency. The bot's behaviour held in every configuration.
+
+### Run log
+
+| Date | Run | Output |
+| --- | --- | --- |
+| 2026-10-16 | Documents, golden set, validator, pipeline; deterministic retriever checks | `results/retriever_deterministic.csv` |
+| 2026-10-19 | Retriever judge smoke test, then full run (golden set v1.2) | Scores recorded in notebook step 2.8 (file later overwritten) |
+| 2026-10-19 | Retriever judge, golden set v1.3, two runs | `results/deepeval_retriever_paragraph_k3_golden_v1.3.csv`, `..._v1.3_repeat.csv` |
+| 2026-10-20 | Generator alone: smoke test, full run, Safe conduct v2 re-score | `results/generator_answers_golden_v1.3.csv`, `results/deepeval_generator_golden_v1.3.csv`, `results/deepeval_generator_safe_conduct_v2_golden_v1.3.csv` |
+| 2026-10-21 | End to end, k=3, 3 repeats | `results/e2e_answers_paragraph_k3_golden_v1.3.csv`, `results/deepeval_e2e_paragraph_k3_golden_v1.3.csv` |
+| 2026-10-21 | Fault injection: k=1 and fixed split | `results/deepeval_e2e_paragraph_k1_golden_v1.3.csv`, `results/deepeval_e2e_fixed_k3_golden_v1.3.csv` |
+| 2026-10-21 | Judge calibration: my labels, then 8 seeded defects | `results/judge_calibration_sheet.csv`, `results/judge_calibration_key.csv`, `results/judge_seeded_defects_golden_v1.3.csv` |
+| 2026-10-21 | Fix and retest, k=5 | `results/deepeval_e2e_paragraph_k5_golden_v1.3.csv` |
+| 2026-10-21 | CI tests, first run: 5 passed in 28 seconds | Console output (recorded in notebook section 9) |
+
+<!-- Adjust the dates to match your own runs. -->
+
+### Open items (Day 3 backlog)
+
+- [ ] Re-measure k=5 latency (2.7 to 6.5 seconds on one run) before quoting it, and decide whether to adopt k=5
+      in `rag_pipeline.py` (`DEFAULT_K` is still 3).
+- [ ] Review the 3 pytest warnings (`pytest tests/test_rag.py -rw`) before Day 5 CI.
+- [ ] Agree a written definition of a good answer (facts, clarity, what the member should do next), then add a
+      member-experience criterion and re-calibrate on a fresh labelled sample.
+- [ ] Make claim-deciding conditions binary checks (for example, "the provider's description is required").
+- [ ] Re-check calibration labels L05 (Q04) and L07 (Q14), where the judge flagged facts that were not retrieved.
+- [ ] Try semantic or hybrid retrieval for the vocabulary gap (Q03), and keep headings with every chunk.
+- [ ] Keep the currency in the document text instead of stripping it in cleaning.
+- [ ] Confirm the k=5 fix on fresh questions it was not tuned against.
+- [ ] Log run settings (model, k, prompt) with each CI run (Day 5).
+- [ ] Try a judge from a different model family, as on Day 2.
 
 ## Day 4: Test-generation agent benchmark
 
