@@ -1,0 +1,369 @@
+{
+  "name": "Harbourlight Health claims platform: test-generation golden set",
+  "version": "1.0",
+  "change_history": [
+    {
+      "version": "1.0",
+      "date": "2026-10-22",
+      "change": "Frozen for the Day 4 benchmark after review. Wording only, meaning unchanged: S04-I06 grammar, S10-I04 apostrophe, S08-I04 duplicated phrase. Any later change needs a new version and a rerun."
+    },
+    {
+      "version": "0.4-draft",
+      "date": "2026-10-22",
+      "change": "Extensive updates based on feedback. Further negative tests added to ensure each user story covers each test technique at least once, typos, apply changes around test ideas for correctness"
+    },
+    {
+      "version": "0.3-draft",
+      "date": "2026-10-22",
+      "change": "Roger's expected ideas added (67). Mechanical fixes by Claude: S03 and S10 duplicate idea IDs renumbered, S09-I04 AC4 -> AC1, routing spelling auto_approved -> auto_approve, S06-I06 category typo, S02-I04 typo. S04 resolved question restored from v0.2. Schema: optional boundary_exempt_reason added and set for S01, S07, S10."
+    },
+    {
+      "version": "0.2-draft",
+      "date": "2026-10-21",
+      "change": "S04: day-0 convention confirmed against claim_triage.csv (HLH-021/022); open question moved to resolved_questions. Schema: optional resolved_questions field added."
+    },
+    {
+      "version": "0.1-draft",
+      "date": "2026-10-21",
+      "change": "First draft: 10 stories with acceptance criteria. expected_ideas left empty for Roger to write."
+    }
+  ],
+  "test_basis": [
+    "datasets/plan_rules.md (sections 4 to 8)",
+    "datasets/policy_docs/01-10_*.md (Day 3 member documents)"
+  ],
+  "notes": [
+    "Fictional insurer, synthetic data only. All amounts in EUR.",
+    "The generator receives title, user story and acceptance_criteria only. It does not see plan_rules.md, basis_refs, open_questions or expected_ideas.",
+    "Values needed for boundary cases are written into the acceptance criteria for that reason.",
+    "Routing and reason codes use the names from plan_rules.md sections 2 and 7.",
+    "expected_ideas are the oracle and are shown to the judge only (recall check).",
+    "Positive: the AC’s rule applies as stated, including decline outcomes.",
+    "Negative: missing, invalid or misleading input, or a case where the rule must not fire.",
+    "Boundary: either side of a numeric limit, a date or the edge of a definition, one side per idea.",
+    "Classify by the input: if it is missing, invalid or misleading, the idea is negative. An exemption stated in an AC is positive."
+  ],
+  "stories": [
+    {
+      "story_id": "S01",
+      "title": "Submit a claim with an itemised receipt",
+      "as_a": "member",
+      "i_want": "to attach an itemised receipt when I submit a claim in the member portal",
+      "so_that": "my claim can be assessed and paid",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "A member can submit a claim through the member portal with an itemised receipt attached."},
+        {"ac_id": "AC2", "text": "An itemised receipt shows the treatment, the treatment date and the amount. A document missing any of these is not an itemised receipt."},
+        {"ac_id": "AC3", "text": "A payment card slip or a bank statement is not an itemised receipt. A claim supported only by one of these is treated as having no receipt."},
+        {"ac_id": "AC4", "text": "A claim with no itemised receipt is never recommended for automatic approval. It is routed to manual_review with reason code MISSING_RECEIPT."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 5 (Receipt)",
+        "plan_rules.md 6 step 3.1",
+        "plan_rules.md 8",
+        "06_how_to_claim.md",
+        "10_contact_and_privacy.md"
+      ],
+      "open_questions": [
+        "AC3 second sentence is derived: 06_how_to_claim.md says a card slip or bank statement is not an itemised receipt, but not explicitly that the claim is then treated as having none.",
+        "The assumption is that identity checks are out of scope. When creating the ideas one negative check would be to ensure that a non-member cannot claim. For purposes of this exercise this scenario is not being considered.",
+        "Processing of duplicate receipts is out of scope. There was an initial test idea added where the claim may contain duplicate receipts if attached incorrectly. This was removed to not complicate the set-up."
+      ],
+      "expected_ideas": [
+        {"idea_id": "S01-I01", "ac_ids": ["AC1", "AC2"], "technique": "positive", "idea": "A valid member submits a claim through the portal with itemised receipt. All details are correct and therefore claim is routed but reason code is not MISSING_RECEIPT."},
+        {"idea_id": "S01-I02", "ac_ids": ["AC2"], "technique": "negative", "idea": "The receipt is attached to the claim but missing amount information and therefore routing should be manual_review with MISSING_RECEIPT."},
+        {"idea_id": "S01-I03", "ac_ids": ["AC2"], "technique": "negative", "idea": "The receipt is attached to the claim but missing treatment date information and therefore routing should be manual_review with MISSING_RECEIPT."},        
+        {"idea_id": "S01-I04", "ac_ids": ["AC3"], "technique": "negative", "idea": "The member submits a bank statement instead of a receipt. The claim will be routed to manual_review and MISSING_RECEIPT."},
+        {"idea_id": "S01-I05", "ac_ids": ["AC3"], "technique": "negative", "idea": "The member submits a card slip instead of a receipt. The claim will be routed to manual_review and MISSING_RECEIPT."},
+        {"idea_id": "S01-I06", "ac_ids": ["AC4"], "technique": "negative", "idea": "There is no itemised receipt with the claim. In this scenario routing will be manual_review and MISSING_RECEIPT"}
+      ],
+      "boundary_exempt_reason": "ACs define which documents count as an itemised receipt; there is no numeric limit or date."
+    },
+    {
+      "story_id": "S02",
+      "title": "Check pre-authorisation for hospital treatment",
+      "as_a": "claims assessor",
+      "i_want": "day case and inpatient claims checked for a pre-authorisation number",
+      "so_that": "hospital treatment that was not approved in advance is never paid automatically",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "A day case procedure is hospital treatment without an overnight stay. An inpatient stay is one or more nights in hospital. Both need a pre-authorisation number."},
+        {"ac_id": "AC2", "text": "A day case or inpatient claim with a blank pre-authorisation number is routed to manual_review with reason code MISSING_PREAUTH."},
+        {"ac_id": "AC3", "text": "Every inpatient claim that has a pre-authorisation number is routed to manual_review with reason code INPATIENT_REVIEW."},
+        {"ac_id": "AC4", "text": "GP visits, consultant visits, physiotherapy and prescriptions do not need a pre-authorisation number."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 4",
+        "plan_rules.md 6 steps 3.3 and 3.4",
+        "05_pre_authorisation.md"
+      ],
+      "open_questions": [
+        "The set up assumes that any pre-authorisation number provided is in a valid format."
+      ],
+      "expected_ideas": [
+        {"idea_id": "S02-I01", "ac_ids": ["AC1"], "technique": "positive", "idea": "A day case procedure with a pre-authorisation number contained and within limits will not be routed with MISSING_PREAUTH."},
+        {"idea_id": "S02-I02", "ac_ids": ["AC2"], "technique": "negative", "idea": "A day case procedure claim with a missing pre-authorisation will be routed to manual_review with reason code MISSING_PREAUTH."},
+        {"idea_id": "S02-I03", "ac_ids": ["AC2"], "technique": "negative", "idea": "An inpatient stay claim with a missing pre-authorisation number will be routed to manual_review with reason code MISSING_PREAUTH and not INPATIENT_REVIEW."},
+        {"idea_id": "S02-I04", "ac_ids": ["AC3"], "technique": "positive", "idea": "An inpatient stay claim with a pre-authorisation number will be routed to manual_review with reason code INPATIENT_REVIEW."},
+        {"idea_id": "S02-I05", "ac_ids": ["AC4"], "technique": "positive", "idea": "On submission, claims that are GP visits can have blank pre-authorisation numbers and reason code will not be MISSING_PREAUTH"},
+        {"idea_id": "S02-I06", "ac_ids": ["AC4"], "technique": "positive", "idea": "On submission, claims that are consultant visits can have blank pre-authorisation numbers and reason code will not be MISSING_PREAUTH"},
+        {"idea_id": "S02-I07", "ac_ids": ["AC1"], "technique": "boundary", "idea": "A hospital treatment claim with an overnight stay including a pre-authorisation number is routed as manual_review with reason code INPATIENT_REVIEW and not flagged as a day case."},
+        {"idea_id": "S02-I08", "ac_ids": ["AC1"], "technique": "boundary", "idea": "A hospital treatment claim with no overnight stay including a pre-authorisation number should not be routed as INPATIENT_REVIEW."}
+      ]
+    },
+    {
+      "story_id": "S03",
+      "title": "Track annual limits per policy year",
+      "as_a": "claims assessor",
+      "i_want": "the number of paid visits or items in each category counted per policy year",
+      "so_that": "claims beyond the annual limit are recommended for decline",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "The first policy year starts on the date cover began; each later policy year starts on the anniversary of that date. Each runs for 12 months."},
+        {"ac_id": "AC2", "text": "Annual limits: GP visit 8 visits, consultant visit 4 visits, physiotherapy 10 sessions, prescription 12 items, day case procedure 2 procedures. Inpatient stays have no fixed annual count; they are assessed individually."},
+        {"ac_id": "AC3", "text": "When the number already paid in a category this policy year equals the annual limit, a further claim in that category is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."},
+        {"ac_id": "AC4", "text": "When the number already paid is below the annual limit, the annual limit does not stop the claim."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 4",
+        "plan_rules.md 6 step 2.4",
+        "01_plan_overview.md",
+        "02_cover_and_limits.md"
+      ],
+      "open_questions": [
+        "Neither source says whether annual limits apply per covered person or per policy. Left out of the ACs on purpose.",
+        "Consideration may be required if the policy start date is on the 29th February in a leap-year",
+        "There is limited handling around policy year when making claims. The assumption here is that it is the window for counting visits"
+      ],
+      "expected_ideas": [
+        {"idea_id": "S03-I01", "ac_ids": ["AC2", "AC4"], "technique": "boundary", "idea": "A member makes an 8th GP visit claim in a policy year. Given this is within limits and all other details are correct this will be routed with a reason code that is not ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I02", "ac_ids": ["AC3"], "technique": "boundary", "idea": "A member makes an 9th GP visit claim in a policy year. Given this is outside the limits the claim will be routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I03", "ac_ids": ["AC3"], "technique": "boundary", "idea": "A member makes an 5th Consultant visit claim in a policy year. Given this is outside the limits the claim will be routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I04", "ac_ids": ["AC3"], "technique": "boundary", "idea": "A member makes an 11th physiotherapy visit claim in a policy year. Given this is outside the limits the claim will be routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I05", "ac_ids": ["AC3"], "technique": "boundary", "idea": "A member makes a 13th prescription item claim in a policy year. Given this is outside the limits the claim will be routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I06", "ac_ids": ["AC2", "AC4"], "technique": "boundary", "idea": "A member makes a 2nd day case procedure visit claim in a policy year. Given this is within limits and all other details are correct (including pre-authorisation number) this will be routed with a reason code that is not ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I07", "ac_ids": ["AC3"], "technique": "boundary", "idea": "A member makes a 3rd day case procedure visit claim in a policy year. Given this is outside the limits the claim will be routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I08", "ac_ids": ["AC2"], "technique": "positive", "idea": "With 5 inpatient stays already paid this year, adding another one will not result in the claim being routed with reason code ANNUAL_LIMIT_REACHED."},
+        {"idea_id": "S03-I09", "ac_ids": ["AC1"], "technique": "boundary", "idea": "Build up 8 GP visit claims within a policy year and then submit another one on the day of the policy year anniversary. The claim should not be routed with reason code ANNUAL_LIMIT_REACHED. This is because its a new policy year and the used_this_year field should be reset."},
+        {"idea_id": "S03-I10", "ac_ids": ["AC3"], "technique": "negative", "idea": "Build up 8 GP paid claims and then submit a physiotherapy claim (that is within limits) to ensure that categories do not impact each other. Routing reason codes will not be ANNUAL_LIMIT_REACHED."}
+      ]
+    },
+    {
+      "story_id": "S04",
+      "title": "Apply the waiting period and its exemptions",
+      "as_a": "claims assessor",
+      "i_want": "the 182-day waiting period applied, with its GP and accidental injury exemptions",
+      "so_that": "new members are not paid for treatment the plan does not yet cover, and exempt treatment is not wrongly declined",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "The day number is the treatment date minus the policy start date, so the start date is day 0. Treatment before day 182 is in the waiting period. Treatment on day 182 or later is not."},
+        {"ac_id": "AC2", "text": "Treatment in the waiting period that is not a GP visit and is clearly not for an accidental injury is routed to decline_recommended with reason code WAITING_PERIOD."},
+        {"ac_id": "AC3", "text": "GP visits are covered from day 0."},
+        {"ac_id": "AC4", "text": "Treatment for an accidental injury is exempt from the waiting period when the provider's treatment description shows the injury was accidental. The exemption removes the waiting period only; the receipt, referral, pre-authorisation and amount limits still apply."},
+        {"ac_id": "AC5", "text": "If a claim in the waiting period may be for an accidental injury but the provider's description does not show it (including when only the claimant's note says so), it is routed to manual_review with reason code UNCLEAR."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 5 (Waiting period)",
+        "plan_rules.md 6 steps 1 and 2.2",
+        "plan_rules.md 9 EX-04 to EX-07",
+        "04_waiting_periods.md"
+      ],
+      "open_questions": [],
+      "expected_ideas": [
+        {"idea_id": "S04-I01", "ac_ids": ["AC1", "AC2"], "technique": "boundary", "idea": "A claim (that is not a GP visit and not an accidental injury) is made for treatment on day 181 after policy start date and is therefore still in the waiting period by one day. All other details on the claim are valid. The claim will route to decline_recommended with reason code WAITING_PERIOD."},
+        {"idea_id": "S04-I02", "ac_ids": ["AC1"], "technique": "boundary", "idea": "A claim (that is not a GP visit and not an accidental injury) is made for treatment on day 182 after policy start date and is therefore outside the waiting period. All other details on the claim are correct and therefore it will be routed with reason code not WAITING_PERIOD."},
+        {"idea_id": "S04-I03", "ac_ids": ["AC3"], "technique": "positive", "idea": "A claim for a GP visit is made on day 0. Given all other details are correct this will be routed with reason code not WAITING_PERIOD."},
+        {"idea_id": "S04-I04", "ac_ids": ["AC4"], "technique": "positive", "idea": "A claim for a treatment with a clear accidental injury description based on provider description of 'Physiotherapy session for an ankle sprain from a fall', with referral is made on day 0 is not routed with WAITING_PERIOD"},
+        {"idea_id": "S04-I05", "ac_ids": ["AC4", "AC5"], "technique": "negative", "idea": "A claim for a treatment with an unclear accidental injury description (based on details in the claimant_note) is made on day 0. Given all other details are correct this should be routed to manual_review with reason code UNCLEAR."},
+        {"idea_id": "S04-I06", "ac_ids": ["AC4"], "technique": "negative", "idea": "A claim for Orthopaedic consultant review based on provider description of 'Wrist fracture following a fall' is made on day 100 but there is no GP referral, so it is not routed with WAITING_PERIOD and is not auto_approve."},
+        {"idea_id": "S04-I07", "ac_ids": ["AC3"], "technique": "positive", "idea": "A claim for a GP visit is made on day 181. Given all other details are correct this will be routed with reason code not WAITING_PERIOD."}
+      ],
+      "resolved_questions": [
+        "Day-0 convention in AC1 confirmed 2026-10-21 against claim_triage.csv: HLH-021 (day 181) expects WAITING_PERIOD, HLH-022 (day 182) expects WITHIN_RULES."
+      ]
+    },
+    {
+      "story_id": "S05",
+      "title": "Enforce the claim submission deadline",
+      "as_a": "claims assessor",
+      "i_want": "claims submitted after the deadline identified",
+      "so_that": "late claims are recommended for decline consistently",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "A claim must be submitted within 12 months of the treatment date. The last day to submit is the same calendar date one year after the treatment date. For example, for treatment on 10 March 2027, a claim submitted on 10 March 2028 is on time and one submitted on 11 March 2028 is late."},
+        {"ac_id": "AC2", "text": "For treatment on 29 February, the last day to submit is 28 February of the following year."},
+        {"ac_id": "AC3", "text": "The deadline is checked against the claim's submission date."},
+        {"ac_id": "AC4", "text": "A claim submitted after the last day is routed to decline_recommended with reason code LATE_SUBMISSION."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 5 (Submission deadline)",
+        "plan_rules.md 6 step 2.3",
+        "07_claim_deadlines.md"
+      ],
+      "open_questions": [],
+      "expected_ideas": [
+        {"idea_id": "S05-I01", "ac_ids": ["AC1", "AC3"], "technique": "positive", "idea": "Treatment on 10 March 2027, submitted on 15 June 2027 (well within 12 months), is not routed with LATE_SUBMISSION."},
+        {"idea_id": "S05-I02", "ac_ids": ["AC1"], "technique": "boundary", "idea": "Treatment on 10 March 2027, submitted on 10 March 2028 (the last day), is on time and is not routed with LATE_SUBMISSION."},
+        {"idea_id": "S05-I03", "ac_ids": ["AC1", "AC4"], "technique": "boundary", "idea": "Treatment on 10 March 2027, submitted on 11 March 2028 (one day after the last day), is decline_recommended with LATE_SUBMISSION."},
+        {"idea_id": "S05-I04", "ac_ids": ["AC2"], "technique": "boundary", "idea": "Treatment on 29 February 2028, submitted on 28 February 2029, is on time and is not routed with LATE_SUBMISSION."},
+        {"idea_id": "S05-I05", "ac_ids": ["AC2", "AC4"], "technique": "boundary", "idea": "Treatment on 29 February 2028, submitted on 1 March 2029, is decline_recommended with LATE_SUBMISSION."},
+        {"idea_id": "S05-I06", "ac_ids": ["AC1"], "technique": "boundary", "idea": "Treatment on 1 March 2027, submitted on 1 March 2028 (366 days later, across 29 February 2028), is on time and is not routed with LATE_SUBMISSION."},
+        {"idea_id": "S05-I07", "ac_ids": ["AC1", "AC4"], "technique": "boundary", "idea": "Treatment on 28 February 2027, submitted on 29 February 2028, is decline_recommended with LATE_SUBMISSION (the last day is 28 February 2028)."},
+        {"idea_id": "S05-I08", "ac_ids": ["AC3"], "technique": "negative", "idea": "A claim submitted on 10 March 2028 for treatment on 10 March 2027, but processed on 20 March 2028, is judged on the submission date and is not routed with LATE_SUBMISSION."}
+      ]
+    },
+    {
+      "story_id": "S06",
+      "title": "Check per-visit and per-item limits",
+      "as_a": "claims assessor",
+      "i_want": "the amount claimed checked against the limit for its category",
+      "so_that": "claims above the limit are reviewed instead of paid automatically",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "Limits per visit or item: GP visit 60, consultant visit 120, physiotherapy 50 per session, prescription 40 per item, day case procedure 1,500 per procedure. Inpatient stays are assessed individually and have no fixed limit."},
+        {"ac_id": "AC2", "text": "An amount exactly equal to the limit is within the limit."},
+        {"ac_id": "AC3", "text": "A claim for more than the limit for its category is never recommended for automatic approval. It is routed to manual_review with reason code OVER_LIMIT."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 4",
+        "plan_rules.md 6 step 3.5",
+        "plan_rules.md 8",
+        "02_cover_and_limits.md"
+      ],
+      "open_questions": [
+        "The focus of these tests are purely on the amounts",
+        "Currency based tests have been excluded to reduce complexity",
+        "Per-item and per-session limits assume a receipt can list several items; the claim record is defined as having one amount."
+      ],
+      "expected_ideas": [
+        {"idea_id": "S06-I01", "ac_ids": ["AC1", "AC2"], "technique": "boundary", "idea": "GP visit item that is €60 and within annual number limits is not routed with OVER_LIMIT."},
+        {"idea_id": "S06-I02", "ac_ids": ["AC3"], "technique": "boundary", "idea": "GP visit item that is €60.01 (one over category limit per visit), within annual number limits will be routed to manual_review with reason code OVER_LIMIT."},
+        {"idea_id": "S06-I03", "ac_ids": ["AC1", "AC2"], "technique": "boundary", "idea": "Consultant visit item that is €120 and within annual number limits is not routed with OVER_LIMIT."},
+        {"idea_id": "S06-I04", "ac_ids": ["AC3"], "technique": "boundary", "idea": "Consultant visit item that is €120.01 (one over category limit per visit), within annual number limits will be routed to manual_review with reason code OVER_LIMIT."},
+        {"idea_id": "S06-I05", "ac_ids": ["AC3"], "technique": "boundary", "idea": "Physiotherapy session that is €50.01 (one over category limit per visit), within annual number limits will be routed to manual_review with reason code OVER_LIMIT."},
+        {"idea_id": "S06-I06", "ac_ids": ["AC3"], "technique": "boundary", "idea": "Prescription item that is €40.01 (one over category limit per visit), within annual number limits will be routed to manual_review with reason code OVER_LIMIT."},
+        {"idea_id": "S06-I07", "ac_ids": ["AC1", "AC2"], "technique": "boundary", "idea": "Day case procedure item that is €1500 and within annual number limits is not routed with OVER_LIMIT."},
+        {"idea_id": "S06-I08", "ac_ids": ["AC3"], "technique": "boundary", "idea": "Day case procedure item that is €1500.01 (one over category limit per visit), within annual number limits will be routed to manual_review with a reason code OVER_LIMIT."},
+        {"idea_id": "S06-I09", "ac_ids": ["AC1"], "technique": "positive", "idea": "An Inpatient stay for €8000 will be assessed and therefore any routing will not have reason code OVER_LIMIT."},
+        {"idea_id": "S06-I10", "ac_ids": ["AC1"], "technique": "negative", "idea": "A receipt for 2 physiotherapy sessions at €50 each (€100 in total) is not routed with OVER_LIMIT, because the limit is €50 per session."}
+      ]
+    },
+    {
+      "story_id": "S07",
+      "title": "Require referrals for consultant visits and physiotherapy",
+      "as_a": "claims assessor",
+      "i_want": "claims that need a referral checked for one",
+      "so_that": "consultant and physiotherapy claims without a referral are reviewed, not paid automatically",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "A consultant visit needs a referral from the member's GP."},
+        {"ac_id": "AC2", "text": "Physiotherapy needs a referral from a GP or a consultant."},
+        {"ac_id": "AC3", "text": "A claim whose required referral is not attached is never recommended for automatic approval. It is routed to manual_review with reason code MISSING_REFERRAL."},
+        {"ac_id": "AC4", "text": "GP visits, prescriptions, day case procedures and inpatient stays do not need a referral."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 4",
+        "plan_rules.md 6 step 3.2",
+        "plan_rules.md 8",
+        "02_cover_and_limits.md",
+        "06_how_to_claim.md"
+      ],
+      "open_questions": [],
+      "expected_ideas": [
+        {"idea_id": "S07-I01", "ac_ids": ["AC1", "AC3"], "technique": "negative", "idea": "A Consultant visit without a referral attachment will be routed to manual_review with reason code MISSING_REFERRAL."},
+        {"idea_id": "S07-I02", "ac_ids": ["AC1"], "technique": "positive", "idea": "A Consultant visit with a GP referral attachment and all other correct details (e.g. within dates and limits) will be routed without reason code MISSING_REFERRAL."},
+        {"idea_id": "S07-I03", "ac_ids": ["AC2", "AC3"], "technique": "negative", "idea": "A Physiotherapy session with no referral attached will be routed to manual_review with reason code MISSING_REFERRAL."},
+        {"idea_id": "S07-I04", "ac_ids": ["AC2"], "technique": "positive", "idea": "A Physiotherapy session with a GP referral and all other correct details (e.g. within dates and limits) will not have a reason code MISSING_REFERRAL."},
+        {"idea_id": "S07-I05", "ac_ids": ["AC2"], "technique": "positive", "idea": "A Physiotherapy session with a Consultant referral and all other correct details (e.g. within dates and limits) will not have a reason code MISSING_REFERRAL."},
+        {"idea_id": "S07-I06", "ac_ids": ["AC4"], "technique": "positive", "idea": "A prescription with no referral is not routed with MISSING_REFERRAL."},
+        {"idea_id": "S07-I07", "ac_ids": ["AC1"], "technique": "negative", "idea": "A Consultant visit with referral from a consultant should be routed to manual_review with reason code MISSING_REFERRAL."}
+      ],
+      "boundary_exempt_reason": "ACs define which referral each category needs; there is no numeric limit or date."
+    },
+    {
+      "story_id": "S08",
+      "title": "Decline excluded treatment",
+      "as_a": "claims assessor",
+      "i_want": "claims for treatment the plan never covers identified",
+      "so_that": "they are recommended for decline whatever the amount or length of membership",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "Excluded treatment: cosmetic procedures; routine dental care; routine optical care (eye tests, glasses, contact lenses); alternative therapies (for example acupuncture, homeopathy); fitness and wellness classes (for example yoga, pilates, gym membership); treatment received outside Ireland."},
+        {"ac_id": "AC2", "text": "Fitness and wellness classes are excluded even if described as therapeutic or run at a clinic."},
+        {"ac_id": "AC3", "text": "A claim for excluded treatment is routed to decline_recommended with reason code EXCLUDED, whatever the amount and however long the member has been covered."},
+        {"ac_id": "AC4", "text": "A claim whose receipt includes an excluded item alongside a covered one is routed to manual_review with reason code UNCLEAR."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 5 (Not covered)",
+        "plan_rules.md 6 steps 1 and 2.1",
+        "03_exclusions.md"
+      ],
+      "open_questions": [
+        "Assumption is that a separate test idea is not needed for each item and we can use equivalence partitioning on the assumption that the logic is the same for any item in the exclusion list."
+      ],
+      "expected_ideas": [
+        {"idea_id": "S08-I01", "ac_ids": ["AC1", "AC3"], "technique": "positive", "idea": "A claim for eye tests will be routed to decline_recommended with reason code EXCLUDED."},
+        {"idea_id": "S08-I02", "ac_ids": ["AC1", "AC3"], "technique": "positive", "idea": "A claim for acupuncture will be routed to decline_recommended with reason code EXCLUDED."},
+        {"idea_id": "S08-I03", "ac_ids": ["AC1", "AC3"], "technique": "positive", "idea": "A claim for cosmetic teeth whitening procedure will be routed to decline_recommended with reason code EXCLUDED."},
+        {"idea_id": "S08-I04", "ac_ids": ["AC2"], "technique": "negative", "idea": "A pilates class at a physiotherapy clinic, described as therapeutic, is routed to decline_recommended with reason code EXCLUDED."},
+        {"idea_id": "S08-I05", "ac_ids": ["AC4"], "technique": "positive", "idea": "A receipt for a physiotherapy session and a yoga class will be routed to manual_review with reason code UNCLEAR."},
+        {"idea_id": "S08-I06", "ac_ids": ["AC3"], "technique": "positive", "idea": "A claim for cosmetic surgery costing €2000 will be routed to decline_recommended with reason code EXCLUDED."},
+        {"idea_id": "S08-I07", "ac_ids": ["AC3"], "technique": "positive", "idea": "A claim for acupuncture on day 30 will be routed to decline_recommended with reason code EXCLUDED."},
+        {"idea_id": "S08-I08", "ac_ids": ["AC1"], "technique": "boundary", "idea": "A Consultant ophthalmology visit with all correct information including referral will not be routed with reason code EXCLUDED."},
+        {"idea_id": "S08-I09", "ac_ids": ["AC1", "AC3"], "technique": "negative", "idea": "A GP visit received in Spain is decline_recommended with EXCLUDED, even though GP visits are a covered category."}
+      ]
+    },
+    {
+      "story_id": "S09",
+      "title": "Flag high-value claims for review",
+      "as_a": "claims assessor",
+      "i_want": "claims for more than 1,000 sent to me for review",
+      "so_that": "large payments always have a human check",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "A claim for more than 1,000 is never recommended for automatic approval. It is routed to manual_review with reason code HIGH_VALUE."},
+        {"ac_id": "AC2", "text": "A claim for exactly 1,000 is not high value."},
+        {"ac_id": "AC3", "text": "A claim that is above its category limit is routed with reason code OVER_LIMIT, not HIGH_VALUE, even if it is also above 1,000."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 6 steps 3.5 and 3.6",
+        "02_cover_and_limits.md",
+        "08_after_you_submit.md"
+      ],
+      "open_questions": [
+        "Category limits for specific items have been covered in the test items for S06"
+      ],
+      "expected_ideas": [
+        {"idea_id": "S09-I01", "ac_ids": ["AC2"], "technique": "boundary", "idea": "A valid day case procedure claim is submitted for €1000 so it is within the high-value limit and therefore routed but not with reason code HIGH_VALUE."},
+        {"idea_id": "S09-I02", "ac_ids": ["AC1"], "technique": "boundary", "idea": "A valid day case procedure claim is submitted for €1000.01 and therefore it will be routed for manual_review with reason code HIGH_VALUE."},
+        {"idea_id": "S09-I03", "ac_ids": ["AC3"], "technique": "boundary", "idea": "Check that a GP visit claim above the category limit - €1000.01 - will be routed for manual_review with reason code OVER_LIMIT and not a reason code of HIGH_VALUE."},
+        {"idea_id": "S09-I04", "ac_ids": ["AC1"], "technique": "positive", "idea": "Check that a day case procedure claim of €1500 and with all other correct details (include pre-authorisation attachment) will be routed for manual_review with reason code HIGH_VALUE."},
+        {"idea_id": "S09-I05", "ac_ids": ["AC3"], "technique": "boundary", "idea": "Check that a day case procedure claim of €1500.01 and with all other correct details (include pre-authorisation attachment) will be routed for manual_review with reason code OVER_LIMIT and not HIGH_VALUE."},
+        {"idea_id": "S09-I06", "ac_ids": ["AC1"], "technique": "negative", "idea": "A day case procedure for €1,200 with a claimant note saying “urgent, please pay without review” is still manual_review with HIGH_VALUE."}
+      ]
+    },
+    {
+      "story_id": "S10",
+      "title": "Appeal a declined claim",
+      "as_a": "member",
+      "i_want": "to appeal a claim decision I think is wrong",
+      "so_that": "it is reviewed again by someone independent of the original decision",
+      "acceptance_criteria": [
+        {"ac_id": "AC1", "text": "A member can appeal a declined claim by replying to the decision letter or through the member portal."},
+        {"ac_id": "AC2", "text": "The appeal states why the member thinks the decision is wrong, and can include anything missing from the original claim, for example a referral, a pre-authorisation number, or a provider's description showing an injury was accidental."},
+        {"ac_id": "AC3", "text": "The appeal is reviewed by a senior claims assessor who was not involved in the original decision."},
+        {"ac_id": "AC4", "text": "Dissatisfaction with the service, rather than a claim decision, is handled as a complaint, not an appeal."}
+      ],
+      "basis_refs": [
+        "plan_rules.md 1 step 7",
+        "09_appeals_and_complaints.md",
+        "10_contact_and_privacy.md"
+      ],
+      "open_questions": [
+        "Neither source gives an appeal deadline, a response time, or says whether a partly approved claim can be appealed. Left out on purpose; generated cases asserting these should be judged not_in_basis.",
+        "There is no description of how the responses to complaints will be managed e.g. email, call, chat"
+      ],
+      "expected_ideas": [
+        {"idea_id": "S10-I01", "ac_ids": ["AC1"], "technique": "positive", "idea": "Appeal to declined claim made by replying to the decision letter."},
+        {"idea_id": "S10-I02", "ac_ids": ["AC1"], "technique": "positive", "idea": "Appeal to declined claim made through the member portal."},
+        {"idea_id": "S10-I03", "ac_ids": ["AC2"], "technique": "positive", "idea": "A member is able to state why the decision is believed to be wrong by including the missing referral information."},
+        {"idea_id": "S10-I04", "ac_ids": ["AC2"], "technique": "positive", "idea": "A member is able to state why the decision is believed to be wrong by including a provider's description showing the injury was accidental."},
+        {"idea_id": "S10-I05", "ac_ids": ["AC3"], "technique": "positive", "idea": "The appeal must be reviewed by a senior claims assessor who was not involved in the original claim decision."},
+        {"idea_id": "S10-I06", "ac_ids": ["AC4"], "technique": "negative", "idea": "A member submits an ‘appeal’ about slow service of the member portal. This is not related to claims appeals and therefore handled as a complaint."},
+        {"idea_id": "S10-I07", "ac_ids": ["AC3"], "technique": "negative", "idea": "An original assessor cannot review appeals against claims they have declined."}
+      ],
+      "boundary_exempt_reason": "ACs describe the appeal process; there is no numeric limit, date or deadline in the basis."
+    }
+  ]
+}

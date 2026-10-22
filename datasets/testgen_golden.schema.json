@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Schema for datasets/testgen_golden.json. v0.3-draft, 2026-10-22: optional boundary_exempt_reason added (v0.2: resolved_questions).",
+  "title": "Test-generation golden set",
+  "type": "object",
+  "required": [
+    "name",
+    "version",
+    "change_history",
+    "test_basis",
+    "stories"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "change_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "version",
+          "date",
+          "change"
+        ],
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "change": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "test_basis": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "story_id",
+          "title",
+          "as_a",
+          "i_want",
+          "so_that",
+          "acceptance_criteria",
+          "basis_refs",
+          "open_questions",
+          "expected_ideas"
+        ],
+        "properties": {
+          "story_id": {
+            "type": "string",
+            "pattern": "^S[0-9]{2}$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "as_a": {
+            "type": "string"
+          },
+          "i_want": {
+            "type": "string"
+          },
+          "so_that": {
+            "type": "string"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "required": [
+                "ac_id",
+                "text"
+              ],
+              "properties": {
+                "ac_id": {
+                  "type": "string",
+                  "pattern": "^AC[0-9]+$"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "basis_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "open_questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resolved_questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "$comment": "Optional. Questions closed, with how and when."
+          },
+          "expected_ideas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "idea_id",
+                "ac_ids",
+                "technique",
+                "idea"
+              ],
+              "properties": {
+                "idea_id": {
+                  "type": "string",
+                  "pattern": "^S[0-9]{2}-I[0-9]{2}$",
+                  "$comment": "e.g. S04-I03"
+                },
+                "ac_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^AC[0-9]+$"
+                  }
+                },
+                "technique": {
+                  "enum": [
+                    "positive",
+                    "negative",
+                    "boundary"
+                  ]
+                },
+                "idea": {
+                  "type": "string",
+                  "$comment": "Condition plus expected outcome, with exact values for boundaries. e.g. 'Non-GP treatment on day 181 is decline_recommended with WAITING_PERIOD.'"
+                }
+              }
+            }
+          },
+          "boundary_exempt_reason": {
+            "type": "string",
+            "$comment": "Optional. Set when the story's ACs contain no numeric limit, date or definition edge, so no boundary idea is expected."
+          }
+        }
+      }
+    }
+  }
+}
