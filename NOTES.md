@@ -169,7 +169,19 @@ the document cleaning strips the currency. The bot's behaviour held in every con
 
 ## Day 4: Test-generation agent benchmark
 
-_Not started._
+## Day 4 observations (golden set)
+
+- **Oracle cost.** Writing and reviewing 78 expected ideas took [12 hours] over three review
+  rounds. Review found 6 wrong expected answers and 2 ambiguous ACs, so the oracle itself
+  needed QA. In a real team the golden set is a maintained asset, like a regression suite.
+- **Sampled partitions.** Where an AC lists several equivalent items, the ideas sample one or
+  two (equivalence partitioning). Recall therefore measures "found the ideas we chose", not
+  completeness. For an LLM the equivalence assumption is weaker than for code: handling one
+  list item correctly does not guarantee the others.
+- **Story-level scope.** The generator sees one story at a time, and the ideas are limited to
+  what each story card supports. Rule interactions across stories (e.g. EXCLUDED before
+  MISSING_RECEIPT) are not measured. A "story + plan_rules" configuration would need a
+  matching extended oracle; candidate stretch goal.
 
 ## Day 5: CI, README, LinkedIn
 
