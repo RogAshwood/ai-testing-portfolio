@@ -1,0 +1,2774 @@
+{
+  "scored_utc": "2026-10-28T12:25:23+00:00",
+  "gen_file": "gen_v1_gpt-6-luna_g1.0_r1_20261023T145401Z.json",
+  "gen_meta": {
+    "started_utc": "2026-10-23T14:54:01+00:00",
+    "model": "gpt-6-luna",
+    "prompt_version": "v1",
+    "prompt_fingerprint": "a71e8c54d488",
+    "golden_version": "1.0",
+    "golden_fingerprint": "228e95aab97e",
+    "run_label": "1",
+    "stories": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10"
+    ],
+    "totals": {
+      "cases": 75,
+      "schema_valid": 10,
+      "input_tokens": 4305,
+      "output_tokens": 14775,
+      "latency_s": 143.0
+    }
+  },
+  "judged": true,
+  "judge_model": "gpt-6-sol",
+  "judge_cases_fp": "ff34c1fc3ab1",
+  "judge_recall_fp": "00e27350cffd",
+  "stories": [
+    {
+      "metrics": {
+        "story_id": "S01",
+        "schema_valid": true,
+        "n_cases": 7,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 1,
+        "tfidf_pairs": [
+          [
+            "TC02",
+            "TC03",
+            0.917
+          ]
+        ],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.833,
+        "recall_positive": 0.0,
+        "recall_negative": 1.0,
+        "recall_boundary": null,
+        "neg_bnd_pass": true,
+        "concrete_rate": 0.857,
+        "atomic_rate": 1.0,
+        "covered_ideas": [
+          "S01-I02",
+          "S01-I03",
+          "S01-I04",
+          "S01-I05",
+          "S01-I06"
+        ],
+        "judge_input_tokens": 3581,
+        "judge_output_tokens": 1643,
+        "judge_cost_usd": 0.023592,
+        "judge_latency_s": 18.04,
+        "judge_issues": [],
+        "gen_input_tokens": 426,
+        "gen_output_tokens": 1326,
+        "gen_cost_usd": 0.000706,
+        "gen_latency_s": 14.02,
+        "card_fp": "1f056e50fb11",
+        "ideas_fp": "99e6a9b0137c"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The receipt's treatment, treatment date and amount are not specified, so the input is not fully concrete."
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC07",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1805,
+            "output_tokens": 920,
+            "latency_s": 10.35
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S01-I01",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC01 tests submission with an itemised receipt but does not state or clearly imply the routing outcome or absence of MISSING_RECEIPT."
+              },
+              {
+                "idea_id": "S01-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 tests a receipt missing the amount and expects manual_review with MISSING_RECEIPT."
+              },
+              {
+                "idea_id": "S01-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 tests a receipt missing the treatment date and expects manual_review with MISSING_RECEIPT."
+              },
+              {
+                "idea_id": "S01-I04",
+                "covered": true,
+                "case_ids": [
+                  "TC06"
+                ],
+                "reason": "TC06 tests a bank statement instead of an itemised receipt and expects manual_review with MISSING_RECEIPT."
+              },
+              {
+                "idea_id": "S01-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 tests a payment card slip instead of an itemised receipt and expects manual_review with MISSING_RECEIPT."
+              },
+              {
+                "idea_id": "S01-I06",
+                "covered": true,
+                "case_ids": [
+                  "TC02",
+                  "TC03",
+                  "TC04",
+                  "TC05",
+                  "TC06",
+                  "TC07"
+                ],
+                "reason": "Each case tests a claim without an itemised receipt and expects manual_review with MISSING_RECEIPT."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1776,
+            "output_tokens": 723,
+            "latency_s": 7.69
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S02",
+        "schema_valid": true,
+        "n_cases": 7,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.625,
+        "recall_positive": 0.75,
+        "recall_negative": 1.0,
+        "recall_boundary": 0.0,
+        "neg_bnd_pass": false,
+        "concrete_rate": 0.857,
+        "atomic_rate": 1.0,
+        "covered_ideas": [
+          "S02-I02",
+          "S02-I03",
+          "S02-I04",
+          "S02-I05",
+          "S02-I06"
+        ],
+        "judge_input_tokens": 3558,
+        "judge_output_tokens": 1329,
+        "judge_cost_usd": 0.020406,
+        "judge_latency_s": 15.15,
+        "judge_issues": [],
+        "gen_input_tokens": 424,
+        "gen_output_tokens": 1281,
+        "gen_cost_usd": 0.000683,
+        "gen_latency_s": 12.49,
+        "card_fp": "977fdbcae364",
+        "ideas_fp": "7b41b9ca23a2"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The number of nights and the pre-authorisation number are not specified, so running the test requires further choices."
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC07",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1732,
+            "output_tokens": 834,
+            "latency_s": 9.54
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S02-I01",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests a day case claim with a pre-authorisation number."
+              },
+              {
+                "idea_id": "S02-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC01"
+                ],
+                "reason": "TC01 routes a day case claim with blank pre-authorisation to manual_review with MISSING_PREAUTH."
+              },
+              {
+                "idea_id": "S02-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 assigns MISSING_PREAUTH, rather than INPATIENT_REVIEW, to an inpatient claim with blank pre-authorisation."
+              },
+              {
+                "idea_id": "S02-I04",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 routes an inpatient claim with a pre-authorisation number to manual_review with INPATIENT_REVIEW."
+              },
+              {
+                "idea_id": "S02-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 establishes that a GP visit with blank pre-authorisation does not require it."
+              },
+              {
+                "idea_id": "S02-I06",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 establishes that a consultant visit with blank pre-authorisation does not require it."
+              },
+              {
+                "idea_id": "S02-I07",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC03 does not state an explicit one-night value required for this boundary idea."
+              },
+              {
+                "idea_id": "S02-I08",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests a zero-night hospital claim with a pre-authorisation number and confirms it is not routed as INPATIENT_REVIEW."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1826,
+            "output_tokens": 495,
+            "latency_s": 5.61
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S03",
+        "schema_valid": true,
+        "n_cases": 14,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.077,
+        "recall": 0.8,
+        "recall_positive": 1.0,
+        "recall_negative": 0.0,
+        "recall_boundary": 0.875,
+        "neg_bnd_pass": false,
+        "concrete_rate": 0.786,
+        "atomic_rate": 0.929,
+        "covered_ideas": [
+          "S03-I01",
+          "S03-I02",
+          "S03-I03",
+          "S03-I04",
+          "S03-I05",
+          "S03-I06",
+          "S03-I07",
+          "S03-I08"
+        ],
+        "judge_input_tokens": 5208,
+        "judge_output_tokens": 1983,
+        "judge_cost_usd": 0.030246,
+        "judge_latency_s": 36.68,
+        "judge_issues": [],
+        "gen_input_tokens": 457,
+        "gen_output_tokens": 2001,
+        "gen_cost_usd": 0.001046,
+        "gen_latency_s": 17.63,
+        "card_fp": "ef6937c990d4",
+        "ideas_fp": "8067c52c9bb6"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "No cover start date is specified to calculate the first policy year."
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "No cover start date is specified to calculate the anniversary."
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC07",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC08",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC09",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC10",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC11",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC12",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC13",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC14",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": false,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": false
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": false
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "It checks both policy-year counting and a conditional limit outcome, but specifies neither a category nor a paid count below its limit, so it does not exercise AC2 or AC4."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2488,
+            "output_tokens": 1452,
+            "latency_s": 14.72
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S03-I01",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 submits the eighth GP claim and states that the annual limit does not stop it."
+              },
+              {
+                "idea_id": "S03-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 submits a ninth GP claim and expects decline_recommended with ANNUAL_LIMIT_REACHED."
+              },
+              {
+                "idea_id": "S03-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 submits a fifth consultant claim and expects the specified decline route and reason code."
+              },
+              {
+                "idea_id": "S03-I04",
+                "covered": true,
+                "case_ids": [
+                  "TC07"
+                ],
+                "reason": "TC07 submits an eleventh physiotherapy claim and expects the specified decline route and reason code."
+              },
+              {
+                "idea_id": "S03-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC09"
+                ],
+                "reason": "TC09 submits a thirteenth prescription claim and expects the specified decline route and reason code."
+              },
+              {
+                "idea_id": "S03-I06",
+                "covered": true,
+                "case_ids": [
+                  "TC12"
+                ],
+                "reason": "TC12 submits the second day case procedure claim and states that the annual limit does not stop it."
+              },
+              {
+                "idea_id": "S03-I07",
+                "covered": true,
+                "case_ids": [
+                  "TC11"
+                ],
+                "reason": "TC11 submits the third day case procedure claim and expects the specified decline route and reason code."
+              },
+              {
+                "idea_id": "S03-I08",
+                "covered": true,
+                "case_ids": [
+                  "TC13"
+                ],
+                "reason": "TC13 covers five previously paid inpatient stays through its one-or-more range and states that no fixed annual count applies."
+              },
+              {
+                "idea_id": "S03-I09",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case submits a GP claim on the anniversary after eight GP visits in the preceding policy year."
+              },
+              {
+                "idea_id": "S03-I10",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case submits a within-limit physiotherapy claim after eight paid GP claims to test category independence."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2720,
+            "output_tokens": 531,
+            "latency_s": 21.96
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S04",
+        "schema_valid": true,
+        "n_cases": 6,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.714,
+        "recall_positive": 0.667,
+        "recall_negative": 0.5,
+        "recall_boundary": 1.0,
+        "neg_bnd_pass": true,
+        "concrete_rate": 0.333,
+        "atomic_rate": 1.0,
+        "covered_ideas": [
+          "S04-I01",
+          "S04-I02",
+          "S04-I03",
+          "S04-I04",
+          "S04-I05"
+        ],
+        "judge_input_tokens": 3777,
+        "judge_output_tokens": 1821,
+        "judge_cost_usd": 0.025764,
+        "judge_latency_s": 21.72,
+        "judge_issues": [],
+        "gen_input_tokens": 513,
+        "gen_output_tokens": 2110,
+        "gen_cost_usd": 0.001106,
+        "gen_latency_s": 21.46,
+        "card_fp": "1b689c391f3d",
+        "ideas_fp": "cc40367298ae"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The non-GP treatment is not specified, so the inputs are not fully concrete."
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The non-GP treatment is not specified, so the inputs are not fully concrete."
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The treatment date and provider description are stated only as qualifying classes, not specific inputs."
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC5",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The treatment date and the contents of the claimant note and provider description are not specific."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1793,
+            "output_tokens": 893,
+            "latency_s": 10.99
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S04-I01",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 tests non-GP, non-accidental treatment on day 181 and expects WAITING_PERIOD decline."
+              },
+              {
+                "idea_id": "S04-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 tests day 182 and states that the treatment is outside the waiting period."
+              },
+              {
+                "idea_id": "S04-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 tests a GP visit on day 0 and states that it is covered."
+              },
+              {
+                "idea_id": "S04-I04",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 covers provider-confirmed accidental injury before day 182 and expects the waiting-period exemption."
+              },
+              {
+                "idea_id": "S04-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC06"
+                ],
+                "reason": "TC06 tests an injury suggested only by the claimant's note and expects manual_review with UNCLEAR."
+              },
+              {
+                "idea_id": "S04-I06",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests an accidental-injury claim without a GP referral and expects it not to be auto-approved."
+              },
+              {
+                "idea_id": "S04-I07",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC04 tests a GP visit on day 0, but no case tests one on day 181."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1984,
+            "output_tokens": 928,
+            "latency_s": 10.73
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S05",
+        "schema_valid": true,
+        "n_cases": 5,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 1,
+        "tfidf_pairs": [
+          [
+            "TC01",
+            "TC02",
+            0.904
+          ]
+        ],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.625,
+        "recall_positive": 0.0,
+        "recall_negative": 0.0,
+        "recall_boundary": 0.833,
+        "neg_bnd_pass": false,
+        "concrete_rate": 1.0,
+        "atomic_rate": 1.0,
+        "covered_ideas": [
+          "S05-I02",
+          "S05-I03",
+          "S05-I04",
+          "S05-I05",
+          "S05-I06"
+        ],
+        "judge_input_tokens": 3313,
+        "judge_output_tokens": 1044,
+        "judge_cost_usd": 0.017066,
+        "judge_latency_s": 11.11,
+        "judge_issues": [],
+        "gen_input_tokens": 435,
+        "gen_output_tokens": 1775,
+        "gen_cost_usd": 0.000931,
+        "gen_latency_s": 18.29,
+        "card_fp": "2e76ed04dc57",
+        "ideas_fp": "3ffe79243120"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1571,
+            "output_tokens": 361,
+            "latency_s": 3.71
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S05-I01",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests a submission well within 12 months; TC01 is one day before the deadline."
+              },
+              {
+                "idea_id": "S05-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 confirms that submission on the anniversary deadline is on time."
+              },
+              {
+                "idea_id": "S05-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 expects decline_recommended with LATE_SUBMISSION one day after the deadline."
+              },
+              {
+                "idea_id": "S05-I04",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 confirms the 28 February deadline for a leap-day treatment is on time."
+              },
+              {
+                "idea_id": "S05-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 expects decline_recommended with LATE_SUBMISSION on 1 March after a leap-day treatment."
+              },
+              {
+                "idea_id": "S05-I06",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 tests an on-time anniversary submission 366 days after treatment, across 29 February 2028."
+              },
+              {
+                "idea_id": "S05-I07",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests submission on 29 February after treatment on 28 February of the preceding year."
+              },
+              {
+                "idea_id": "S05-I08",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case gives a processing date after the deadline to verify that the submission date governs."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1742,
+            "output_tokens": 683,
+            "latency_s": 7.4
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S06",
+        "schema_valid": true,
+        "n_cases": 11,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.4,
+        "recall_positive": 1.0,
+        "recall_negative": 0.0,
+        "recall_boundary": 0.375,
+        "neg_bnd_pass": false,
+        "concrete_rate": 0.545,
+        "atomic_rate": 1.0,
+        "covered_ideas": [
+          "S06-I01",
+          "S06-I03",
+          "S06-I07",
+          "S06-I09"
+        ],
+        "judge_input_tokens": 4420,
+        "judge_output_tokens": 1206,
+        "judge_cost_usd": 0.0209,
+        "judge_latency_s": 10.99,
+        "judge_issues": [],
+        "gen_input_tokens": 410,
+        "gen_output_tokens": 1764,
+        "gen_cost_usd": 0.000923,
+        "gen_latency_s": 16.28,
+        "card_fp": "763a66604ccd",
+        "ideas_fp": "80cebe5072a2"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The claimed amount is specified only as greater than 60."
+              },
+              {
+                "case_id": "TC07",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The claimed amount is specified only as greater than 120."
+              },
+              {
+                "case_id": "TC08",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The claimed amount is specified only as greater than 50."
+              },
+              {
+                "case_id": "TC09",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The claimed amount is specified only as greater than 40."
+              },
+              {
+                "case_id": "TC10",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The claimed amount is specified only as greater than 1,500."
+              },
+              {
+                "case_id": "TC11",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2145,
+            "output_tokens": 753,
+            "latency_s": 6.63
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S06-I01",
+                "covered": true,
+                "case_ids": [
+                  "TC01"
+                ],
+                "reason": "TC01 tests a GP visit at 60 and classifies it as within the limit."
+              },
+              {
+                "idea_id": "S06-I02",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC06 does not specify 60.01 or another value one cent above the GP limit."
+              },
+              {
+                "idea_id": "S06-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 tests a consultant visit at 120 and classifies it as within the limit."
+              },
+              {
+                "idea_id": "S06-I04",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC07 does not specify 120.01 or another value one cent above the consultant limit."
+              },
+              {
+                "idea_id": "S06-I05",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC08 does not specify 50.01 or another value one cent above the physiotherapy limit."
+              },
+              {
+                "idea_id": "S06-I06",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC09 does not specify 40.01 or another value one cent above the prescription limit."
+              },
+              {
+                "idea_id": "S06-I07",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 tests a day case procedure at 1,500 and classifies it as within the limit."
+              },
+              {
+                "idea_id": "S06-I08",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC10 does not specify 1,500.01 or another value one cent above the day case limit."
+              },
+              {
+                "idea_id": "S06-I09",
+                "covered": true,
+                "case_ids": [
+                  "TC11"
+                ],
+                "reason": "TC11 covers inpatient stays as a class and says they are assessed individually without a fixed limit."
+              },
+              {
+                "idea_id": "S06-I10",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests a receipt containing two physiotherapy sessions at 50 each."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2275,
+            "output_tokens": 453,
+            "latency_s": 4.36
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S07",
+        "schema_valid": true,
+        "n_cases": 8,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 1.0,
+        "recall_positive": 1.0,
+        "recall_negative": 1.0,
+        "recall_boundary": null,
+        "neg_bnd_pass": true,
+        "concrete_rate": 0.75,
+        "atomic_rate": 0.875,
+        "covered_ideas": [
+          "S07-I01",
+          "S07-I02",
+          "S07-I03",
+          "S07-I04",
+          "S07-I05",
+          "S07-I06",
+          "S07-I07"
+        ],
+        "judge_input_tokens": 3634,
+        "judge_output_tokens": 994,
+        "judge_cost_usd": 0.017208,
+        "judge_latency_s": 11.1,
+        "judge_issues": [],
+        "gen_input_tokens": 394,
+        "gen_output_tokens": 1507,
+        "gen_cost_usd": 0.000793,
+        "gen_latency_s": 14.12,
+        "card_fp": "b6438b4356c0",
+        "ideas_fp": "361b87b7ee92"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The referral source is specified only as someone other than the member's GP."
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC07",
+                "verdict": "correct",
+                "technique": "negative",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The referral source is specified only as someone who is neither a GP nor a consultant."
+              },
+              {
+                "case_id": "TC08",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": false,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The case bundles checks for four different claim types."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1808,
+            "output_tokens": 645,
+            "latency_s": 6.88
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S07-I01",
+                "covered": true,
+                "case_ids": [
+                  "TC01"
+                ],
+                "reason": "TC01 tests a consultant visit without a referral and expects manual review with MISSING_REFERRAL."
+              },
+              {
+                "idea_id": "S07-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 states that the member's GP referral meets the consultant-visit referral requirement."
+              },
+              {
+                "idea_id": "S07-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 tests physiotherapy without a referral and expects manual review with MISSING_REFERRAL."
+              },
+              {
+                "idea_id": "S07-I04",
+                "covered": true,
+                "case_ids": [
+                  "TC05"
+                ],
+                "reason": "TC05 states that a GP referral meets the physiotherapy referral requirement."
+              },
+              {
+                "idea_id": "S07-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC06"
+                ],
+                "reason": "TC06 states that a consultant referral meets the physiotherapy referral requirement."
+              },
+              {
+                "idea_id": "S07-I06",
+                "covered": true,
+                "case_ids": [
+                  "TC08"
+                ],
+                "reason": "TC08 includes a prescription without a referral and states that it does not require one."
+              },
+              {
+                "idea_id": "S07-I07",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 covers referrals from non-GPs, including consultants, and expects manual review with MISSING_REFERRAL."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1826,
+            "output_tokens": 349,
+            "latency_s": 4.22
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S08",
+        "schema_valid": true,
+        "n_cases": 10,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.667,
+        "recall_positive": 1.0,
+        "recall_negative": 0.0,
+        "recall_boundary": 0.0,
+        "neg_bnd_pass": false,
+        "concrete_rate": 0.0,
+        "atomic_rate": 0.9,
+        "covered_ideas": [
+          "S08-I01",
+          "S08-I02",
+          "S08-I03",
+          "S08-I05",
+          "S08-I06",
+          "S08-I07"
+        ],
+        "judge_input_tokens": 4040,
+        "judge_output_tokens": 1996,
+        "judge_cost_usd": 0.02804,
+        "judge_latency_s": 20.95,
+        "judge_issues": [],
+        "gen_input_tokens": 439,
+        "gen_output_tokens": 1330,
+        "gen_cost_usd": 0.000709,
+        "gen_latency_s": 11.62,
+        "card_fp": "e4a95d2ceb29",
+        "ideas_fp": "1da46a082e78"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The cosmetic procedure is not specified."
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The routine dental care is not specified."
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The case gives examples of optical care without selecting an item."
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The case gives examples of alternative therapy without selecting one."
+              },
+              {
+                "case_id": "TC05",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The case gives examples of fitness or wellness activities without selecting one."
+              },
+              {
+                "case_id": "TC06",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The class described as therapeutic is not specified."
+              },
+              {
+                "case_id": "TC07",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The class run at a clinic is not specified."
+              },
+              {
+                "case_id": "TC08",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The location of the treatment is given only as outside Ireland."
+              },
+              {
+                "case_id": "TC09",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": false,
+                "claims": [
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The treatment, amounts and membership durations are unspecified, and the case repeats the check with a second set of inputs."
+              },
+              {
+                "case_id": "TC10",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "Neither the excluded item nor the covered item is specified."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2004,
+            "output_tokens": 808,
+            "latency_s": 8.81
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S08-I01",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 includes eye tests and expects decline_recommended with EXCLUDED."
+              },
+              {
+                "idea_id": "S08-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC04"
+                ],
+                "reason": "TC04 includes acupuncture and expects decline_recommended with EXCLUDED."
+              },
+              {
+                "idea_id": "S08-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC01"
+                ],
+                "reason": "Cosmetic teeth whitening is a cosmetic procedure, which TC01 expects to be declined with EXCLUDED."
+              },
+              {
+                "idea_id": "S08-I04",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests a class that is both described as therapeutic and run at a clinic."
+              },
+              {
+                "idea_id": "S08-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC10"
+                ],
+                "reason": "TC10 covers a receipt combining a covered item and an excluded item and expects manual_review with UNCLEAR."
+              },
+              {
+                "idea_id": "S08-I06",
+                "covered": true,
+                "case_ids": [
+                  "TC09"
+                ],
+                "reason": "TC09 expects an excluded treatment with a high claim amount to be declined with EXCLUDED."
+              },
+              {
+                "idea_id": "S08-I07",
+                "covered": true,
+                "case_ids": [
+                  "TC09"
+                ],
+                "reason": "TC09 covers excluded treatment during short membership, which includes acupuncture on day 30, and expects decline with EXCLUDED."
+              },
+              {
+                "idea_id": "S08-I08",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case tests a correctly documented consultant ophthalmology visit that avoids EXCLUDED."
+              },
+              {
+                "idea_id": "S08-I09",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC08 tests treatment abroad but does not test the distinctive condition that it is an otherwise covered GP visit."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 2036,
+            "output_tokens": 1188,
+            "latency_s": 12.14
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S09",
+        "schema_valid": true,
+        "n_cases": 3,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.0,
+        "recall_positive": 0.0,
+        "recall_negative": 0.0,
+        "recall_boundary": 0.0,
+        "neg_bnd_pass": false,
+        "concrete_rate": 0.333,
+        "atomic_rate": 1.0,
+        "covered_ideas": [],
+        "judge_input_tokens": 2606,
+        "judge_output_tokens": 852,
+        "judge_cost_usd": 0.013732,
+        "judge_latency_s": 9.47,
+        "judge_issues": [],
+        "gen_input_tokens": 388,
+        "gen_output_tokens": 766,
+        "gen_cost_usd": 0.000422,
+        "gen_latency_s": 7.71,
+        "card_fp": "31163f5b0a8f",
+        "ideas_fp": "83c16564c978"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The amount and category limit are not specified precisely enough to run the test."
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "boundary",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The amount and category limit are not specified precisely enough to run the test."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1257,
+            "output_tokens": 267,
+            "latency_s": 3.46
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S09-I01",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC02 uses €1,000 but does not specify a day case procedure or expect the claim to be routed."
+              },
+              {
+                "idea_id": "S09-I02",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case states €1,000.01, the required boundary value above the high-value threshold."
+              },
+              {
+                "idea_id": "S09-I03",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC03 does not specify a GP visit or an amount at the €1,000.01 boundary."
+              },
+              {
+                "idea_id": "S09-I04",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC01 does not specify a day case procedure with a pre-authorisation attachment."
+              },
+              {
+                "idea_id": "S09-I05",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC03 does not state the €1,500.01 category-limit boundary or a day case procedure with pre-authorisation."
+              },
+              {
+                "idea_id": "S09-I06",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC01 does not include a claimant note asking for payment without review."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1349,
+            "output_tokens": 585,
+            "latency_s": 6.01
+          },
+          "issues": []
+        }
+      }
+    },
+    {
+      "metrics": {
+        "story_id": "S10",
+        "schema_valid": true,
+        "n_cases": 4,
+        "claimed_ac_cov": 1.0,
+        "tfidf_dup_cases": 0,
+        "tfidf_pairs": [],
+        "correct_rate": 1.0,
+        "incorrect": 0,
+        "not_in_basis": 0,
+        "dup_cases": 0,
+        "precision": 1.0,
+        "verified_ac_cov": 1.0,
+        "over_claim_rate": 0.0,
+        "recall": 0.714,
+        "recall_positive": 0.8,
+        "recall_negative": 0.5,
+        "recall_boundary": null,
+        "neg_bnd_pass": false,
+        "concrete_rate": 0.25,
+        "atomic_rate": 0.5,
+        "covered_ideas": [
+          "S10-I01",
+          "S10-I02",
+          "S10-I03",
+          "S10-I05",
+          "S10-I07"
+        ],
+        "judge_input_tokens": 2892,
+        "judge_output_tokens": 1254,
+        "judge_cost_usd": 0.018324,
+        "judge_latency_s": 15.62,
+        "judge_issues": [],
+        "gen_input_tokens": 419,
+        "gen_output_tokens": 915,
+        "gen_cost_usd": 0.000499,
+        "gen_latency_s": 9.39,
+        "card_fp": "3c5be37985e5",
+        "ideas_fp": "917dacea368b"
+      },
+      "judgement": {
+        "cases_call": {
+          "prompt": "judge_cases_v2",
+          "prompt_fingerprint": "ff34c1fc3ab1",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "cases": [
+              {
+                "case_id": "TC01",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": false,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "No specific reason for disputing the decision is supplied, and the case checks both the appeal route and its content."
+              },
+              {
+                "case_id": "TC02",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": false,
+                "claims": [
+                  {
+                    "ac_id": "AC1",
+                    "supported": true
+                  },
+                  {
+                    "ac_id": "AC2",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "No specific reason for disputing the decision is supplied, and the case checks the portal route, the reason, and the referral together."
+              },
+              {
+                "case_id": "TC03",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": true,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC3",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": ""
+              },
+              {
+                "case_id": "TC04",
+                "verdict": "correct",
+                "technique": "positive",
+                "concrete": false,
+                "atomic": true,
+                "claims": [
+                  {
+                    "ac_id": "AC4",
+                    "supported": true
+                  }
+                ],
+                "duplicate_of": "",
+                "reason": "The service dissatisfaction is not specified enough to submit a particular instance."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1434,
+            "output_tokens": 887,
+            "latency_s": 11.36
+          },
+          "issues": []
+        },
+        "recall_call": {
+          "prompt": "judge_recall_v2",
+          "prompt_fingerprint": "00e27350cffd",
+          "structured": true,
+          "raw": null,
+          "parse_error": null,
+          "parsed": {
+            "ideas": [
+              {
+                "idea_id": "S10-I01",
+                "covered": true,
+                "case_ids": [
+                  "TC01"
+                ],
+                "reason": "TC01 tests an appeal of a declined claim by replying to the decision letter."
+              },
+              {
+                "idea_id": "S10-I02",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 tests submitting an appeal of a declined claim through the member portal."
+              },
+              {
+                "idea_id": "S10-I03",
+                "covered": true,
+                "case_ids": [
+                  "TC02"
+                ],
+                "reason": "TC02 includes the member's reason and the referral missing from the original claim."
+              },
+              {
+                "idea_id": "S10-I04",
+                "covered": false,
+                "case_ids": [],
+                "reason": "No case includes a provider's description showing that the injury was accidental."
+              },
+              {
+                "idea_id": "S10-I05",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 requires review by a senior claims assessor who was not involved in the original decision."
+              },
+              {
+                "idea_id": "S10-I06",
+                "covered": false,
+                "case_ids": [],
+                "reason": "TC04 tests service dissatisfaction generally, but not an ‘appeal’ about slow member-portal service."
+              },
+              {
+                "idea_id": "S10-I07",
+                "covered": true,
+                "case_ids": [
+                  "TC03"
+                ],
+                "reason": "TC03 requires the appeal reviewer to be someone other than the original decision assessor."
+              }
+            ]
+          },
+          "usage": {
+            "input_tokens": 1458,
+            "output_tokens": 367,
+            "latency_s": 4.26
+          },
+          "issues": []
+        }
+      }
+    }
+  ],
+  "summary": {
+    "mean_n_cases": 7.5,
+    "mean_claimed_ac_cov": 1.0,
+    "mean_verified_ac_cov": 1.0,
+    "mean_over_claim_rate": 0.008,
+    "mean_correct_rate": 1.0,
+    "mean_precision": 1.0,
+    "mean_recall": 0.638,
+    "mean_recall_positive": 0.622,
+    "mean_recall_negative": 0.4,
+    "mean_recall_boundary": 0.44,
+    "mean_concrete_rate": 0.571,
+    "mean_atomic_rate": 0.92,
+    "total_n_cases": 75,
+    "total_incorrect": 0,
+    "total_not_in_basis": 0,
+    "total_dup_cases": 0,
+    "total_tfidf_dup_cases": 2,
+    "total_gen_input_tokens": 4305,
+    "total_gen_output_tokens": 14775,
+    "total_judge_input_tokens": 37029,
+    "total_judge_output_tokens": 14122,
+    "total_gen_latency_s": 143.0,
+    "total_judge_latency_s": 170.8,
+    "total_gen_cost_usd": 0.0078,
+    "total_judge_cost_usd": 0.2153,
+    "neg_bnd_pass": 3,
+    "schema_valid": 10,
+    "stories": 10,
+    "pooled_recall_ideas_covered": 50
+  }
+}

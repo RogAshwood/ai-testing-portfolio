@@ -1,0 +1,423 @@
+{
+  "judge_model": "gpt-6-sol",
+  "results": [
+    {
+      "seed": "SD01",
+      "check": "verdict",
+      "expected": "incorrect",
+      "judge": "incorrect",
+      "pass": true,
+      "defect": "off-by-one: deadline day treated as late",
+      "reason": "Submission on the last day is on time, so the late-claim routing in AC4 does not apply."
+    },
+    {
+      "seed": "SD11",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "control: correct leap-day boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD11",
+      "check": "technique",
+      "expected": "boundary",
+      "judge": "boundary",
+      "pass": true,
+      "defect": "control: correct leap-day boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD11",
+      "check": "concrete",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: correct leap-day boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD11",
+      "check": "duplicate_of",
+      "expected": "",
+      "judge": "",
+      "pass": true,
+      "defect": "control: correct leap-day boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD14",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "control: other side of the same boundary is not a duplicate",
+      "reason": ""
+    },
+    {
+      "seed": "SD14",
+      "check": "duplicate_of",
+      "expected": "",
+      "judge": "",
+      "pass": true,
+      "defect": "control: other side of the same boundary is not a duplicate",
+      "reason": ""
+    },
+    {
+      "seed": "SD02",
+      "check": "verdict",
+      "expected": "incorrect",
+      "judge": "incorrect",
+      "pass": true,
+      "defect": "at-limit amount treated as over the limit",
+      "reason": "A GP claim of 60.00 is exactly at the limit, so OVER_LIMIT does not apply."
+    },
+    {
+      "seed": "SD17",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "'greater than the limit' with no value is not a boundary test",
+      "reason": "The claimed amount is only described as greater than 120, not specified exactly."
+    },
+    {
+      "seed": "SD17",
+      "check": "technique",
+      "expected": "positive",
+      "judge": "positive",
+      "pass": true,
+      "defect": "'greater than the limit' with no value is not a boundary test",
+      "reason": "The claimed amount is only described as greater than 120, not specified exactly."
+    },
+    {
+      "seed": "SD17",
+      "check": "concrete",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "'greater than the limit' with no value is not a boundary test",
+      "reason": "The claimed amount is only described as greater than 120, not specified exactly."
+    },
+    {
+      "seed": "SD03",
+      "check": "verdict",
+      "expected": "incorrect",
+      "judge": "incorrect",
+      "pass": true,
+      "defect": "wrong precedence: HIGH_VALUE instead of OVER_LIMIT",
+      "reason": "The claim exceeds both 1,000 and the GP visit limit, so AC3 requires OVER_LIMIT rather than HIGH_VALUE."
+    },
+    {
+      "seed": "SD04",
+      "check": "verdict",
+      "expected": "incorrect",
+      "judge": "incorrect",
+      "pass": true,
+      "defect": "accident accepted from the claimant's note alone",
+      "reason": "The claimant’s note alone does not establish the AC4 exemption; AC5 requires manual_review with reason code UNCLEAR."
+    },
+    {
+      "seed": "SD05",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "over-claims AC4, which the case does not test",
+      "reason": "AC4 is not exercised because this is a consultant visit, not a claim type exempt from referral."
+    },
+    {
+      "seed": "SD05",
+      "check": "unsupported",
+      "expected": [
+        "AC4"
+      ],
+      "judge": [
+        "AC4"
+      ],
+      "pass": true,
+      "defect": "over-claims AC4, which the case does not test",
+      "reason": "AC4 is not exercised because this is a consultant visit, not a claim type exempt from referral."
+    },
+    {
+      "seed": "SD15",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "several claim types bundled in one case (not atomic)",
+      "reason": "The case bundles checks for three different claim types."
+    },
+    {
+      "seed": "SD15",
+      "check": "atomic",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "several claim types bundled in one case (not atomic)",
+      "reason": "The case bundles checks for three different claim types."
+    },
+    {
+      "seed": "SD06",
+      "check": "verdict",
+      "expected": "not_in_basis",
+      "judge": "not_in_basis",
+      "pass": true,
+      "defect": "asserts a response time the story never states",
+      "reason": "AC3 requires an independent senior assessor but sets no 10-working-day deadline; the case checks both."
+    },
+    {
+      "seed": "SD07",
+      "check": "verdict",
+      "expected": "not_in_basis",
+      "judge": "not_in_basis",
+      "pass": true,
+      "defect": "asserts a confirmation email the story never mentions",
+      "reason": "The criteria do not define a confirmation email or its timing, and the receipt’s treatment, date and amount are unspecified."
+    },
+    {
+      "seed": "SD08",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "abstract: no concrete test data",
+      "reason": "The treatment is described only as excluded, without naming a specific treatment."
+    },
+    {
+      "seed": "SD08",
+      "check": "concrete",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "abstract: no concrete test data",
+      "reason": "The treatment is described only as excluded, without naming a specific treatment."
+    },
+    {
+      "seed": "SD09",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "missing input should be classed negative, whatever the case calls itself",
+      "reason": ""
+    },
+    {
+      "seed": "SD09",
+      "check": "technique",
+      "expected": "negative",
+      "judge": "negative",
+      "pass": true,
+      "defect": "missing input should be classed negative, whatever the case calls itself",
+      "reason": ""
+    },
+    {
+      "seed": "SD16",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "control: concrete enough, because the procedure type does not matter to the rule tested",
+      "reason": ""
+    },
+    {
+      "seed": "SD16",
+      "check": "technique",
+      "expected": "negative",
+      "judge": "negative",
+      "pass": true,
+      "defect": "control: concrete enough, because the procedure type does not matter to the rule tested",
+      "reason": ""
+    },
+    {
+      "seed": "SD16",
+      "check": "concrete",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: concrete enough, because the procedure type does not matter to the rule tested",
+      "reason": ""
+    },
+    {
+      "seed": "SD10",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "control: correct annual-limit boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD10",
+      "check": "technique",
+      "expected": "boundary",
+      "judge": "boundary",
+      "pass": true,
+      "defect": "control: correct annual-limit boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD10",
+      "check": "concrete",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: correct annual-limit boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD10",
+      "check": "duplicate_of",
+      "expected": "",
+      "judge": "",
+      "pass": true,
+      "defect": "control: correct annual-limit boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD10",
+      "check": "atomic",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: correct annual-limit boundary case",
+      "reason": ""
+    },
+    {
+      "seed": "SD12",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "paraphrased duplicate of SD10",
+      "reason": "Duplicates SD10: both test a further GP claim after 8 visits have been paid in the policy year."
+    },
+    {
+      "seed": "SD12",
+      "check": "duplicate_of",
+      "expected": "SD10",
+      "judge": "SD10",
+      "pass": true,
+      "defect": "paraphrased duplicate of SD10",
+      "reason": "Duplicates SD10: both test a further GP claim after 8 visits have been paid in the policy year."
+    },
+    {
+      "seed": "SD13",
+      "check": "verdict",
+      "expected": "correct",
+      "judge": "correct",
+      "pass": true,
+      "defect": "control: same wording pattern, different category, not a duplicate",
+      "reason": ""
+    },
+    {
+      "seed": "SD13",
+      "check": "duplicate_of",
+      "expected": "",
+      "judge": "",
+      "pass": true,
+      "defect": "control: same wording pattern, different category, not a duplicate",
+      "reason": ""
+    },
+    {
+      "seed": "RS01",
+      "check": "covered",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "boundary idea (day 182) against a case with no explicit day",
+      "reason": "RC01 gives no explicit day-182 boundary value."
+    },
+    {
+      "seed": "RS02",
+      "check": "covered",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: equivalent value (day 10 for day 0), same condition and outcome (D1)",
+      "reason": "RC02 tests the same provider-described accidental injury, with a referral, during the waiting period."
+    },
+    {
+      "seed": "RS03",
+      "check": "covered",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "misses the distinguishing detail: a covered category (GP visit) received abroad (D3)",
+      "reason": "RC01 tests treatment abroad but does not specify a GP visit, a covered category."
+    },
+    {
+      "seed": "RS04",
+      "check": "covered",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: class with example covers a member of the class (D2)",
+      "reason": "RC02 includes acupuncture and expects decline_recommended with EXCLUDED."
+    },
+    {
+      "seed": "RS05",
+      "check": "covered",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: equivalent year, same rule and outcome (D1)",
+      "reason": "RC01 tests a leap-day treatment submitted on the following year's 28 February and expects it to be on time."
+    },
+    {
+      "seed": "RS06",
+      "check": "covered",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "boundary idea (one day late) against 'more than 12 months' with no date",
+      "reason": "RC02 gives no explicit submission date one day after the deadline."
+    },
+    {
+      "seed": "RS07",
+      "check": "covered",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "same condition, opposite outcome",
+      "reason": "RC01 uses €1,000.01 but expects the opposite outcome: not HIGH_VALUE."
+    },
+    {
+      "seed": "RS08",
+      "check": "covered",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: 'meets the referral requirement' implies not MISSING_REFERRAL (implied outcome)",
+      "reason": "RC01 states that a GP referral meets the physiotherapy referral requirement."
+    },
+    {
+      "seed": "RS09",
+      "check": "covered",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: background assumptions ('all other details correct') need not be restated",
+      "reason": "RC01 tests a second day case procedure after one has been paid and expects the annual limit not to stop it."
+    },
+    {
+      "seed": "RS11",
+      "check": "covered",
+      "expected": false,
+      "judge": false,
+      "pass": true,
+      "defect": "boundary idea (claim on the anniversary after 8 GP visits) against a case with no anniversary date, category or count",
+      "reason": "RC02 does not specify a GP claim on the policy-year anniversary after eight GP visits."
+    },
+    {
+      "seed": "RS10",
+      "check": "covered",
+      "expected": true,
+      "judge": true,
+      "pass": true,
+      "defect": "control: a range ('before day 182') covers a member (day 0) for a non-boundary idea",
+      "reason": "RC01 tests an accidental injury shown in the provider’s description before day 182 and expects no WAITING_PERIOD routing."
+    }
+  ]
+}

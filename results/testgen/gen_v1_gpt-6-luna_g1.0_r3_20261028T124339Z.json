@@ -1,0 +1,1608 @@
+{
+  "meta": {
+    "started_utc": "2026-10-28T12:43:39+00:00",
+    "model": "gpt-6-luna",
+    "prompt_version": "v1",
+    "prompt_fingerprint": "a71e8c54d488",
+    "golden_version": "1.0",
+    "golden_fingerprint": "228e95aab97e",
+    "run_label": "3",
+    "stories": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10"
+    ],
+    "totals": {
+      "cases": 80,
+      "schema_valid": 10,
+      "input_tokens": 4305,
+      "output_tokens": 16716,
+      "latency_s": 174.2
+    }
+  },
+  "records": [
+    {
+      "story_id": "S01",
+      "story_fingerprints": {
+        "card": "1f056e50fb11",
+        "ideas": "99e6a9b0137c"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S01\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Submit a claim with an itemised receipt\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The receipt shows the treatment, treatment date and amount.\"],\n      \"steps\": [\"Attach the receipt to the claim.\", \"Submit the claim through the member portal.\"],\n      \"expected_result\": \"The member can submit the claim through the portal with the itemised receipt attached.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Receipt missing the treatment\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The attached document shows the treatment date and amount but not the treatment.\"],\n      \"steps\": [\"Attach the document to the claim.\", \"Submit the claim.\"],\n      \"expected_result\": \"The document is not treated as an itemised receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Receipt missing the treatment date\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The attached document shows the treatment and amount but not the treatment date.\"],\n      \"steps\": [\"Attach the document to the claim.\", \"Submit the claim.\"],\n      \"expected_result\": \"The document is not treated as an itemised receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Receipt missing the amount\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The attached document shows the treatment and treatment date but not the amount.\"],\n      \"steps\": [\"Attach the document to the claim.\", \"Submit the claim.\"],\n      \"expected_result\": \"The document is not treated as an itemised receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Claim supported only by a payment card slip\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC3\", \"AC4\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The only supporting document is a payment card slip.\"],\n      \"steps\": [\"Attach the payment card slip to the claim.\", \"Submit the claim.\"],\n      \"expected_result\": \"The payment card slip is treated as no receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Claim supported only by a bank statement\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC3\", \"AC4\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The only supporting document is a bank statement.\"],\n      \"steps\": [\"Attach the bank statement to the claim.\", \"Submit the claim.\"],\n      \"expected_result\": \"The bank statement is treated as no receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Submit a claim with no itemised receipt\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A member is using the member portal to submit a claim.\", \"The claim has no itemised receipt attached.\"],\n      \"steps\": [\"Submit the claim.\"],\n      \"expected_result\": \"The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S01",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Submit a claim with an itemised receipt",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The receipt shows the treatment, treatment date and amount."
+            ],
+            "steps": [
+              "Attach the receipt to the claim.",
+              "Submit the claim through the member portal."
+            ],
+            "expected_result": "The member can submit the claim through the portal with the itemised receipt attached."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Receipt missing the treatment",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The attached document shows the treatment date and amount but not the treatment."
+            ],
+            "steps": [
+              "Attach the document to the claim.",
+              "Submit the claim."
+            ],
+            "expected_result": "The document is not treated as an itemised receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Receipt missing the treatment date",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The attached document shows the treatment and amount but not the treatment date."
+            ],
+            "steps": [
+              "Attach the document to the claim.",
+              "Submit the claim."
+            ],
+            "expected_result": "The document is not treated as an itemised receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Receipt missing the amount",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The attached document shows the treatment and treatment date but not the amount."
+            ],
+            "steps": [
+              "Attach the document to the claim.",
+              "Submit the claim."
+            ],
+            "expected_result": "The document is not treated as an itemised receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Claim supported only by a payment card slip",
+            "technique": "negative",
+            "covers": [
+              "AC3",
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The only supporting document is a payment card slip."
+            ],
+            "steps": [
+              "Attach the payment card slip to the claim.",
+              "Submit the claim."
+            ],
+            "expected_result": "The payment card slip is treated as no receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Claim supported only by a bank statement",
+            "technique": "negative",
+            "covers": [
+              "AC3",
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The only supporting document is a bank statement."
+            ],
+            "steps": [
+              "Attach the bank statement to the claim.",
+              "Submit the claim."
+            ],
+            "expected_result": "The bank statement is treated as no receipt. The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC07",
+            "title": "Submit a claim with no itemised receipt",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is using the member portal to submit a claim.",
+              "The claim has no itemised receipt attached."
+            ],
+            "steps": [
+              "Submit the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 7,
+      "usage": {
+        "latency_s": 17.65,
+        "input_tokens": 426,
+        "output_tokens": 1590,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S02",
+      "story_fingerprints": {
+        "card": "977fdbcae364",
+        "ideas": "7b41b9ca23a2"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S02\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Route a day case with a blank pre-authorisation number\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is for a hospital procedure with no overnight stay.\", \"The pre-authorisation number is blank.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is treated as a day case and routed to manual_review with reason code MISSING_PREAUTH.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Route a one-night inpatient claim with a blank pre-authorisation number\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is for a hospital stay of one night.\", \"The pre-authorisation number is blank.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is treated as an inpatient claim and routed to manual_review with reason code MISSING_PREAUTH.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Route a one-night inpatient claim with a pre-authorisation number\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a hospital stay of one night.\", \"The claim has a pre-authorisation number.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is routed to manual_review with reason code INPATIENT_REVIEW.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Route an inpatient claim of more than one night with a pre-authorisation number\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a hospital stay of more than one night.\", \"The claim has a pre-authorisation number.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is treated as an inpatient claim and routed to manual_review with reason code INPATIENT_REVIEW.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Do not require pre-authorisation for a GP visit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A claim is for a GP visit.\", \"The pre-authorisation number is blank.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Do not require pre-authorisation for a consultant visit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A claim is for a consultant visit.\", \"The pre-authorisation number is blank.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Do not require pre-authorisation for physiotherapy\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A claim is for physiotherapy.\", \"The pre-authorisation number is blank.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Do not require pre-authorisation for a prescription\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A claim is for a prescription.\", \"The pre-authorisation number is blank.\"],\n      \"steps\": [\"Submit the claim for checking.\"],\n      \"expected_result\": \"The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S02",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Route a day case with a blank pre-authorisation number",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is for a hospital procedure with no overnight stay.",
+              "The pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is treated as a day case and routed to manual_review with reason code MISSING_PREAUTH."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Route a one-night inpatient claim with a blank pre-authorisation number",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is for a hospital stay of one night.",
+              "The pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is treated as an inpatient claim and routed to manual_review with reason code MISSING_PREAUTH."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Route a one-night inpatient claim with a pre-authorisation number",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a hospital stay of one night.",
+              "The claim has a pre-authorisation number."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code INPATIENT_REVIEW."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Route an inpatient claim of more than one night with a pre-authorisation number",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a hospital stay of more than one night.",
+              "The claim has a pre-authorisation number."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is treated as an inpatient claim and routed to manual_review with reason code INPATIENT_REVIEW."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Do not require pre-authorisation for a GP visit",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A claim is for a GP visit.",
+              "The pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Do not require pre-authorisation for a consultant visit",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A claim is for a consultant visit.",
+              "The pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number."
+          },
+          {
+            "case_id": "TC07",
+            "title": "Do not require pre-authorisation for physiotherapy",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A claim is for physiotherapy.",
+              "The pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number."
+          },
+          {
+            "case_id": "TC08",
+            "title": "Do not require pre-authorisation for a prescription",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A claim is for a prescription.",
+              "The pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Submit the claim for checking."
+            ],
+            "expected_result": "The claim is not routed to manual_review with reason code MISSING_PREAUTH for lacking a pre-authorisation number."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 8,
+      "usage": {
+        "latency_s": 18.04,
+        "input_tokens": 424,
+        "output_tokens": 1735,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S03",
+      "story_fingerprints": {
+        "card": "ef6937c990d4",
+        "ideas": "8067c52c9bb6"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S03\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Policy years start on cover date and anniversaries\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\"Cover began on 2024-04-10.\"],\n      \"steps\": [\"Review the policy-year start dates for the cover.\"],\n      \"expected_result\": \"The first policy year starts on 2024-04-10, and each later policy year starts on 2025-04-10, 2026-04-10, and subsequent anniversaries, with each policy year running for 12 months.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"GP claim at annual limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Eight GP visits have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further GP visit claim.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Consultant claim at annual limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Four consultant visits have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further consultant visit claim.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Physiotherapy claim at annual limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Ten physiotherapy sessions have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further physiotherapy session claim.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Prescription claim at annual limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Twelve prescription items have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further prescription item claim.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Day case procedure claim at annual limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Two day case procedures have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further day case procedure claim.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"GP claim below annual limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Seven GP visits have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further GP visit claim.\"],\n      \"expected_result\": \"The annual limit does not stop the claim.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Consultant claim below annual limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Three consultant visits have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further consultant visit claim.\"],\n      \"expected_result\": \"The annual limit does not stop the claim.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Physiotherapy claim below annual limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Nine physiotherapy sessions have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further physiotherapy session claim.\"],\n      \"expected_result\": \"The annual limit does not stop the claim.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Prescription claim below annual limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"Eleven prescription items have already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further prescription item claim.\"],\n      \"expected_result\": \"The annual limit does not stop the claim.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Day case procedure claim below annual limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\"The claim is in the current policy year.\", \"One day case procedure has already been paid in that policy year.\"],\n      \"steps\": [\"Submit a further day case procedure claim.\"],\n      \"expected_result\": \"The annual limit does not stop the claim.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"Inpatient stays are assessed individually\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\"One or more inpatient stays have already been paid in the current policy year.\"],\n      \"steps\": [\"Submit an inpatient stay claim.\"],\n      \"expected_result\": \"The inpatient stay is assessed individually and is not assessed against a fixed annual count.\"\n    },\n    {\n      \"case_id\": \"TC13\",\n      \"title\": \"Paid visits are counted within the policy year\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC3\", \"AC4\"],\n      \"preconditions\": [\"Cover began on 2024-04-10.\", \"Eight GP visits were paid during the policy year that started on 2024-04-10.\"],\n      \"steps\": [\"Submit a GP visit claim on 2025-04-10, the next policy-year start date.\"],\n      \"expected_result\": \"The claim is counted in the policy year starting on 2025-04-10, not against the GP visits paid in the previous policy year, and the annual limit does not stop the claim.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S03",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Policy years start on cover date and anniversaries",
+            "technique": "boundary",
+            "covers": [
+              "AC1"
+            ],
+            "preconditions": [
+              "Cover began on 2024-04-10."
+            ],
+            "steps": [
+              "Review the policy-year start dates for the cover."
+            ],
+            "expected_result": "The first policy year starts on 2024-04-10, and each later policy year starts on 2025-04-10, 2026-04-10, and subsequent anniversaries, with each policy year running for 12 months."
+          },
+          {
+            "case_id": "TC02",
+            "title": "GP claim at annual limit",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Eight GP visits have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further GP visit claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Consultant claim at annual limit",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Four consultant visits have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further consultant visit claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Physiotherapy claim at annual limit",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Ten physiotherapy sessions have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further physiotherapy session claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Prescription claim at annual limit",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Twelve prescription items have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further prescription item claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Day case procedure claim at annual limit",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Two day case procedures have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further day case procedure claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          {
+            "case_id": "TC07",
+            "title": "GP claim below annual limit",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Seven GP visits have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further GP visit claim."
+            ],
+            "expected_result": "The annual limit does not stop the claim."
+          },
+          {
+            "case_id": "TC08",
+            "title": "Consultant claim below annual limit",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Three consultant visits have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further consultant visit claim."
+            ],
+            "expected_result": "The annual limit does not stop the claim."
+          },
+          {
+            "case_id": "TC09",
+            "title": "Physiotherapy claim below annual limit",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Nine physiotherapy sessions have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further physiotherapy session claim."
+            ],
+            "expected_result": "The annual limit does not stop the claim."
+          },
+          {
+            "case_id": "TC10",
+            "title": "Prescription claim below annual limit",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "Eleven prescription items have already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further prescription item claim."
+            ],
+            "expected_result": "The annual limit does not stop the claim."
+          },
+          {
+            "case_id": "TC11",
+            "title": "Day case procedure claim below annual limit",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "preconditions": [
+              "The claim is in the current policy year.",
+              "One day case procedure has already been paid in that policy year."
+            ],
+            "steps": [
+              "Submit a further day case procedure claim."
+            ],
+            "expected_result": "The annual limit does not stop the claim."
+          },
+          {
+            "case_id": "TC12",
+            "title": "Inpatient stays are assessed individually",
+            "technique": "negative",
+            "covers": [
+              "AC2"
+            ],
+            "preconditions": [
+              "One or more inpatient stays have already been paid in the current policy year."
+            ],
+            "steps": [
+              "Submit an inpatient stay claim."
+            ],
+            "expected_result": "The inpatient stay is assessed individually and is not assessed against a fixed annual count."
+          },
+          {
+            "case_id": "TC13",
+            "title": "Paid visits are counted within the policy year",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC3",
+              "AC4"
+            ],
+            "preconditions": [
+              "Cover began on 2024-04-10.",
+              "Eight GP visits were paid during the policy year that started on 2024-04-10."
+            ],
+            "steps": [
+              "Submit a GP visit claim on 2025-04-10, the next policy-year start date."
+            ],
+            "expected_result": "The claim is counted in the policy year starting on 2025-04-10, not against the GP visits paid in the previous policy year, and the annual limit does not stop the claim."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 13,
+      "usage": {
+        "latency_s": 30.52,
+        "input_tokens": 457,
+        "output_tokens": 2988,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S04",
+      "story_fingerprints": {
+        "card": "1b689c391f3d",
+        "ideas": "cc40367298ae"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S04\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Policy start date is day 0\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The policy start date is known.\",\n        \"The treatment date is the same as the policy start date.\"\n      ],\n      \"steps\": [\n        \"Calculate the day number using the treatment date minus the policy start date.\"\n      ],\n      \"expected_result\": \"The treatment day number is 0.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Treatment on day 181 is in the waiting period\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"The treatment date is 181 days after the policy start date.\",\n        \"The treatment is not a GP visit.\",\n        \"The provider description clearly indicates that the treatment is not for an accidental injury.\"\n      ],\n      \"steps\": [\n        \"Submit the treatment claim for assessment.\"\n      ],\n      \"expected_result\": \"The treatment is in the waiting period and is routed to decline_recommended with reason code WAITING_PERIOD.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Treatment on day 182 is not in the waiting period\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The treatment date is 182 days after the policy start date.\"\n      ],\n      \"steps\": [\n        \"Assess the treatment date against the waiting period.\"\n      ],\n      \"expected_result\": \"The treatment is not in the waiting period.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"GP visit is covered on day 0\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The treatment is a GP visit.\",\n        \"The treatment date is the policy start date.\"\n      ],\n      \"steps\": [\n        \"Submit the GP visit for assessment.\"\n      ],\n      \"expected_result\": \"The GP visit is covered from day 0.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Provider description shows accidental injury\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The treatment is before day 182.\",\n        \"The provider's treatment description shows that the injury was accidental.\"\n      ],\n      \"steps\": [\n        \"Submit the treatment claim for assessment.\"\n      ],\n      \"expected_result\": \"The waiting period is removed for this treatment. The receipt, referral, pre-authorisation and amount limits still apply.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Accidental injury stated only in claimant note\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The treatment is in the waiting period.\",\n        \"The claimant's note says the treatment may be for an accidental injury.\",\n        \"The provider's treatment description does not show that the injury was accidental.\"\n      ],\n      \"steps\": [\n        \"Submit the claim for assessment.\"\n      ],\n      \"expected_result\": \"The claim is routed to manual_review with reason code UNCLEAR.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Provider description does not establish accidental injury\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The treatment is in the waiting period.\",\n        \"The claim may be for an accidental injury.\",\n        \"The provider's treatment description does not show that the injury was accidental.\"\n      ],\n      \"steps\": [\n        \"Submit the claim for assessment.\"\n      ],\n      \"expected_result\": \"The claim is routed to manual_review with reason code UNCLEAR.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S04",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Policy start date is day 0",
+            "technique": "boundary",
+            "covers": [
+              "AC1"
+            ],
+            "preconditions": [
+              "The policy start date is known.",
+              "The treatment date is the same as the policy start date."
+            ],
+            "steps": [
+              "Calculate the day number using the treatment date minus the policy start date."
+            ],
+            "expected_result": "The treatment day number is 0."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Treatment on day 181 is in the waiting period",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "The treatment date is 181 days after the policy start date.",
+              "The treatment is not a GP visit.",
+              "The provider description clearly indicates that the treatment is not for an accidental injury."
+            ],
+            "steps": [
+              "Submit the treatment claim for assessment."
+            ],
+            "expected_result": "The treatment is in the waiting period and is routed to decline_recommended with reason code WAITING_PERIOD."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Treatment on day 182 is not in the waiting period",
+            "technique": "boundary",
+            "covers": [
+              "AC1"
+            ],
+            "preconditions": [
+              "The treatment date is 182 days after the policy start date."
+            ],
+            "steps": [
+              "Assess the treatment date against the waiting period."
+            ],
+            "expected_result": "The treatment is not in the waiting period."
+          },
+          {
+            "case_id": "TC04",
+            "title": "GP visit is covered on day 0",
+            "technique": "positive",
+            "covers": [
+              "AC3"
+            ],
+            "preconditions": [
+              "The treatment is a GP visit.",
+              "The treatment date is the policy start date."
+            ],
+            "steps": [
+              "Submit the GP visit for assessment."
+            ],
+            "expected_result": "The GP visit is covered from day 0."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Provider description shows accidental injury",
+            "technique": "positive",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "The treatment is before day 182.",
+              "The provider's treatment description shows that the injury was accidental."
+            ],
+            "steps": [
+              "Submit the treatment claim for assessment."
+            ],
+            "expected_result": "The waiting period is removed for this treatment. The receipt, referral, pre-authorisation and amount limits still apply."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Accidental injury stated only in claimant note",
+            "technique": "negative",
+            "covers": [
+              "AC5"
+            ],
+            "preconditions": [
+              "The treatment is in the waiting period.",
+              "The claimant's note says the treatment may be for an accidental injury.",
+              "The provider's treatment description does not show that the injury was accidental."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code UNCLEAR."
+          },
+          {
+            "case_id": "TC07",
+            "title": "Provider description does not establish accidental injury",
+            "technique": "negative",
+            "covers": [
+              "AC5"
+            ],
+            "preconditions": [
+              "The treatment is in the waiting period.",
+              "The claim may be for an accidental injury.",
+              "The provider's treatment description does not show that the injury was accidental."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code UNCLEAR."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 7,
+      "usage": {
+        "latency_s": 15.06,
+        "input_tokens": 513,
+        "output_tokens": 1405,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S05",
+      "story_fingerprints": {
+        "card": "2e76ed04dc57",
+        "ideas": "3ffe79243120"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S05\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Submission on the last day is on time\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The treatment date is 10 March 2027.\"\n      ],\n      \"steps\": [\n        \"Submit the claim on 10 March 2028.\"\n      ],\n      \"expected_result\": \"The claim is identified as on time because its submission date is the last day to submit.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Submission after the last day is routed for decline\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC3\", \"AC4\"],\n      \"preconditions\": [\n        \"The treatment date is 10 March 2027.\"\n      ],\n      \"steps\": [\n        \"Submit the claim on 11 March 2028.\"\n      ],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code LATE_SUBMISSION.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Leap-day treatment allows submission through 28 February\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\n        \"The treatment date is 29 February 2028.\"\n      ],\n      \"steps\": [\n        \"Submit the claim on 28 February 2029.\"\n      ],\n      \"expected_result\": \"The claim is identified as on time because 28 February 2029 is the last day to submit.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Submission after the leap-day deadline is routed for decline\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\", \"AC3\", \"AC4\"],\n      \"preconditions\": [\n        \"The treatment date is 29 February 2028.\"\n      ],\n      \"steps\": [\n        \"Submit the claim on 1 March 2029.\"\n      ],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code LATE_SUBMISSION.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S05",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Submission on the last day is on time",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "The treatment date is 10 March 2027."
+            ],
+            "steps": [
+              "Submit the claim on 10 March 2028."
+            ],
+            "expected_result": "The claim is identified as on time because its submission date is the last day to submit."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Submission after the last day is routed for decline",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC3",
+              "AC4"
+            ],
+            "preconditions": [
+              "The treatment date is 10 March 2027."
+            ],
+            "steps": [
+              "Submit the claim on 11 March 2028."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code LATE_SUBMISSION."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Leap-day treatment allows submission through 28 February",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "The treatment date is 29 February 2028."
+            ],
+            "steps": [
+              "Submit the claim on 28 February 2029."
+            ],
+            "expected_result": "The claim is identified as on time because 28 February 2029 is the last day to submit."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Submission after the leap-day deadline is routed for decline",
+            "technique": "boundary",
+            "covers": [
+              "AC2",
+              "AC3",
+              "AC4"
+            ],
+            "preconditions": [
+              "The treatment date is 29 February 2028."
+            ],
+            "steps": [
+              "Submit the claim on 1 March 2029."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code LATE_SUBMISSION."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 4,
+      "usage": {
+        "latency_s": 11.08,
+        "input_tokens": 435,
+        "output_tokens": 947,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S06",
+      "story_fingerprints": {
+        "card": "763a66604ccd",
+        "ideas": "80cebe5072a2"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S06\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"GP visit amount equals its limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is categorized as a GP visit with an amount claimed of 60.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The GP visit limit is 60, and the claim amount exactly equal to that limit is within the limit.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"GP visit amount exceeds its limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is categorized as a GP visit with an amount claimed of 61.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The claim exceeds the GP visit limit of 60, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Consultant visit amount equals its limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is categorized as a consultant visit with an amount claimed of 120.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The consultant visit limit is 120, and the claim amount exactly equal to that limit is within the limit.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Consultant visit amount exceeds its limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is categorized as a consultant visit with an amount claimed of 121.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The claim exceeds the consultant visit limit of 120, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Physiotherapy session amount equals its limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is categorized as physiotherapy for one session with an amount claimed of 50.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The physiotherapy limit is 50 per session, and the claim amount exactly equal to that limit is within the limit.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Physiotherapy session amount exceeds its limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is categorized as physiotherapy for one session with an amount claimed of 51.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The claim exceeds the physiotherapy limit of 50 per session, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Prescription item amount equals its limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is categorized as one prescription item with an amount claimed of 40.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The prescription limit is 40 per item, and the claim amount exactly equal to that limit is within the limit.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Prescription item amount exceeds its limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is categorized as one prescription item with an amount claimed of 41.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The claim exceeds the prescription limit of 40 per item, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Day case procedure amount equals its limit\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\"A claim is categorized as one day case procedure with an amount claimed of 1500.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The day case procedure limit is 1500 per procedure, and the claim amount exactly equal to that limit is within the limit.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Day case procedure amount exceeds its limit\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is categorized as one day case procedure with an amount claimed of 1501.\"],\n      \"steps\": [\"Check the claim amount against the limit for its category.\"],\n      \"expected_result\": \"The claim exceeds the day case procedure limit of 1500 per procedure, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Inpatient stay has no fixed limit\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\"A claim is categorized as an inpatient stay and has an amount claimed.\"],\n      \"steps\": [\"Check how the inpatient stay claim is assessed.\"],\n      \"expected_result\": \"The inpatient stay is assessed individually and has no fixed limit.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S06",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "GP visit amount equals its limit",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is categorized as a GP visit with an amount claimed of 60."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The GP visit limit is 60, and the claim amount exactly equal to that limit is within the limit."
+          },
+          {
+            "case_id": "TC02",
+            "title": "GP visit amount exceeds its limit",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is categorized as a GP visit with an amount claimed of 61."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The claim exceeds the GP visit limit of 60, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Consultant visit amount equals its limit",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is categorized as a consultant visit with an amount claimed of 120."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The consultant visit limit is 120, and the claim amount exactly equal to that limit is within the limit."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Consultant visit amount exceeds its limit",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is categorized as a consultant visit with an amount claimed of 121."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The claim exceeds the consultant visit limit of 120, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Physiotherapy session amount equals its limit",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is categorized as physiotherapy for one session with an amount claimed of 50."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The physiotherapy limit is 50 per session, and the claim amount exactly equal to that limit is within the limit."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Physiotherapy session amount exceeds its limit",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is categorized as physiotherapy for one session with an amount claimed of 51."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The claim exceeds the physiotherapy limit of 50 per session, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT."
+          },
+          {
+            "case_id": "TC07",
+            "title": "Prescription item amount equals its limit",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is categorized as one prescription item with an amount claimed of 40."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The prescription limit is 40 per item, and the claim amount exactly equal to that limit is within the limit."
+          },
+          {
+            "case_id": "TC08",
+            "title": "Prescription item amount exceeds its limit",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is categorized as one prescription item with an amount claimed of 41."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The claim exceeds the prescription limit of 40 per item, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT."
+          },
+          {
+            "case_id": "TC09",
+            "title": "Day case procedure amount equals its limit",
+            "technique": "boundary",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim is categorized as one day case procedure with an amount claimed of 1500."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The day case procedure limit is 1500 per procedure, and the claim amount exactly equal to that limit is within the limit."
+          },
+          {
+            "case_id": "TC10",
+            "title": "Day case procedure amount exceeds its limit",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is categorized as one day case procedure with an amount claimed of 1501."
+            ],
+            "steps": [
+              "Check the claim amount against the limit for its category."
+            ],
+            "expected_result": "The claim exceeds the day case procedure limit of 1500 per procedure, is not recommended for automatic approval, and is routed to manual_review with reason code OVER_LIMIT."
+          },
+          {
+            "case_id": "TC11",
+            "title": "Inpatient stay has no fixed limit",
+            "technique": "positive",
+            "covers": [
+              "AC1"
+            ],
+            "preconditions": [
+              "A claim is categorized as an inpatient stay and has an amount claimed."
+            ],
+            "steps": [
+              "Check how the inpatient stay claim is assessed."
+            ],
+            "expected_result": "The inpatient stay is assessed individually and has no fixed limit."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 11,
+      "usage": {
+        "latency_s": 19.23,
+        "input_tokens": 410,
+        "output_tokens": 1991,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S07",
+      "story_fingerprints": {
+        "card": "b6438b4356c0",
+        "ideas": "361b87b7ee92"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S07\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Consultant claim without referral is routed for review\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A consultant visit claim has no referral attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim is routed to manual_review with reason code MISSING_REFERRAL and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Consultant claim with GP referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A consultant visit claim has a referral from the member's GP attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim has the referral required for a consultant visit and is not routed to manual_review with reason code MISSING_REFERRAL.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Consultant claim with referral from a non-GP source\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A consultant visit claim has a referral attached from a consultant, not from the member's GP.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The required referral from the member's GP is not attached. The claim is routed to manual_review with reason code MISSING_REFERRAL and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Physiotherapy claim without referral is routed for review\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"A physiotherapy claim has no referral attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim is routed to manual_review with reason code MISSING_REFERRAL and is not recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Physiotherapy claim with GP referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"A physiotherapy claim has a referral from a GP attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim has a referral source specified for physiotherapy and is not routed to manual_review with reason code MISSING_REFERRAL.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Physiotherapy claim with consultant referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\"A physiotherapy claim has a referral from a consultant attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim has a referral source specified for physiotherapy and is not routed to manual_review with reason code MISSING_REFERRAL.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"GP visit does not require a referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A GP visit claim has no referral attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim is not treated as missing a required referral.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Prescription does not require a referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A prescription claim has no referral attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim is not treated as missing a required referral.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Day case procedure does not require a referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A day case procedure claim has no referral attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim is not treated as missing a required referral.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Inpatient stay does not require a referral\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"An inpatient stay claim has no referral attached.\"],\n      \"steps\": [\"Assess the claim.\"],\n      \"expected_result\": \"The claim is not treated as missing a required referral.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S07",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Consultant claim without referral is routed for review",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A consultant visit claim has no referral attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code MISSING_REFERRAL and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Consultant claim with GP referral",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A consultant visit claim has a referral from the member's GP attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim has the referral required for a consultant visit and is not routed to manual_review with reason code MISSING_REFERRAL."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Consultant claim with referral from a non-GP source",
+            "technique": "negative",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A consultant visit claim has a referral attached from a consultant, not from the member's GP."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The required referral from the member's GP is not attached. The claim is routed to manual_review with reason code MISSING_REFERRAL and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Physiotherapy claim without referral is routed for review",
+            "technique": "negative",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "A physiotherapy claim has no referral attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code MISSING_REFERRAL and is not recommended for automatic approval."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Physiotherapy claim with GP referral",
+            "technique": "positive",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "A physiotherapy claim has a referral from a GP attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim has a referral source specified for physiotherapy and is not routed to manual_review with reason code MISSING_REFERRAL."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Physiotherapy claim with consultant referral",
+            "technique": "positive",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "A physiotherapy claim has a referral from a consultant attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim has a referral source specified for physiotherapy and is not routed to manual_review with reason code MISSING_REFERRAL."
+          },
+          {
+            "case_id": "TC07",
+            "title": "GP visit does not require a referral",
+            "technique": "positive",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A GP visit claim has no referral attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is not treated as missing a required referral."
+          },
+          {
+            "case_id": "TC08",
+            "title": "Prescription does not require a referral",
+            "technique": "positive",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A prescription claim has no referral attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is not treated as missing a required referral."
+          },
+          {
+            "case_id": "TC09",
+            "title": "Day case procedure does not require a referral",
+            "technique": "positive",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A day case procedure claim has no referral attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is not treated as missing a required referral."
+          },
+          {
+            "case_id": "TC10",
+            "title": "Inpatient stay does not require a referral",
+            "technique": "positive",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "An inpatient stay claim has no referral attached."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is not treated as missing a required referral."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 10,
+      "usage": {
+        "latency_s": 13.65,
+        "input_tokens": 394,
+        "output_tokens": 1491,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S08",
+      "story_fingerprints": {
+        "card": "e4a95d2ceb29",
+        "ideas": "1da46a082e78"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S08\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Decline a cosmetic procedure claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a cosmetic procedure.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Decline routine dental care\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for routine dental care.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Decline a routine eye test claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a routine eye test.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Decline a routine glasses claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for routine glasses.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Decline a routine contact lenses claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for routine contact lenses.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Decline an alternative therapy claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for an alternative therapy, such as acupuncture or homeopathy.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Decline a fitness or wellness class claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a fitness or wellness class, such as yoga, pilates, or gym membership.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Decline a class described as therapeutic\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC2\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a fitness or wellness class described as therapeutic.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Decline a class run at a clinic\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC2\", \"AC3\"],\n      \"preconditions\": [\"A claim is for a fitness or wellness class run at a clinic.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Decline treatment received outside Ireland\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\"A claim is for treatment received outside Ireland.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to decline_recommended with reason code EXCLUDED.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Decline excluded treatment across differing amounts and membership durations\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\"Two claims are for excluded treatment.\", \"The claims have different amounts and different membership durations, with one duration longer than the other.\"],\n      \"steps\": [\"Submit both claims for assessment.\"],\n      \"expected_result\": \"Both claims are routed to decline_recommended with reason code EXCLUDED, regardless of their amounts and membership durations.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"Route a receipt with excluded and covered items to manual review\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\"A claim receipt includes an excluded treatment item alongside an item identified as covered.\"],\n      \"steps\": [\"Submit the claim for assessment.\"],\n      \"expected_result\": \"The claim is routed to manual_review with reason code UNCLEAR.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S08",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Decline a cosmetic procedure claim",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a cosmetic procedure."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Decline routine dental care",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for routine dental care."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Decline a routine eye test claim",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a routine eye test."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Decline a routine glasses claim",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for routine glasses."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Decline a routine contact lenses claim",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for routine contact lenses."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC06",
+            "title": "Decline an alternative therapy claim",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for an alternative therapy, such as acupuncture or homeopathy."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC07",
+            "title": "Decline a fitness or wellness class claim",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a fitness or wellness class, such as yoga, pilates, or gym membership."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC08",
+            "title": "Decline a class described as therapeutic",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a fitness or wellness class described as therapeutic."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC09",
+            "title": "Decline a class run at a clinic",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC2",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for a fitness or wellness class run at a clinic."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC10",
+            "title": "Decline treatment received outside Ireland",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim is for treatment received outside Ireland."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          {
+            "case_id": "TC11",
+            "title": "Decline excluded treatment across differing amounts and membership durations",
+            "technique": "positive",
+            "covers": [
+              "AC3"
+            ],
+            "preconditions": [
+              "Two claims are for excluded treatment.",
+              "The claims have different amounts and different membership durations, with one duration longer than the other."
+            ],
+            "steps": [
+              "Submit both claims for assessment."
+            ],
+            "expected_result": "Both claims are routed to decline_recommended with reason code EXCLUDED, regardless of their amounts and membership durations."
+          },
+          {
+            "case_id": "TC12",
+            "title": "Route a receipt with excluded and covered items to manual review",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A claim receipt includes an excluded treatment item alongside an item identified as covered."
+            ],
+            "steps": [
+              "Submit the claim for assessment."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code UNCLEAR."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 12,
+      "usage": {
+        "latency_s": 29.86,
+        "input_tokens": 439,
+        "output_tokens": 2890,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S09",
+      "story_fingerprints": {
+        "card": "31163f5b0a8f",
+        "ideas": "83c16564c978"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S09\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Route a claim above 1,000 for high-value review\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A claim has an amount of 1,001.\",\n        \"The claim's category limit is greater than 1,001.\"\n      ],\n      \"steps\": [\n        \"Submit the claim for processing.\"\n      ],\n      \"expected_result\": \"The claim is routed to manual_review with reason code HIGH_VALUE and is never recommended for automatic approval.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"A claim of exactly 1,000 is not high value\",\n      \"technique\": \"boundary\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"A claim has an amount of exactly 1,000.\"\n      ],\n      \"steps\": [\n        \"Submit the claim for processing.\"\n      ],\n      \"expected_result\": \"The claim is not treated as high value.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Use OVER_LIMIT for a claim above both limits\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A claim has an amount of 1,001.\",\n        \"The claim's category limit is less than 1,001.\"\n      ],\n      \"steps\": [\n        \"Submit the claim for processing.\"\n      ],\n      \"expected_result\": \"The claim is routed with reason code OVER_LIMIT, not HIGH_VALUE.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S09",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Route a claim above 1,000 for high-value review",
+            "technique": "positive",
+            "covers": [
+              "AC1"
+            ],
+            "preconditions": [
+              "A claim has an amount of 1,001.",
+              "The claim's category limit is greater than 1,001."
+            ],
+            "steps": [
+              "Submit the claim for processing."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is never recommended for automatic approval."
+          },
+          {
+            "case_id": "TC02",
+            "title": "A claim of exactly 1,000 is not high value",
+            "technique": "boundary",
+            "covers": [
+              "AC2"
+            ],
+            "preconditions": [
+              "A claim has an amount of exactly 1,000."
+            ],
+            "steps": [
+              "Submit the claim for processing."
+            ],
+            "expected_result": "The claim is not treated as high value."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Use OVER_LIMIT for a claim above both limits",
+            "technique": "positive",
+            "covers": [
+              "AC3"
+            ],
+            "preconditions": [
+              "A claim has an amount of 1,001.",
+              "The claim's category limit is less than 1,001."
+            ],
+            "steps": [
+              "Submit the claim for processing."
+            ],
+            "expected_result": "The claim is routed with reason code OVER_LIMIT, not HIGH_VALUE."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 3,
+      "usage": {
+        "latency_s": 9.76,
+        "input_tokens": 388,
+        "output_tokens": 780,
+        "attempts": 1
+      }
+    },
+    {
+      "story_id": "S10",
+      "story_fingerprints": {
+        "card": "3c5be37985e5",
+        "ideas": "917dacea368b"
+      },
+      "raw_reply": "{\n  \"story_id\": \"S10\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Appeal a declined claim by replying to the decision letter\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"The member has received a decision letter declining a claim.\"\n      ],\n      \"steps\": [\n        \"Reply to the decision letter to appeal the declined claim.\",\n        \"State why the member thinks the decision is wrong.\"\n      ],\n      \"expected_result\": \"The member can appeal the declined claim by replying to the decision letter, and the appeal states why the member thinks the decision is wrong.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Appeal a declined claim through the member portal\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"The member has a claim that was declined.\"\n      ],\n      \"steps\": [\n        \"Submit an appeal for the declined claim through the member portal.\",\n        \"State why the member thinks the decision is wrong.\"\n      ],\n      \"expected_result\": \"The member can appeal the declined claim through the member portal, and the appeal states why the member thinks the decision is wrong.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Include information missing from the original claim\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The member has a declined claim and information missing from the original claim.\"\n      ],\n      \"steps\": [\n        \"Submit an appeal that states why the member thinks the decision is wrong.\",\n        \"Include the missing information, such as a referral, pre-authorisation number, or provider description showing an injury was accidental.\"\n      ],\n      \"expected_result\": \"The appeal states why the member thinks the decision is wrong and can include information missing from the original claim.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Have the appeal reviewed independently\",\n      \"technique\": \"positive\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A member has appealed a declined claim.\"\n      ],\n      \"steps\": [\n        \"Review the appeal assignment and review.\"\n      ],\n      \"expected_result\": \"The appeal is reviewed by a senior claims assessor who was not involved in the original decision.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Route dissatisfaction with service as a complaint\",\n      \"technique\": \"negative\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"A member is dissatisfied with the service, rather than a claim decision.\"\n      ],\n      \"steps\": [\n        \"Submit the member's dissatisfaction.\"\n      ],\n      \"expected_result\": \"The matter is handled as a complaint, not an appeal.\"\n    }\n  ]\n}",
+      "parsed": {
+        "story_id": "S10",
+        "test_cases": [
+          {
+            "case_id": "TC01",
+            "title": "Appeal a declined claim by replying to the decision letter",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "The member has received a decision letter declining a claim."
+            ],
+            "steps": [
+              "Reply to the decision letter to appeal the declined claim.",
+              "State why the member thinks the decision is wrong."
+            ],
+            "expected_result": "The member can appeal the declined claim by replying to the decision letter, and the appeal states why the member thinks the decision is wrong."
+          },
+          {
+            "case_id": "TC02",
+            "title": "Appeal a declined claim through the member portal",
+            "technique": "positive",
+            "covers": [
+              "AC1",
+              "AC2"
+            ],
+            "preconditions": [
+              "The member has a claim that was declined."
+            ],
+            "steps": [
+              "Submit an appeal for the declined claim through the member portal.",
+              "State why the member thinks the decision is wrong."
+            ],
+            "expected_result": "The member can appeal the declined claim through the member portal, and the appeal states why the member thinks the decision is wrong."
+          },
+          {
+            "case_id": "TC03",
+            "title": "Include information missing from the original claim",
+            "technique": "positive",
+            "covers": [
+              "AC2"
+            ],
+            "preconditions": [
+              "The member has a declined claim and information missing from the original claim."
+            ],
+            "steps": [
+              "Submit an appeal that states why the member thinks the decision is wrong.",
+              "Include the missing information, such as a referral, pre-authorisation number, or provider description showing an injury was accidental."
+            ],
+            "expected_result": "The appeal states why the member thinks the decision is wrong and can include information missing from the original claim."
+          },
+          {
+            "case_id": "TC04",
+            "title": "Have the appeal reviewed independently",
+            "technique": "positive",
+            "covers": [
+              "AC3"
+            ],
+            "preconditions": [
+              "A member has appealed a declined claim."
+            ],
+            "steps": [
+              "Review the appeal assignment and review."
+            ],
+            "expected_result": "The appeal is reviewed by a senior claims assessor who was not involved in the original decision."
+          },
+          {
+            "case_id": "TC05",
+            "title": "Route dissatisfaction with service as a complaint",
+            "technique": "negative",
+            "covers": [
+              "AC4"
+            ],
+            "preconditions": [
+              "A member is dissatisfied with the service, rather than a claim decision."
+            ],
+            "steps": [
+              "Submit the member's dissatisfaction."
+            ],
+            "expected_result": "The matter is handled as a complaint, not an appeal."
+          }
+        ]
+      },
+      "parse_info": {
+        "strict_json": true,
+        "fenced": false,
+        "error": null
+      },
+      "schema_issues": [],
+      "schema_valid": true,
+      "n_cases": 5,
+      "usage": {
+        "latency_s": 9.38,
+        "input_tokens": 419,
+        "output_tokens": 899,
+        "attempts": 1
+      }
+    }
+  ]
+}

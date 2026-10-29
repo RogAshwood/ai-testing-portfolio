@@ -1,0 +1,13 @@
+﻿pair_id,story_id,earlier_case,later_case,selected_as,judge_duplicate,my_duplicate,my_reason
+D01,S01,TC02,TC03,"control (similar, not flagged)",n,n,One refers to the treatment description and the later case refers to treatment date
+D02,S06,TC13,TC14,"control (similar, not flagged)",n,y,The boundary is around 1500 rather than 1499.99; it will not tell us anything new about how the system behaves
+D03,S04,TC01,TC14,judge flagged,y,y,Months are not used in the calculation
+D04,S09,TC04,TC05,"control (similar, not flagged)",n,y,1199 and 1200 test the same logic; if it passes for 1200 it will pass for 1199
+D05,S01,TC03,TC04,"control (similar, not flagged)",n,n,Separate data point; missing any piece of information needs to be flagged for subsequent handling
+D06,S04,TC02,TC15,judge flagged,y,y,Logic is based on days difference; months are not considered
+D07,S02,TC02,TC03,"control (similar, not flagged)",n,n,Two separate tests that validate different logic
+D08,S01,TC01,TC09,judge flagged,y,y,Year end logic is not part of the test basis
+D09,S01,TC01,TC08,judge flagged,y,y,Month end logic is not part of the test basis
+D10,S04,TC02,TC17,judge flagged,y,y,Logic is the difference between two dates; leap years are not considered
+D11,S01,TC01,TC10,judge flagged,y,y,The leap year is not what the test needs to validate
+D12,S04,TC02,TC16,judge flagged,y,y,Year end logic is not part of the test basis
