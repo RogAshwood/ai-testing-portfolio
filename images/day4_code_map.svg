@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 876" width="760" height="876" font-family="Inter, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#666" stroke-width="1.3"/></marker></defs>
+<rect width="760" height="876" rx="12" fill="#fbfaf7"/>
+<rect x="40" y="30" width="212" height="78" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="54" y="54" font-size="13" font-weight="700" fill="#2b2b2b">testgen_golden.json</text>
+<text x="54" y="75" font-size="12" fill="#555">10 stories, 78 expected</text>
+<text x="54" y="92" font-size="12" fill="#555">ideas: the oracle</text>
+<rect x="274" y="30" width="212" height="78" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="288" y="54" font-size="13" font-weight="700" fill="#2b2b2b">validate_testgen_golden.py</text>
+<text x="288" y="75" font-size="12" fill="#555">checks the oracle before</text>
+<text x="288" y="92" font-size="12" fill="#555">any run (section 1)</text>
+<rect x="508" y="30" width="212" height="78" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="522" y="54" font-size="13" font-weight="700" fill="#2b2b2b">testgen_seeded_defects.json</text>
+<text x="522" y="75" font-size="12" fill="#555">flawed items and controls;</text>
+<text x="522" y="92" font-size="12" fill="#555">read by score.py --seeded</text>
+<rect x="26" y="142" width="708" height="378" rx="12" fill="none" stroke="#9a968c" stroke-dasharray="5 4"/>
+<text x="380.0" y="164" font-size="12.5" fill="#444" font-weight="700" text-anchor="middle">bench/  (Python package)</text>
+<rect x="40" y="176" width="680" height="62" rx="9" fill="#f2f0ea" stroke="#bdb9ae" stroke-width="1"/>
+<text x="54" y="200" font-size="13" font-weight="700" fill="#2b2b2b">golden.py</text>
+<text x="54" y="221" font-size="12" fill="#555">loads the golden set and prompts, builds each story card, computes the fingerprints; used by every module</text>
+<path d="M146.0,108 L146.0,174" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<rect x="40" y="268" width="212" height="130" rx="9" fill="#eeeefc" stroke="#5b54c9" stroke-width="1"/>
+<text x="54" y="292" font-size="13" font-weight="700" fill="#3b3596">generate.py</text>
+<text x="54" y="313" font-size="12" fill="#4f48b8">the system under test:</text>
+<text x="54" y="330" font-size="12" fill="#4f48b8">prompt v1 or v2 + story</text>
+<text x="54" y="347" font-size="12" fill="#4f48b8">card → gpt-6-luna;</text>
+<text x="54" y="364" font-size="12" fill="#4f48b8">testcase_schema.py</text>
+<text x="54" y="381" font-size="12" fill="#4f48b8">checks the JSON</text>
+<rect x="274" y="268" width="212" height="130" rx="9" fill="#f2f0ea" stroke="#bdb9ae" stroke-width="1"/>
+<text x="288" y="292" font-size="13" font-weight="700" fill="#2b2b2b">score.py</text>
+<text x="288" y="313" font-size="12" fill="#555">measures each run: recall,</text>
+<text x="288" y="330" font-size="12" fill="#555">precision, case count;</text>
+<text x="288" y="347" font-size="12" fill="#555">judge self-test; history file;</text>
+<text x="288" y="364" font-size="12" fill="#555">pricing.py for cost;</text>
+<text x="288" y="381" font-size="12" fill="#555">calls judge.py</text>
+<rect x="508" y="268" width="212" height="130" rx="9" fill="#e6f5ef" stroke="#2f8a68" stroke-width="1"/>
+<text x="522" y="292" font-size="13" font-weight="700" fill="#16573f">judge.py</text>
+<text x="522" y="313" font-size="12" fill="#1f7354">the judge (gpt-6-sol),</text>
+<text x="522" y="330" font-size="12" fill="#1f7354">two calls per story:</text>
+<text x="522" y="347" font-size="12" fill="#1f7354">1. mark each case</text>
+<text x="522" y="364" font-size="12" fill="#1f7354">2. which expected ideas</text>
+<text x="522" y="381" font-size="12" fill="#1f7354">are covered, and by what</text>
+<path d="M146.0,238 L146.0,266" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<path d="M380.0,238 L380.0,266" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<path d="M614.0,238 L614.0,266" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<path d="M252,333 L272,333" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<path d="M486,333 L506,333" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<rect x="40" y="424" width="212" height="78" rx="9" fill="#f2f0ea" stroke="#bdb9ae" stroke-width="1"/>
+<text x="54" y="448" font-size="13" font-weight="700" fill="#2b2b2b">review_sheet.py</text>
+<text x="54" y="469" font-size="12" fill="#555">HTML sheet of a run's</text>
+<text x="54" y="486" font-size="12" fill="#555">cases, for error analysis</text>
+<rect x="274" y="424" width="212" height="78" rx="9" fill="#f2f0ea" stroke="#bdb9ae" stroke-width="1"/>
+<text x="288" y="448" font-size="13" font-weight="700" fill="#2b2b2b">calibration.py</text>
+<text x="288" y="469" font-size="12" fill="#555">blind label sheets, then</text>
+<text x="288" y="486" font-size="12" fill="#555">agreement with the judge</text>
+<rect x="508" y="424" width="212" height="78" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="522" y="448" font-size="13" font-weight="700" fill="#2b2b2b">prompts/</text>
+<text x="522" y="469" font-size="12" fill="#555">testgen v1 and v2;</text>
+<text x="522" y="486" font-size="12" fill="#555">judge prompts v1 and v2</text>
+<path d="M204.5,520 L204.5,574" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<path d="M555.5,520 L555.5,574" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<text x="380.0" y="544" font-size="11.5" fill="#666" font-weight="400" text-anchor="middle">imported by the notebook, or run</text>
+<text x="380.0" y="560" font-size="11.5" fill="#666" font-weight="400" text-anchor="middle">on their own: python -m bench.&lt;module&gt;</text>
+<rect x="40" y="576" width="329.0" height="96" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="54" y="600" font-size="13" font-weight="700" fill="#2b2b2b">Notebook 03 (.ipynb)</text>
+<text x="54" y="621" font-size="12" fill="#555">analysis and explanation, sections 0 to 12;</text>
+<text x="54" y="638" font-size="12" fill="#555">reads saved results, so a full run is free</text>
+<text x="54" y="655" font-size="12" fill="#555">while the RUN_* switches are off</text>
+<rect x="391.0" y="576" width="329.0" height="96" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="405.0" y="600" font-size="13" font-weight="700" fill="#2b2b2b">Command line</text>
+<text x="405.0" y="621" font-size="12" fill="#555">python -m bench.generate, score,</text>
+<text x="405.0" y="638" font-size="12" fill="#555">calibration, review_sheet:</text>
+<text x="405.0" y="655" font-size="12" fill="#555">how the runs and label sheets were made</text>
+<path d="M204.5,672 L204.5,704" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<path d="M555.5,672 L555.5,704" fill="none" stroke="#666" stroke-width="1" marker-end="url(#a)"/>
+<rect x="40" y="706" width="680" height="62" rx="9" fill="#ffffff" stroke="#c9c6bf" stroke-width="1"/>
+<text x="54" y="730" font-size="13" font-weight="700" fill="#2b2b2b">results/testgen/ and results/testgen_history.csv</text>
+<text x="54" y="751" font-size="12" fill="#555">generated cases, scores, seeded checks and label sheets; every record stores the fingerprints it came from</text>
+<rect x="105.0" y="793" width="14" height="14" rx="3" fill="#eeeefc" stroke="#5b54c9"/>
+<text x="127.0" y="805" font-size="12" fill="#444">System under test</text>
+<rect x="277.0" y="793" width="14" height="14" rx="3" fill="#f2f0ea" stroke="#bdb9ae"/>
+<text x="299.0" y="805" font-size="12" fill="#444">Free code, no LLM</text>
+<rect x="449.0" y="793" width="14" height="14" rx="3" fill="#e6f5ef" stroke="#2f8a68"/>
+<text x="471.0" y="805" font-size="12" fill="#444">LLM judge</text>
+<rect x="581.0" y="793" width="14" height="14" rx="3" fill="#ffffff" stroke="#c9c6bf"/>
+<text x="603.0" y="805" font-size="12" fill="#444">Data, files, runners</text>
+<text x="380.0" y="838" font-size="11.5" fill="#666" font-weight="400" text-anchor="middle">Only generate.py and judge.py call the OpenAI API (key in .env).</text>
+<text x="380.0" y="856" font-size="11.5" fill="#666" font-weight="400" text-anchor="middle">Everything else runs free.</text>
+</svg>
