@@ -1,0 +1,76 @@
+{
+  "suite": "Benchmark: AI test generation (prompt v2)",
+  "verdict": "passed",
+  "gates": [
+    {
+      "name": "Frozen fingerprint: golden",
+      "level": "HARD",
+      "passed": true,
+      "actual": "228e95aab97e",
+      "expected": "228e95aab97e"
+    },
+    {
+      "name": "Frozen fingerprint: prompt_v2",
+      "level": "HARD",
+      "passed": true,
+      "actual": "26bcc3fb6a1c",
+      "expected": "26bcc3fb6a1c"
+    },
+    {
+      "name": "Frozen fingerprint: judge_cases",
+      "level": "HARD",
+      "passed": true,
+      "actual": "ff34c1fc3ab1",
+      "expected": "ff34c1fc3ab1"
+    },
+    {
+      "name": "Frozen fingerprint: judge_recall",
+      "level": "HARD",
+      "passed": true,
+      "actual": "00e27350cffd",
+      "expected": "00e27350cffd"
+    },
+    {
+      "name": "Stories schema-valid",
+      "level": "HARD",
+      "passed": true,
+      "actual": "10/10",
+      "expected": ">= 10/10"
+    },
+    {
+      "name": "Mean recall (judge)",
+      "level": "WARN",
+      "passed": true,
+      "actual": "0.70",
+      "expected": ">= 0.68"
+    },
+    {
+      "name": "Mean precision (judge)",
+      "level": "WARN",
+      "passed": true,
+      "actual": "0.88",
+      "expected": ">= 0.85"
+    },
+    {
+      "name": "Judge replies complete (no missing or unknown IDs)",
+      "level": "WARN",
+      "passed": true,
+      "actual": "0",
+      "expected": "0"
+    },
+    {
+      "name": "Cases linked to no acceptance criterion (empty covers)",
+      "level": "WARN",
+      "passed": true,
+      "actual": "0",
+      "expected": "<= 0"
+    }
+  ],
+  "notes": [
+    "Cases 137, incorrect 1, not in basis 11, duplicates 5",
+    "Cost: generation $0.018, judge $0.3111 (gpt-6-sol price provisional); time: generation 333.4 s, judge 257.2 s",
+    "Baseline (3 runs, 28 Oct 2026): recall 0.75 [0.70-0.78], precision 0.91"
+  ],
+  "gen_file": "gen_v2_gpt-6-luna_g1.0_rbench-3_20261029T172259Z.json",
+  "score_file": "score_v2_gpt-6-luna_g1.0_rbench-3_20261029T172259Z_jff34c1fc3ab1_20261029T173251Z.json"
+}
