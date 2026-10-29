@@ -1,5 +1,8 @@
 # Testing AI: a QA lead's portfolio
 
+[![AI evals](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/evals.yml/badge.svg)](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/evals.yml)
+[![AI test-generation benchmark](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/benchmark.yml/badge.svg)](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/benchmark.yml)
+
 Practical work from a short upskilling project in testing LLM-based systems, written from a QA-lead perspective.
 Every exercise uses one fictional health insurer, **Harbourlight Health**, so the portfolio reads as one business
 tested at several layers. All data is synthetic: no employer data and no real personal or medical data.
@@ -9,6 +12,36 @@ tested at several layers. All data is synthetic: no employer data and no real pe
 | 01 | [`01_promptfoo_claim_triage.ipynb`](01_promptfoo_claim_triage.ipynb) | An LLM claim-triage step: prompt regression, model comparison, judge validation, red teaming | Promptfoo, pandas | Done |
 | 02 | [`02_deepeval_rag_component_vs_e2e.ipynb`](02_deepeval_rag_component_vs_e2e.ipynb) | Member-help chatbot (RAG): retriever and generator tested separately and end to end, fault injection, judge calibration, fix and retest, CI tests | DeepEval, scikit-learn, pytest | Done |
 | 03 | [`03_testgen_benchmark.ipynb`](03_testgen_benchmark.ipynb) | AI test generation: two prompts benchmarked against an expert golden set, an LLM judge tested with seeded defects and blind labels (including a held-out round) | OpenAI API, Python (`bench/`), pandas, matplotlib | Done |
+| CI | [Continuous evaluation](#continuous-evaluation) | The suites from all three notebooks re-run on a schedule, with quality gates | GitHub Actions | Running |
+
+## Testing AI: a QA lead's primer
+
+My answers to the four questions I started with, after doing the work.
+
+**1. What replaces a fixed expected result when the output is non-deterministic?** Mostly, still a fixed
+expected result: where the output is structured (a routing, a reason code), it either matches or it doesn't.
+Where it isn't, the expected result becomes a rule that must always hold ("never auto-approve a claim the rules
+don't") or a rubric. Either way, one run proves little. The same claim was auto-approved in 2 of 3 identical
+runs, so I repeat runs and report ranges, not single numbers.
+
+**2. When is a deterministic check enough, and how do I know an LLM judge is right?** Use a deterministic check
+wherever one exists. A plain text match for key facts predicted chatbot failures better than any judged metric,
+for free. A judge is for meaning, and it is a test oracle that needs testing itself: mine failed 11 of 24 good
+summaries until it was told what the fields meant. I validate a judge with blind human labels, deliberately
+flawed examples, and a held-out set it was never tuned on (agreement on one measure fell from 100% to 50%
+on held-out cases).
+
+**3. How do I test a RAG chatbot at component level and end to end?** The retriever on its own (did the right
+facts arrive?), the generator on its own with the correct context, then the whole pipeline. End to end, 6 of 12
+questions failed; given the right context, the generator answered all 12 well. Every failure came from
+retrieval, which an end-to-end score alone would not have shown. Faithfulness even stayed perfect with the
+retriever broken.
+
+**4. Which OWASP risks matter most for a health insurer's member-help chatbot?** Prompt injection through any
+text a member controls; disclosure of health and personal data; excessive agency, which for claim triage
+means an unchecked auto-approval; and misinformation, such as promising a claim will be paid or giving medical
+advice. I tested all four, and kept the LLM's decisions behind a human assessor.
+
 
 ---
 
@@ -20,6 +53,8 @@ Step 3 of a seven-step claims workflow: an LLM reads a claim and recommends a **
 (`auto_approve`, `manual_review` or `decline_recommended`), a **reason code** and a short **summary**.
 A human assessor makes every decision except spot-checked auto-approvals.
 
+![Where the claim-triage step sits in the claims process](images/day2_claims_workflow.png)
+
 The rules (cover limits, exclusions, a 182-day waiting period with exemptions, a 12-month submission deadline,
 and a strict order for applying them) are in [`datasets/plan_rules.md`](datasets/plan_rules.md). That file is
 the **specification (test basis)**. The expected results in the dataset are derived from it, and a reference
@@ -27,6 +62,9 @@ implementation ([`datasets/validate_dataset.py`](datasets/validate_dataset.py)) 
 result follows from the rules.
 
 ### What was tested
+
+![How the claim-triage step was tested](images/day2_triage_test_setup.png)
+
 
 - **35 synthetic claims** covering the core rules, boundaries (at the limit vs 1 euro over, deadline day vs 1 day
   late, waiting-period day 181 vs 182, a leap-day deadline), ambiguous claims, adversarial notes (an embedded
@@ -44,6 +82,31 @@ result follows from the rules.
 - **Red team:** Promptfoo-generated attacks through the free-text claimant note (prompt injection, hijacking,
   PII and health-data disclosure, coverage discrimination).
 - **Judge validation:** the summary judge was itself tested against human labels (see below).
+
+### What was measured
+
+The **industry term** column links each measure to the name it usually goes by in AI evaluation, so the results
+can be compared with other work. "Domain-specific" marks measures that come from this business's rules rather
+than from a standard set.
+
+| Measure | How it is measured | Industry term | Why it matters |
+| --- | --- | --- | --- |
+| Routing accuracy | Routing equals the expected routing, per prompt and model | Accuracy against a golden set (classification) | Routing is the decision: it either pays a claim or gives an assessor work |
+| Category and reason code | Exact match with the expected values | Accuracy against a golden set | The reason code tells the assessor which rule applied, and shows whether the rules were applied in the right order |
+| False auto-approvals | `auto_approve` where the rules say otherwise | False positives, i.e. the **precision** of auto-approve; a safety guardrail | The costly error: a claim paid that nobody checked. Zero tolerance |
+| Unnecessary manual reviews | `manual_review` where the rules say `auto_approve` | False negatives, i.e. the **recall** of auto-approve | The cheap error: assessor time. Counted separately so the two errors are not averaged together |
+| Format and traceability | Valid JSON, the agreed fields and values, and `claim_id` returned unchanged | Schema validation; **schema regression** | The next system must be able to read the output and link it to the right claim |
+| Prompt and model comparison | The same claims through prompts v1, v2 and v3 on two models | **Prompt regression** testing; model comparison | Shows what each prompt change and model choice is worth before it ships |
+| Stability | The same test run 3 times; routings that change between runs | Consistency under non-determinism | One run proves little when the output can vary; a flipping claim needs a fix, not a lucky run |
+| Change over time | The weekly CI run, compared with the baseline | **Model drift** monitoring | The hosted model can change without notice |
+| Fairness | Both claims in a pair (differing only in name or gender) get the same routing | Bias testing with counterfactual pairs | Personal characteristics must not change the outcome |
+| Summary quality | LLM judge, pass or fail against a four-point rubric: accurate to the claim record, consistent with the routing, no medical advice, short | **LLM-as-a-judge**; **grounding** (a fact not in the record is a **hallucination**) | The assessor reads the summary; free text cannot be exact-matched |
+| Judge agreement | Judge verdicts against my blind labels, plus deliberately flawed summaries | Judge calibration (human agreement); seeded defects | Shows whether the summary score can be trusted at all |
+| Red-team outcome | Whether an attack in the claimant note changed the routing or disclosed data | Adversarial robustness: prompt injection, sensitive data disclosure (OWASP Top 10 for LLMs) | The note is the one field a member controls |
+| Cost and latency | Cost per call and per 100 claims; response time | Non-functional: latency, token cost | Affordability and speed at volume |
+
+Not used here: **semantic similarity scoring**. The outputs that matter are structured values, where exact match is
+stricter and cheaper; the free-text summary is judged against a rubric instead.
 
 ### Headline findings
 
@@ -98,14 +161,17 @@ two components, and each can fail on its own:
   prompt: say when it does not know, no medical advice, never promise a claim will be paid, ignore instructions
   hidden in the question.
 
+![Where the member-help chatbot sits in the member journey](images/day3_member_help_workflow.png)
+
 The documents in [`datasets/policy_docs/`](datasets/policy_docs/) are the **test basis**. The **oracle** is a
 15-question golden set ([`datasets/rag_golden.csv`](datasets/rag_golden.csv)): expected answer, expected
 behaviour, source documents and key facts for each question. [`datasets/validate_golden.py`](datasets/validate_golden.py)
 checks the oracle against the documents before any test runs.
 
-![Day 3 evaluation set-up](images/day3_eval_setup.png)
-
 ### What was tested
+
+![How the member-help chatbot was tested](images/day3_chatbot_test_setup.png)
+
 
 - **15 questions:** 8 standard, 3 the documents cannot answer (the bot should say so), 2 adversarial (a prompt
   injection and a false premise) and 2 that ask for medical advice or a promise of payment.
@@ -122,6 +188,33 @@ checks the oracle against the documents before any test runs.
   it must fail.
 - **Fix and retest:** k raised from 3 to 5, then confirmation and regression testing.
 - **CI tests:** 5 automated tests in [`tests/test_rag.py`](tests/test_rag.py), run with `deepeval test run`.
+
+### What was measured
+
+The **industry term** column links each measure to the name it usually goes by in AI evaluation, so the results
+can be compared with other work. "Domain-specific" marks measures that come from this business's rules rather
+than from a standard set.
+
+| Measure | Component | How it is measured | Industry term | Why it matters |
+| --- | --- | --- | --- | --- |
+| Key-fact recall | Retriever | Share of the answer's key facts found word for word in the retrieved chunks (no LLM) | Retrieval **recall** (lexical); detects **retrieval failures** | Free and repeatable: shows whether the generator was given what it needed |
+| Contextual precision, recall and relevancy | Retriever | DeepEval judge: are relevant chunks ranked high, are all needed chunks found, how much is noise | Retrieval **precision** and **recall**; context relevance (RAG triad) | The judged view of retrieval quality, to compare with the free check |
+| Faithfulness | Generator | DeepEval judge: is every claim in the answer supported by the chunks | **Grounding** / faithfulness (RAG triad) | Catches invented facts |
+| Hallucination | Generator | DeepEval judge: agreement with the context (higher is better in DeepEval 4.2.8) | **Hallucination** rate | A second view of invented content |
+| Answer relevancy | Generator | DeepEval judge: does the answer address the question | Answer relevance (RAG triad) | Catches answers that are true but beside the point |
+| Correctness | Generator and end to end | G-Eval criterion against the expected answer | **LLM-as-a-judge** (G-Eval) against a reference answer | Did the member get the right answer |
+| Declines when the answer is not in the documents | Generator and end to end | G-Eval criterion on the 3 unanswerable questions | Abstention on unanswerable questions | A guess is worse than "I don't know" for an insurer |
+| Safe conduct | Generator and end to end | G-Eval criterion: no medical advice, no promise that a claim will be paid | Domain-specific safety policy (guardrail compliance) | Conduct risk in a regulated business |
+| Fault injection | Retriever | The retriever broken on purpose (k=1; text cut every 200 characters), then every measure re-run | Metric sensitivity to **retrieval failures** | Shows which measures notice a broken retriever and which stay green |
+| Run-to-run variation | End to end | The same question set run 3 times | Consistency under non-determinism | Separates real differences from noise |
+| Regression after the fix | End to end | k raised from 3 to 5; confirmation and regression testing on the full golden set | Regression testing | A fix must not break questions that already passed |
+| Tokens and latency | End to end | Input and output tokens, and seconds, per answer | Non-functional: latency, token cost | The price of a fix (k=5 cost about 28% more input tokens) |
+| Judge agreement | Judge | Verdicts against my blind labels, plus 8 deliberately bad answers | Judge calibration (human agreement); seeded defects | Shows which judged scores can be trusted |
+
+Not used here: **semantic similarity scoring** (comparing embeddings of the answer and the expected answer).
+Correctness was judged by an LLM against the expected answer instead. The retriever is lexical (TF-IDF) too, which
+is why one question fails at every setting: its wording shares nothing with the answer. Semantic search is the
+listed next step.
 
 ### Headline findings
 
@@ -181,6 +274,8 @@ provider as the generator; 10 human labels from one person; the faults and the f
 Teams increasingly paste a user story into an AI tool and get test cases back. This exercise measures how good
 those test cases are, and whether telling the AI how to design tests helps.
 
+![Where AI test generation sits in the delivery process](images/day4_testgen_workflow.png)
+
 The system under test is a single prompt (not an agent) that turns one user story into test cases as JSON:
 title, technique, the acceptance criteria covered, preconditions, steps and expected result. The generator
 (`gpt-6-luna`, the cheaper model) sees only the story's title, user story and acceptance criteria. Two prompts
@@ -197,9 +292,10 @@ QA lead would want (27 positive, 20 negative, 31 boundary) in
 [`datasets/testgen_golden.json`](datasets/testgen_golden.json), v1.0, frozen.
 [`datasets/validate_testgen_golden.py`](datasets/validate_testgen_golden.py) checks it before any run.
 
-![Day 4 benchmark flow](images/day4_testgen_flow.svg)
-
 ### What was tested
+
+![How AI test generation was benchmarked](images/day4_testgen_test_setup.png)
+
 
 - **3 runs × 2 prompts × 10 stories**, because the generator does not give the same answer twice.
 - **Error analysis first.** The first v1 run was read case by case before any metric was chosen. It found nine
@@ -209,12 +305,38 @@ QA lead would want (27 positive, 20 negative, 31 boundary) in
   seeing the expected ideas: correct, incorrect or not in the test basis; technique; concrete test data; one
   condition per case (atomic); duplicates. The second decides which expected ideas are covered, and by which cases.
   The judge never knows which prompt wrote the cases.
-- **Measures reported together:** recall (share of expected ideas found) alone can be gamed by writing more cases,
-  so it always appears with precision (share of cases correct and not duplicates) and case count. Also claimed
-  against verified coverage, concrete and atomic rates, cost and time.
+- **Measures reported together:** recall alone can be gamed by writing more cases, so it always appears with
+  precision and case count (see the table below).
 - **Traceability by content:** the golden set, every prompt, the judge prompts and each story are fingerprinted
   (first 12 characters of a SHA-256 hash). Every result records the fingerprints it was produced from, so a changed
   story or prompt shows in every result. All runs go into `results/testgen_history.csv`.
+
+### What was measured
+
+One row per story per run. "Correct" always means a case the judge marked correct.
+
+The **industry term** column links each measure to the name it usually goes by in AI evaluation, so the results
+can be compared with other work. "Domain-specific" marks measures that come from this business's rules rather
+than from a standard set.
+
+| Measure | How it is measured | Industry term | Why it matters |
+| --- | --- | --- | --- |
+| Schema validity | Reply is JSON and meets the output contract; strict JSON (nothing around it) reported separately | Structured-output validation; **schema regression** | Unusable output means a story gets no tests |
+| Expert idea recall | Share of the 78 expected ideas covered by at least one correct case, overall and by technique (positive, negative, boundary) | **Recall** against a golden set; **LLM-as-a-judge**, yes or no per idea | The main question: does the tool find what an experienced tester would look for |
+| Precision | Share of cases that are correct and not duplicates | **Precision** | Every extra case costs review time; recall alone rewards volume |
+| Case count | Cases per story | Output volume | Read with recall and precision: more ideas found for how many cases |
+| Correctness | Each case correct, incorrect, or not in the test basis | **LLM-as-a-judge**; **grounding** to the specification ("not in basis" is the test-design version of a **hallucination**, though most were fair questions about gaps) | A wrong expected result is worse than a missing test |
+| AC coverage, claimed and verified | Share of acceptance criteria the generator says it covers, against those the judge confirms; plus the over-claim rate | Faithfulness of the model's own labels | Coverage labels are only useful if they are true |
+| Negative and boundary presence | At least one correct negative and one correct boundary case per story | Domain-specific: test design techniques (ISTQB) | The two techniques testers most often see missing |
+| Duplication | Cases that repeat an earlier case's condition and outcome, judged; TF-IDF similarity kept as an indicator | **LLM-as-a-judge**; lexical similarity | Duplicates inflate the case count without adding coverage |
+| Concrete test data and atomic cases | Share of cases with specific inputs, and share testing one condition with one outcome | Domain-specific rubric criteria | Whether a tester could run the case without rewriting it |
+| Change over time | Monthly CI run against frozen, fingerprinted inputs; results in the history file | **Model drift** monitoring; **prompt drift** guarded by fingerprints | Any change in scores must come from the model, not from an unnoticed edit |
+| Cost and latency | Tokens, USD and seconds per story, for generation and judging | Non-functional: latency, token cost | What a run costs; judging costs far more than generating |
+| Judge agreement | Verdicts against my blind labels (two rounds and a held-out round), plus 46 seeded-defect checks | Judge calibration (human agreement, held-out set); seeded defects | Shows which judged measures can be trusted |
+
+Not used here: **semantic similarity scoring**. Duplicates were first measured with TF-IDF, which compares words,
+not meaning. It flagged distinct boundary pairs as duplicates because they share a template, so duplicates are
+judged by the LLM instead. Embedding-based similarity would be the next thing to try.
 
 ### Headline findings
 
@@ -269,6 +391,56 @@ cost uses `gpt-6.1-sol` prices, unconfirmed for `gpt-6-sol`. The full list is in
 
 ---
 
+## Continuous evaluation
+
+The suites from all three notebooks run on GitHub Actions without me. Each run checks a set of **quality gates**,
+and the badges at the top show whether the latest run passed them.
+
+| Workflow | When it runs | What it checks | Cost per run |
+| --- | --- | --- | --- |
+| [`evals.yml`](.github/workflows/evals.yml) | Every Monday, and by hand | Claim triage with Promptfoo (prompt v3, both models, 35 claims) and the 5 DeepEval chatbot tests | About $0.21 |
+| [`benchmark.yml`](.github/workflows/benchmark.yml) | 1st of each month, on any change to the benchmark's files, and by hand | One run of the test-generation benchmark (prompt v2, 10 stories) | About $0.35 |
+
+**Hard gates fail the run (red badge). Warnings are reported in the run summary but do not fail it.**
+
+| Hard gates | Warnings only |
+| --- | --- |
+| Valid JSON, schema and claim ID on every claim, both models | Anything an LLM judge scores: summary quality, benchmark recall and precision |
+| Zero false auto-approvals, and at least 34 of 35 routings correct, on the stronger model | The cheaper model's routing and false auto-approvals (a known, intermittent defect on claim HLH-009) |
+| All 5 DeepEval tests pass | Generated test cases linked to no acceptance criterion |
+| Benchmark: golden set, prompt and judge unchanged (checked by fingerprint), and every story returns valid output | |
+
+Why the split: deterministic checks are reliable enough to block a release; the judges disagreed with my own
+labels often enough (notebooks 01 to 03) that their scores start as warnings. Every threshold, and the baseline
+it was set from, is in [`bench/ci_thresholds.py`](bench/ci_thresholds.py).
+
+**What the benchmark run checks.** Test cases are generated once and reviewed, so CI does not re-run the
+benchmark to get new tests. It checks the generator itself: with the golden set, prompt and judge frozen, any
+change in the scores comes from the hosted model or from run-to-run variation. A change to a frozen file has to be
+declared in `bench/ci_thresholds.py` in the same commit; otherwise the run stops before any model is called.
+
+**What is kept.** Each run commits its gate tables (`results/ci_gates/`), and each benchmark run also commits its
+generated test cases, the judge's verdicts and new rows in `results/testgen_history.csv`, so every score can be
+traced back to its outputs. The larger Promptfoo results file is kept with the run for 90 days.
+
+**Found by CI already.** The first benchmark run failed a hard gate: one story's output was rejected because a
+test case listed no acceptance criteria. The case was a question about a gap in the story, which the prompt
+asks for, so the contradiction was in my own output contract, not in the generator. The check now reports such
+cases as a warning. Details are in [`NOTES.md`](NOTES.md), Day 5.
+
+## Three lessons from a QA-lead perspective
+
+1. **The oracle is most of the work, and it needs testing too.** Review rounds corrected 14 of my 78 expected test
+   ideas; a judge failed half of the good summaries it was given; CI found a contradiction in my own output
+   contract. Every one would have produced wrong results about the system under test. Budget for testing the
+   tests.
+2. **Gate on what is deterministic, monitor what is judged, and weigh errors by what they cost.** A false
+   auto-approval pays out money nobody checked; an unnecessary manual review costs an assessor a few minutes. Rules
+   that can be code should be code, leaving the LLM the parts that need language.
+3. **Treat every result as one sample from a moving system.** Repeat runs, report ranges, and fingerprint the
+   dataset, prompt and judge behind every number. Re-marking the same test cases with a clarified judge moved recall
+   as much as the prompt change did, and the hosted models can change without notice.
+
 ## Repository layout
 
 ```
@@ -282,7 +454,10 @@ ai-testing-portfolio/
 ├── rag_metrics.py                    Day 3 free checks (no LLM): key-fact recall, correct-context stub
 ├── rag_judges.py                     Day 3 LLM judge and its G-Eval criteria; shared by notebook and tests
 ├── environment.yml                   Conda environment
-├── bench/                            Day 4 benchmark code, imported by notebook 03
+├── .github/workflows/
+│   ├── evals.yml                     Weekly CI: Promptfoo claim triage and DeepEval tests, with quality gates
+│   └── benchmark.yml                 Monthly and on-change CI: the test-generation benchmark
+├── bench/                            Day 4 benchmark code, imported by notebook 03 and by CI
 │   ├── golden.py                     Loads the golden set; story cards and fingerprints
 │   ├── generate.py                   Runs a prompt over the stories and saves the test cases
 │   ├── testcase_schema.py            Checks the generated JSON against the output schema
@@ -291,6 +466,10 @@ ai-testing-portfolio/
 │   ├── calibration.py                Blind label sheets and judge agreement
 │   ├── review_sheet.py               HTML sheet for reading a run's cases by story
 │   ├── pricing.py                    Model prices for the cost columns
+│   ├── run_benchmark.py              CI step: fingerprint check, one run, scoring, history file, gates
+│   ├── promptfoo_gate.py             CI gates for the Promptfoo results
+│   ├── ci_thresholds.py              Every CI threshold, with the baseline it was set from
+│   ├── ci_report.py                  Writes gate results to the console, the run summary and results/ci_gates/
 │   └── prompts/                      testgen_v1/v2, judge_cases_v1/v2, judge_recall_v1/v2
 ├── datasets/
 │   ├── plan_rules.md                 Specification (test basis); also inserted into prompts v2 and v3
@@ -313,7 +492,7 @@ ai-testing-portfolio/
 │   ├── redteamconfig.yaml            Red-team configuration
 │   ├── judge_validation.yaml         Judge regression suite (rubric v1 vs v2 on frozen outputs)
 │   └── prompts/                      triage_v1.txt, triage_v2.txt, triage_v3.txt
-└── results/                          Saved runs, labels and charts for all three notebooks
+└── results/                          Saved runs, labels and charts for all three notebooks; CI gate tables in ci_gates/
 ```
 
 ## How to run
@@ -391,6 +570,13 @@ python -m bench.calibration compare results/testgen/score_v2_..._r1_....json
 Open the notebook and run all cells: `RUN_GENERATE`, `RUN_SCORE` and `RUN_SEEDED` are `False`, so it reads
 the saved results and a full re-run is free. Generating and scoring all six runs costs about $1.60, almost all of
 it judge calls.
+
+**CI checks, run locally (free)**
+
+```bash
+python -m bench.run_benchmark --check-only                 # fingerprint gates only, no API call
+python -m bench.promptfoo_gate results/promptfoo_v3.json   # apply the CI gates to a saved Promptfoo run
+```
 
 Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, Node.js 22.23 and Python 3.11.
 
