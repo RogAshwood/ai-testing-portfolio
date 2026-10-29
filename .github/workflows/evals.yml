@@ -20,6 +20,8 @@
 #   2026-10-29  v1  first version (Day 5).
 #   2026-10-29  v2  benchmark run files and gate tables committed as well as the history file.
 #   2026-10-29  v3  benchmark moved to benchmark.yml (monthly and on change); run label evals-N.
+#   2026-10-29  v4  actions moved to their Node 24 versions (checkout v7, upload-artifact v7,
+#                   setup-miniconda v4); runner pinned to ubuntu-24.04.
 
 name: AI evals
 
@@ -37,7 +39,7 @@ concurrency:
 
 jobs:
   evals:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04        # pinned: ubuntu-latest moves to 26.04 from Oct-Nov 2026; change deliberately
     timeout-minutes: 40
     defaults:
       run:
@@ -51,7 +53,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Stop if the API key secret is missing
         run: |
@@ -60,7 +62,7 @@ jobs:
           fi
 
       - name: Set up the conda env from environment.yml
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
           miniforge-version: latest
           environment-file: environment.yml
@@ -96,7 +98,7 @@ jobs:
 
       - name: Upload results as a run artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: evals-results-${{ github.run_number }}
           path: |
