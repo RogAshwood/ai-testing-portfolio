@@ -297,11 +297,24 @@ Areas where the benchmark could be improved further, with what each would add.
 
 Also seen in run ci-1: the judge marked TC06 "correct", while it marked the equivalent Day 4 run 1 cases "not in basis". One case, no gate affected; worth a check in the next calibration.
 
+### Observations from the first CI runs
+
+1. **Specification-gap cases vary a lot between runs.** "Not in basis" was 4 in ci-1 and 14 in bench-1 and bench-2 (Day 4 v2: 7, 6 and 4). In bench-1, 5 of the 14 were S03 "count already above the annual limit", one per category: the known S03 AC3 gap. 8 were missing or invalid inputs (dates, amounts, appeal reason) and 1 was S02 "day case with a pre-authorisation number". Excluding them, bench-1 precision is 0.91, the same as the baseline. So the precision warning (0.81 in bench-1) measured how many questions the generator raised, not how many wrong tests it wrote.
+2. **The same gap case is labelled differently from run to run.** "Missing amount" on S09 had `covers` listing all three ACs (Day 4 run 1, bench-1) or `[]` (ci-1). Prompt v2 does not say which; see the prompt v3 next step.
+3. **An oracle ambiguity in S09.** bench-1 TC06: a claim of 1,100.01, above 1,000 and above its category limit. The generator gave `OVER_LIMIT` and said the routing is not specified; the judge marked it incorrect because AC1 routes anything over 1,000 to `manual_review`. AC3 replaces AC1's reason code but does not say whether AC1's routing still applies. Either reading is defensible.
+4. **Two CI runs are not a trend.** Recall was 0.71 in ci-1 and bench-1 (bottom of the Day 4 range) and 0.77 in bench-2. This is the run-to-run spread the monthly history is there to show.
+5. **HLH-009 went the right way in both Promptfoo CI runs.** luna-cheap routed 35/35 with no false auto-approvals in ci-1 and evals-2. It auto-approved HLH-009 in 2 of 3 runs on 9 October, so it stays a known, intermittent defect: two clean runs do not show it is fixed.
+
 ### Run log
 
 | Date | Run | Output |
 | --- | --- | --- |
 | 2026-10-29 | CI run ci-1 (first run, all suites). Promptfoo passed (sol-strong 35/35, luna-cheap 35/35, no false auto-approvals this run). DeepEval passed. Benchmark failed 9/10 schema-valid (problem 1); recall 0.71, precision 0.91 | `results/ci_gates/gates_*_ci-1_*`, `results/testgen/gen_v2_…_rci-1_…json`, `score_v2_…_rci-1_…json` |
+| 2026-10-29 | bench-1: first run of `benchmark.yml`, started by the workflow-split push, before the schema fix. Passed with a warning: precision 0.81 (14 not in basis, 10 duplicates, 1 incorrect); recall 0.71; 10/10 schema-valid | `results/ci_gates/gates_benchmark_bench-1_*`, `results/testgen/*rbench-1_*` |
+| 2026-10-29 | bench-2: confirmation run after the schema fix. Passed: 10/10 schema-valid, recall 0.77, precision 0.87, no cases with empty `covers` | `results/ci_gates/gates_benchmark_bench-2_*`, `results/testgen/*rbench-2_*` |
+| 2026-10-29 | evals-2: first run of `evals.yml` without the benchmark (ci-1 was run 1 of the same workflow file). Promptfoo passed: both models 35/35, no false auto-approvals; summary judge 35/35 and 32/35. DeepEval passed | `results/ci_gates/gates_promptfoo_evals-2_*` |
+
+Day 5 CI model spend so far: about $1.30 (ci-1 about $0.55, bench-1 and bench-2 about $0.35 each, evals-2 about $0.21; estimates).
 
 ### Possible next steps
 
@@ -309,3 +322,5 @@ Also seen in run ci-1: the judge marked TC06 "correct", while it marked the equi
 | --- | --- | --- |
 | Prompt | Prompt v3 for test generation: say "use `[]` in covers when a case tests no acceptance criterion, and say so in the expected result" | A clear contract for spec-gap cases. Needs a new fingerprint, three runs and a new baseline |
 | Gates | Promote recall and precision from warnings to hard gates after a few monthly runs | Only once their run-to-run spread in CI is known |
+| Metrics | Report precision with and without "not in basis" cases in the gate table, as notebook 03 does | Stops spec-gap questions showing up as a precision drop (observation 1) |
+| Oracle | Add S09 AC1/AC3 routing (above 1,000 and above the category limit) to the golden set v1.1 review | Resolves observation 3; the same ambiguity could appear in the Day 2 plan rules |
