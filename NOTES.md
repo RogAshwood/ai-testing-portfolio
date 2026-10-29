@@ -167,21 +167,119 @@ the document cleaning strips the currency. The bot's behaviour held in every con
 - [ ] Log run settings (model, k, prompt) with each CI run (Day 5).
 - [ ] Try a judge from a different model family, as on Day 2.
 
-## Day 4: Test-generation agent benchmark
+---
 
-## Day 4 observations (golden set)
+## Day 4: AI test generation benchmark
 
-- **Oracle cost.** Writing and reviewing 78 expected ideas took [12 hours] over three review
-  rounds. Review found 6 wrong expected answers and 2 ambiguous ACs, so the oracle itself
-  needed QA. In a real team the golden set is a maintained asset, like a regression suite.
-- **Sampled partitions.** Where an AC lists several equivalent items, the ideas sample one or
-  two (equivalence partitioning). Recall therefore measures "found the ideas we chose", not
-  completeness. For an LLM the equivalence assumption is weaker than for code: handling one
-  list item correctly does not guarantee the others.
-- **Story-level scope.** The generator sees one story at a time, and the ideas are limited to
-  what each story card supports. Rule interactions across stories (e.g. EXCLUDED before
-  MISSING_RECEIPT) are not measured. A "story + plan_rules" configuration would need a
-  matching extended oracle; candidate stretch goal.
+### Decisions
+
+| Decision | Why |
+| --- | --- |
+| A single prompt that writes test cases, not an agent; notebook renamed `03_testgen_benchmark.ipynb` | That is what was built; calling it an agent would overstate it |
+| Compare two prompts (v1 story only, v2 plus seven test-design techniques) on one model | Holding the model constant means any difference comes from the instructions |
+| The generator sees title, story and acceptance criteria only; never `plan_rules.md` or the expected ideas | The cases must come from the story, as they would for a tester given the same card |
+| The v2 techniques written from general test design, each line usable in another domain | Stops the expected ideas leaking into the prompt, which would inflate recall |
+| Keep technique 3 (calendar edge cases) although it overlaps with four S05 ideas | A normal technique to give; the overlap is declared in the notebook. In the end it found one S05 idea in 1 of 3 runs and caused most of the duplicates |
+| `covers` means the story's own AC IDs (AC1, AC2 …), never `plan_rules.md` | The generator does not see the rules, so it could not cite them |
+| No strict JSON mode for the generator | Keeps schema validity a real measure; production would switch it on |
+| Error analysis on the first run before choosing any metric | The metrics should measure the failures that actually occur (F1–F9 below) |
+| Judge rules D1–D4: equivalent values count; a class covers a member (not for boundaries); the case must include the idea's distinguishing detail; a separate concrete-data check | Written down before scoring, so the judge and I mark to the same rules |
+| Two judge calls per story: one marks the cases without the expected ideas, one checks recall | The correctness verdict cannot be swayed by what the expert expected |
+| Duplicates decided by the judge, not TF-IDF; TF-IDF kept as a free indicator | TF-IDF scored distinct boundary pairs at 0.90 or more because they share a template |
+| Recall, precision and case count always reported together | Recall alone can be raised by writing more cases |
+| Fingerprints for the golden set, prompts, judge prompts and each story (card and ideas) | Traceability by content, not name: a change to one story re-runs only that story, and every result shows what it was produced from |
+| Judge v2 frozen before the comparison runs | Re-marking alone moved recall by +0.12, so a judge change mid-comparison could fake a prompt gain |
+| No further judge tuning after the held-out round | Tuning on the held-out labels would make them another training set |
+| `plan_rules.md` left unchanged | Prompts v2 and v3 from Day 2 load it, so any edit changes that system under test |
+| Currency stays USD for costs | Matches the provider's price list |
+
+### Problems found in the test setup
+
+| # | Symptom | Cause | Fix |
+| --- | --- | --- | --- |
+| 1 | The golden set's first draft held expected ideas that were wrong or ambiguous | One author, and no review yet | Two review rounds corrected 14 ideas and tightened 2 ACs; validator added; v1.0 frozen before any run |
+| 2 | TF-IDF flagged distinct cases as duplicates | Boundary pairs share a template ("claim of €X on day Y") | Duplicates judged by the LLM; TF-IDF kept as an indicator column |
+| 3 | The judge was stricter than me on all 7 recall disagreements in round 1 | Its prompt did not allow implied outcomes, ignore background assumptions or let a range cover a member | Judge v2 with those rules, plus seeded defects for each rule and a control that it still rejects vague cases |
+| 4 | Seven of my own labels did not follow my written rules | I labelled from instinct, not the definitions | Labels changed with a dated note; originals kept as `…_labels_round1.csv` |
+| 5 | A case testing several conditions at once had no criterion to fail it (L14) | The checks covered correctness, not structure | New `atomic` check, with a seeded defect |
+| 6 | Round 2 agreed 20/20 on verdict and technique | The judge had been tuned on those same 20 cases | Held-out round on a v2 run: technique fell to 10/20; quoted as the real figure |
+| 7 | Technique disagreed on 6 of 10 at-limit inputs in the held-out round | Valid values at a limit fit both "positive" and "boundary"; I tagged them boundary in the golden set and positive in round 3 | Recorded (observation 4); technique and concrete reported as indicative |
+| 8 | The judge missed 2 duplicate pairs (€1,499.99 vs €1,500) | v2 asks for three-value boundary analysis; I apply two-value. ISTQB describes both | Recorded; v2 precision slightly overstated |
+| 9 | One concrete label flipped between rounds (L20) | The definition of "concrete" leaves room for judgement | Concrete rate reported as indicative |
+| 10 | Score files written in the same second overwrote each other | File names had one-second timestamps | Unique names with a `_2` suffix |
+| 11 | `testgen_history.csv` had a 39-column header over 40-column rows | `atomic_rate` added after the first rows were written | Appends now repair an out-of-date header; `python -m bench.score --repair-history` (old file kept) |
+
+Pattern: problem 3 was Day 2's lesson again, **a grader only knows what it is given**. Problems 4, 7, 8 and 9
+were new: the definitions themselves are contested, and the human labeller is inconsistent too. Problem 6 is the
+reason a held-out set exists.
+
+### Problems found in the generated tests
+
+From the error analysis of v1 run 1 (S05, S08 and S09 read closely, the rest scanned):
+
+| # | Pattern |
+| --- | --- |
+| F1 | Abstract cases with no concrete test data ("a claim over the limit") |
+| F2 | Boundaries tested only where the AC gives the values |
+| F3 | No "the rule must not fire" cases |
+| F4 | No misleading inputs (a GP visit abroad, pressure in the claimant note) |
+| F5 | Several conditions in one case |
+| F6 | No rule interactions at the limits |
+| F7 | Few cases for short stories |
+| F8 | Every AC claimed as covered in all 10 stories, so claimed coverage cannot tell runs apart |
+| F9 | Technique labels differ from mine |
+
+The good: no invented outcomes, exact reason codes, and the leap-day rule handled where an AC states it. Steps
+were generic ("Assess the claim") and not executable; not measured. v2 reduced F1, F2 and F7; F3, F4 and F6
+persisted, which is why 12 ideas were never found.
+
+### Observations
+
+1. **Oracle cost.** Writing and reviewing the 78 expected ideas took about 14 hours (two working days), longer than everything else.
+   The first two review rounds corrected 14 expected ideas and tightened 2 ACs, so the oracle itself needed QA.
+   In a real team the golden set is a maintained asset, like a regression suite.
+2. **Sampled partitions.** Where an AC lists several equivalent items, the ideas sample one or two (equivalence
+   partitioning). Recall therefore measures "found the ideas we chose", not completeness. For an LLM the
+   equivalence assumption is weaker than for code: handling one list item correctly does not guarantee the others.
+3. **Story-level scope.** The generator sees one story at a time, and the ideas are limited to what each story
+   card supports. Rule interactions across stories (e.g. EXCLUDED before MISSING_RECEIPT) are not measured. A
+   "story + plan_rules" configuration would need a matching extended oracle; candidate stretch goal.
+4. **Definitions vary.** Positive, negative and boundary (and concrete, covered, duplicate) mean different things
+   to different people, organisations and standards. Several judge disagreements were two reasonable readings of
+   one definition, and the written rule picks one. A benchmark's numbers depend on those definitions, so they must
+   be written down and shared with every reviewer.
+
+### Run log
+
+| Date | Run | Output |
+| --- | --- | --- |
+| 2026-10-22 | Golden set v1.0 frozen (fingerprint `228e95aab97e`) | `datasets/testgen_golden.json` |
+| 2026-10-23 | Prompt v1, run 1 | `results/testgen/gen_v1_gpt-6-luna_g1.0_r1_20261023T145401Z.json` |
+| 2026-10-24 | Error analysis of run 1 | `results/testgen/review_v1_gpt-6-luna_g1.0_r1.html` |
+| 2026-10-28 | Judge v1: seeded check (33/33), run 1 scored, calibration round 1 | `seeded_j29d3036b71d3_…`, `score_v1_…_r1_…_j29d3036b71d3_…`, `calibration/cal_*_v1_…_labels_round1.csv` |
+| 2026-10-28 | Judge v2: seeded check (46/46), run 1 re-scored, calibration round 2 | `seeded_jff34c1fc3ab1_…`, `score_v1_…_r1_…_jff34c1fc3ab1_…`, `calibration/cal_*_v1_….csv` |
+| 2026-10-28 | v1 runs 2–3 and v2 runs 1–3, all scored with judge v2 | `results/testgen/gen_*` and `score_*_jff34c1fc3ab1_*`; `results/testgen_history.csv` |
+| 2026-10-28 | Held-out calibration (round 3) and duplicate check on v2 run 1 | `calibration/cal_*_v2_….csv`, `cal_duplicates_v2_….csv`, `review_v2_gpt-6-luna_g1.0_r1.html` |
+| 2026-10-29 | Notebook 03 reviewed; history file repaired | `03_testgen_benchmark.ipynb`, `results/testgen_history_before_repair.csv` |
+
+Day 4 model spend: about $2 (generation about $0.08, judge about $1.90).
+
+### Possible next steps
+
+Areas where the benchmark could be improved further, with what each would add.
+
+| Area | Possible step | What it would add |
+| --- | --- | --- |
+| Oracle | Golden set v1.1: S03 AC3 "equals or exceeds the annual limit" (the specification gap v2 found), then a new baseline | Closes a real gap, and shows the versioning working: the old results stay tied to v1.0 |
+| Definitions | Write a tie-break for valid values at a limit (positive or boundary) into the golden set notes and the judge prompt, then re-calibrate technique on fresh labels | Could make technique, and negative and boundary presence, trustworthy measures rather than indicative ones |
+| Definitions | Choose two-value or three-value boundary value analysis for the duplicate rule, and say which in the v2 prompt | Duplicates counted to one convention, so precision is no longer overstated |
+| Prompt | Reconsider technique 3 (calendar edge cases) | It found one idea in one run but caused most of the duplicates; removing or narrowing it may raise precision at little cost to recall |
+| Coverage | A "story + plan_rules" configuration with an extended oracle | Measures rule interactions across stories, which this design cannot see |
+| Coverage | A check that the steps can be executed | Most steps say "Assess the claim"; a tester would need more |
+| Judge | Repeat the held-out calibration on more than one run, and try a judge from a different model family | Firmer agreement figures, and less risk of a model family favouring its own style |
+| Cost | Confirm the `gpt-6-sol` price | Costs currently use `gpt-6.1-sol` prices and are marked provisional |
+
+---
 
 ## Day 5: CI, README, LinkedIn
 

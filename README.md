@@ -8,7 +8,7 @@ tested at several layers. All data is synthetic: no employer data and no real pe
 | --- | --- | --- | --- | --- |
 | 01 | [`01_promptfoo_claim_triage.ipynb`](01_promptfoo_claim_triage.ipynb) | An LLM claim-triage step: prompt regression, model comparison, judge validation, red teaming | Promptfoo, pandas | Done |
 | 02 | [`02_deepeval_rag_component_vs_e2e.ipynb`](02_deepeval_rag_component_vs_e2e.ipynb) | Member-help chatbot (RAG): retriever and generator tested separately and end to end, fault injection, judge calibration, fix and retest, CI tests | DeepEval, scikit-learn, pytest | Done |
-| 03 | `03_agent_testgen_benchmark.ipynb` | Benchmarking an AI agent that generates test cases | DeepEval, golden dataset | Planned |
+| 03 | [`03_testgen_benchmark.ipynb`](03_testgen_benchmark.ipynb) | AI test generation: two prompts benchmarked against an expert golden set, an LLM judge tested with seeded defects and blind labels (including a held-out round) | OpenAI API, Python (`bench/`), pandas, matplotlib | Done |
 
 ---
 
@@ -173,18 +173,124 @@ provider as the generator; 10 human labels from one person; the faults and the f
 
 ---
 
+## 03: AI test generation benchmark
+
+### The system under test
+
+Teams increasingly paste a user story into an AI tool and get test cases back. This exercise measures how good
+those test cases are, and whether telling the AI how to design tests helps.
+
+The system under test is a single prompt (not an agent) that turns one user story into test cases as JSON:
+title, technique, the acceptance criteria covered, preconditions, steps and expected result. The generator
+(`gpt-6-luna`, the cheaper model) sees only the story's title, user story and acceptance criteria. Two prompts
+are compared on the same model, so any difference comes from the instructions:
+
+- **v1:** "here is a user story, write test cases for it", with the technique definitions so its labels can be compared.
+- **v2:** v1 plus seven general test-design techniques (equivalence partitioning, boundary value analysis, negative
+  testing and others). They were written from general test design, never from the expected ideas: each line must
+  still make sense for a story from another domain.
+
+The **test basis** is 10 user stories for Harbourlight's claims platform (39 acceptance criteria), traced to
+`plan_rules.md` and the Day 3 documents. The **oracle** is a golden set of 78 expected test ideas an experienced
+QA lead would want (27 positive, 20 negative, 31 boundary) in
+[`datasets/testgen_golden.json`](datasets/testgen_golden.json), v1.0, frozen.
+[`datasets/validate_testgen_golden.py`](datasets/validate_testgen_golden.py) checks it before any run.
+
+![Day 4 benchmark flow](images/day4_testgen_flow.svg)
+
+### What was tested
+
+- **3 runs × 2 prompts × 10 stories**, because the generator does not give the same answer twice.
+- **Error analysis first.** The first v1 run was read case by case before any metric was chosen. It found nine
+  failure patterns (abstract test data, boundaries only where the story gives values, no "rule must not fire"
+  cases, several conditions in one case, and others), which became the judge's checks and four matching rules.
+- **An LLM judge** (`gpt-6-sol`, the stronger model) in two calls per story. The first marks each case without
+  seeing the expected ideas: correct, incorrect or not in the test basis; technique; concrete test data; one
+  condition per case (atomic); duplicates. The second decides which expected ideas are covered, and by which cases.
+  The judge never knows which prompt wrote the cases.
+- **Measures reported together:** recall (share of expected ideas found) alone can be gamed by writing more cases,
+  so it always appears with precision (share of cases correct and not duplicates) and case count. Also claimed
+  against verified coverage, concrete and atomic rates, cost and time.
+- **Traceability by content:** the golden set, every prompt, the judge prompts and each story are fingerprinted
+  (first 12 characters of a SHA-256 hash). Every result records the fingerprints it was produced from, so a changed
+  story or prompt shows in every result. All runs go into `results/testgen_history.csv`.
+
+### Headline findings
+
+1. **Technique guidance helped.** v2 found 0.75 of the expected ideas against v1's 0.63 (mean of 3 runs; ranges
+   0.70–0.78 and 0.60–0.64 do not overlap). Gains were similar for positive, negative and boundary ideas. The
+   largest story gain was per-visit limits (0.40 to 0.93), where v2 tested both sides of each value.
+2. **The reviewer pays for it.** v2 wrote 130 cases per run against 78: about five extra cases for every extra
+   idea found. Precision fell from 1.00 to 0.91 (0.94 without the "not in basis" cases), and every duplicate came
+   from v2. A run cost $0.32 against $0.22, most of it the judge.
+3. **Twelve ideas were never found by either prompt in any run.** They are domain traps, rules that must not fire
+   and rule interactions: what an experienced tester adds from knowing the business. One story (S09) stayed near zero.
+4. **The marker's rules moved the score as much as the prompt.** Re-marking the same v1 cases with clarified judge
+   instructions raised recall from 0.52 to 0.64, the same +0.12 as the change from v1 to v2. The judge was therefore
+   frozen before the comparison runs, and every score records the judge version.
+5. **"Not in basis" was not always a defect.** Most of v2's were questions about gaps in the specification, and one
+   found a real gap: an annual-limit criterion that says what happens at the limit, but not above it.
+
+![Recall by technique: prompt v1 against v2](results/charts/testgen_recall_by_technique.png)
+
+### Testing the judge
+
+The judge is the test oracle for every number above, so it was tested in four ways before its scores were used:
+
+1. **Seeded defects.** 28 deliberately flawed or deliberately correct items (46 checks) in
+   [`datasets/testgen_seeded_defects.json`](datasets/testgen_seeded_defects.json). The judge must fail the flawed
+   ones and pass the controls. Judge v1 passed 33 of 33 checks; judge v2 passed 46 of 46.
+2. **Blind human labels.** 20 cases and 24 expected ideas labelled by hand without seeing the judge's verdicts.
+3. **Tuning, then a held-out round.** Round 1's disagreements led to judge v2. Re-marked, the same labels then agreed
+   20/20 on verdict and technique, which is optimistic, so 20 fresh cases and 24 ideas from a v2 run were labelled and the
+   frozen judge scored on them with no further tuning.
+4. **Duplicate check.** 12 blind pairs: all 7 duplicates the judge flagged were confirmed, and it missed 2.
+
+| Check | Round 1 | Round 2 (after tuning) | Round 3 (held-out) |
+| --- | --- | --- | --- |
+| Idea covered | 17/24 | 24/24 | 23/24 |
+| Verdict | 19/20 | 20/20 | 18/20 |
+| Atomic | – | 19/20 | 18/20 |
+| Concrete | 16/20 | 16/20 | 13/20 |
+| Technique | 15/20 | 20/20 | 10/20 |
+
+The judge's coverage and correctness verdicts held up on unseen cases, so recall and precision can be trusted.
+Its technique and concrete labels did not, mainly because people apply those definitions differently (is a valid
+value at a limit "positive" or "boundary"?), so those measures are reported as indicative only.
+
+### Limitations
+
+10 stories, 3 runs per prompt, one generator model. The judge was tuned on its own calibration set, and the
+held-out round covers one run. Duplicates are under-counted, so v2's precision is slightly overstated. Recall
+counts the ideas chosen for the golden set, not completeness. The generator saw one story at a time, so rule
+interactions across stories were not measured, and nobody checked whether the steps could be executed. Judge
+cost uses `gpt-6.1-sol` prices, unconfirmed for `gpt-6-sol`. The full list is in section 11 of the notebook.
+
+---
+
 ## Repository layout
 
 ```
 ai-testing-portfolio/
 ├── 01_promptfoo_claim_triage.ipynb   Notebook 01: results, charts and interpretation
 ├── 02_deepeval_rag_component_vs_e2e.ipynb  Notebook 02: RAG chatbot tested by component and end to end
+├── 03_testgen_benchmark.ipynb        Notebook 03: AI test generation, prompt v1 against v2
 ├── routing_stability.py              Finds claims whose routing changes across repeat runs
 ├── build_judge_cases.py              Builds the judge-validation cases from stored outputs and labels
 ├── rag_pipeline.py                   Day 3 system under test: chunker, TF-IDF retriever, generator
 ├── rag_metrics.py                    Day 3 free checks (no LLM): key-fact recall, correct-context stub
 ├── rag_judges.py                     Day 3 LLM judge and its G-Eval criteria; shared by notebook and tests
 ├── environment.yml                   Conda environment
+├── bench/                            Day 4 benchmark code, imported by notebook 03
+│   ├── golden.py                     Loads the golden set; story cards and fingerprints
+│   ├── generate.py                   Runs a prompt over the stories and saves the test cases
+│   ├── testcase_schema.py            Checks the generated JSON against the output schema
+│   ├── judge.py                      The two LLM-judge calls per story
+│   ├── score.py                      Metrics, seeded-defect check and the history file
+│   ├── calibration.py                Blind label sheets and judge agreement
+│   ├── review_sheet.py               HTML sheet for reading a run's cases by story
+│   ├── pricing.py                    Model prices for the cost columns
+│   └── prompts/                      testgen_v1/v2, judge_cases_v1/v2, judge_recall_v1/v2
 ├── datasets/
 │   ├── plan_rules.md                 Specification (test basis); also inserted into prompts v2 and v3
 │   ├── claim_triage.csv              35 claims with expected results
@@ -192,17 +298,21 @@ ai-testing-portfolio/
 │   ├── judge_seeded_summaries.csv    Deliberately flawed summaries for judge validation
 │   ├── policy_docs/                  Day 3 test basis: 10 member documents
 │   ├── rag_golden.csv                Day 3 oracle: golden set v1.3, 15 questions
-│   └── validate_golden.py            Checks the Day 3 golden set against the documents
+│   ├── validate_golden.py            Checks the Day 3 golden set against the documents
+│   ├── testgen_golden.json           Day 4 oracle: golden set v1.0, 10 stories, 78 expected ideas
+│   ├── testgen_golden.schema.json    Its JSON schema
+│   ├── validate_testgen_golden.py    Checks the Day 4 golden set
+│   └── testgen_seeded_defects.json   Seeded defects for testing the Day 4 judge
 ├── tests/
 │   ├── test_rag.py                   5 automated tests for CI (deepeval test run)
 │   └── conftest.py                   Test set-up: import path and .env
-├── images/                           Diagrams used in notebook 02
+├── images/                           Diagrams used in notebooks 02 and 03
 ├── promptfoo/
 │   ├── promptfooconfig.yaml          Main regression suite (3 prompts × 2 models × 35 claims)
 │   ├── redteamconfig.yaml            Red-team configuration
 │   ├── judge_validation.yaml         Judge regression suite (rubric v1 vs v2 on frozen outputs)
 │   └── prompts/                      triage_v1.txt, triage_v2.txt, triage_v3.txt
-└── results/                          Saved runs, labels and charts for both notebooks
+└── results/                          Saved runs, labels and charts for all three notebooks
 ```
 
 ## How to run
@@ -254,6 +364,30 @@ Add `DEEPEVAL_TELEMETRY_OPT_OUT=YES` to `.env` to keep DeepEval from sending usa
 all cells: every step that calls the API is behind a `RUN_... = False` switch and shows the saved results in
 `results/` instead, so a full re-run of the notebook is free. Re-running every paid step, smoke tests included, makes about
 110 generator calls and 485 judge calls; [approximate cost].
+
+**Notebook 03 (test generation)**
+
+```bash
+# 1. Check the golden set and print its fingerprints (free)
+python datasets/validate_testgen_golden.py
+python -m bench.golden
+
+# 2. Generate one run: see the prompt first (free), then all 10 stories
+python -m bench.generate --prompt v2 --dry-run
+python -m bench.generate --prompt v2 --run 1
+
+# 3. Test the judge on the seeded defects, then score a run (judge calls; appends to the history file)
+python -m bench.score --seeded
+python -m bench.score results/testgen/gen_v2_..._r1_....json
+
+# 4. Calibration: build blind label sheets, label them, then compare
+python -m bench.calibration build results/testgen/gen_v2_..._r1_....json
+python -m bench.calibration compare results/testgen/score_v2_..._r1_....json
+```
+
+Open the notebook and run all cells: `RUN_GENERATE`, `RUN_SCORE` and `RUN_SEEDED` are `False`, so it reads
+the saved results and a full re-run is free. Generating and scoring all six runs costs about $1.60, almost all of
+it judge calls.
 
 Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, Node.js 22.22 and Python 3.11.
 
