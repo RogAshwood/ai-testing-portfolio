@@ -15,7 +15,7 @@ Gates (bench/ci_thresholds.py):
 
 Usage (from the repo root):
     python -m bench.run_benchmark --check-only     # free: fingerprints only
-    python -m bench.run_benchmark --run ci-42      # generate + score + history + gates (about $0.32)
+    python -m bench.run_benchmark --run bench-3    # generate + score + history + gates (about $0.32)
 
 Change history:
   2026-10-29  v1  first version (Day 5).
@@ -62,7 +62,7 @@ def quality_gates(summary: dict, judge_issue_count: int) -> list[Gate]:
 
 def main() -> None:
     p = argparse.ArgumentParser(description="CI run of the test-generation benchmark")
-    p.add_argument("--run", default="ci", help="run label, e.g. ci-42 (GitHub run number)")
+    p.add_argument("--run", default="ci", help="run label, e.g. bench-3 (set by benchmark.yml)")
     p.add_argument("--check-only", action="store_true", help="fingerprint gates only; no API call")
     a = p.parse_args()
     suite = "Benchmark: AI test generation (prompt v2)"

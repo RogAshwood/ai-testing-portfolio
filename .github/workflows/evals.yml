@@ -1,26 +1,25 @@
-# Weekly AI evals: Promptfoo claim triage, DeepEval RAG tests, test-generation benchmark.
+# Weekly AI evals: Promptfoo claim triage and DeepEval RAG tests.
+# (The test-generation benchmark has its own workflow, benchmark.yml: monthly and on change.)
 #
 # Scope and gates agreed 2026-10-29 (see bench/ci_thresholds.py for every threshold and its baseline):
 #   Promptfoo   prompt v3, both models, 35 claims    HARD on sol-strong, luna-cheap reported only
 #   DeepEval    tests/test_rag.py, 5 tests           HARD: 5/5 pass
-#   Benchmark   prompt v2, one run of 10 stories     HARD: fingerprints + schema; recall/precision WARN
-# Estimated cost per run: about $0.55 (OpenAI). The red team is not run here (manual, see README).
+# Estimated cost per run: about $0.21 (OpenAI). The red team is not run here (manual, see README).
 #
-# Every suite runs even if an earlier one fails (if: always()), so one red suite does not hide
-# the others.
+# Both suites run even if the first fails (if: always()), so one red suite does not hide the other.
+# The job fails if any HARD gate fails; warnings appear in the run summary only.
 #
 # What is kept where:
-#   committed to the repo (permanent)  results/testgen_history.csv, this run's benchmark files
-#                                      (results/testgen/*ci-N*: generated cases and judge verdicts),
-#                                      and the gate tables (results/ci_gates/)
-#   run artifact only (90 days)        everything above plus results/ci/promptfoo_ci.json (about 3 MB a run,
-#                                      too large to commit weekly; its headline numbers are in the gate table) The job fails if any HARD gate fails; warnings appear in the run summary only.
+#   committed to the repo (permanent)  the gate tables (results/ci_gates/*evals-N_*)
+#   run artifact only (90 days)        the gate tables and results/ci/promptfoo_ci.json (about 3 MB a run,
+#                                      too large to commit weekly; its headline numbers are in the gate table)
 #
 # Needs one repository secret: OPENAI_API_KEY (Settings > Secrets and variables > Actions).
 #
 # Change history
 #   2026-10-29  v1  first version (Day 5).
 #   2026-10-29  v2  benchmark run files and gate tables committed as well as the history file.
+#   2026-10-29  v3  benchmark moved to benchmark.yml (monthly and on change); run label evals-N.
 
 name: AI evals
 
@@ -30,16 +29,16 @@ on:
   workflow_dispatch: {}          # "Run workflow" button in the Actions tab
 
 permissions:
-  contents: write                # to commit the history file, benchmark run files and gate tables
+  contents: write                # to commit the gate tables
 
 concurrency:
-  group: evals
+  group: ai-evals-commit         # shared with benchmark.yml, so the two never push at the same time
   cancel-in-progress: false
 
 jobs:
   evals:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 40
     defaults:
       run:
         shell: bash -el {0}      # login shell, so the conda env is active in every step
@@ -48,6 +47,7 @@ jobs:
       DEEPEVAL_TELEMETRY_OPT_OUT: "YES"
       PROMPTFOO_DISABLE_TELEMETRY: "1"
       PYTHONUTF8: "1"
+      CI_RUN_LABEL: evals-${{ github.run_number }}
 
     steps:
       - name: Check out the repo
@@ -94,36 +94,27 @@ jobs:
         if: always()
         run: deepeval test run tests/test_rag.py
 
-      # 3. Benchmark: checks frozen fingerprints first (free), then generates, scores, appends
-      #    to the history file and applies the gates.
-      - name: "Benchmark: AI test generation (prompt v2)"
-        if: always()
-        run: python -m bench.run_benchmark --run ci-${{ github.run_number }}
-
       - name: Upload results as a run artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eval-results-${{ github.run_number }}
+          name: evals-results-${{ github.run_number }}
           path: |
             results/ci/
-            results/ci_gates/*ci-${{ github.run_number }}_*
-            results/testgen/*ci-${{ github.run_number }}_*
+            results/ci_gates/*evals-${{ github.run_number }}_*
           retention-days: 90
           if-no-files-found: warn
 
-      - name: Commit the history file, benchmark run files and gate tables
+      - name: Commit the gate tables
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add results/testgen_history.csv
-          if [ -d results/ci_gates ]; then git add results/ci_gates/; fi
-          git add results/testgen/*ci-${{ github.run_number }}_* || echo "No benchmark files from this run."
+          git add results/ci_gates/*"${CI_RUN_LABEL}"_* || echo "No gate tables from this run."
           if git diff --cached --quiet; then
             echo "No new results; nothing to commit."
           else
-            git commit -m "CI: results of eval run ci-${{ github.run_number }}"
+            git commit -m "CI: results of ${CI_RUN_LABEL}"
             git pull --rebase origin "${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi

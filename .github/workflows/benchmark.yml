@@ -1,0 +1,121 @@
+# AI test-generation benchmark (notebook 03): monthly drift check, and on change.
+#
+# What it validates: the GENERATOR (prompt v2 + gpt-6-luna), not the generated test cases.
+# Everything on our side is frozen and fingerprinted (golden set, prompt, judge prompts), so a
+# change in the scores comes from the hosted model or from run-to-run variation.
+#
+# When it runs, and why:
+#   monthly (1st of the month)   drift check: the provider can update the model behind the same name
+#   on push to the files below   confirmation and regression test after a change we made
+#                                (prompt, judge, golden set, scoring code or model name)
+#   manually                     "Run workflow" in the Actions tab
+#
+# Changing a frozen file on purpose: update FROZEN in bench/ci_thresholds.py in the same push.
+# Otherwise the fingerprint gate stops the run before any API call (free), because the result
+# would not be comparable with the history file. Re-baseline the WARN thresholds after 3 runs.
+#
+# Gates (bench/ci_thresholds.py): HARD fingerprints + 10/10 schema-valid; WARN recall, precision.
+# Estimated cost per run: about $0.35 (OpenAI), about 10 minutes.
+#
+# What is kept where:
+#   committed to the repo (permanent)  results/testgen_history.csv, this run's generated cases and judge
+#                                      verdicts (results/testgen/*bench-N_*), the gate table (results/ci_gates/)
+#   run artifact (90 days)             the same files, as one download
+#
+# Needs one repository secret: OPENAI_API_KEY (Settings > Secrets and variables > Actions).
+#
+# Change history
+#   2026-10-29  v1  split out of evals.yml (Day 5): monthly + on change instead of weekly.
+
+name: AI test-generation benchmark
+
+on:
+  schedule:
+    - cron: "41 5 1 * *"        # 05:41 UTC on the 1st of each month
+  push:
+    branches: [main]
+    paths:
+      - datasets/testgen_golden.json
+      - bench/prompts/**
+      - bench/golden.py
+      - bench/testcase_schema.py
+      - bench/generate.py         # holds GENERATOR_MODEL
+      - bench/judge.py            # holds JUDGE_MODEL
+      - bench/score.py
+      - bench/ci_thresholds.py
+      - bench/run_benchmark.py
+      - .github/workflows/benchmark.yml
+  workflow_dispatch: {}
+
+permissions:
+  contents: write                # to commit the history file, run files and gate table
+
+concurrency:
+  group: ai-evals-commit         # shared with evals.yml, so the two never push at the same time
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash -el {0}
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      PYTHONUTF8: "1"
+      CI_RUN_LABEL: bench-${{ github.run_number }}
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Stop if the API key secret is missing
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Repository secret OPENAI_API_KEY is not set"; exit 1
+          fi
+
+      - name: Set up the conda env from environment.yml
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: ai-testing
+          conda-remove-defaults: true
+
+      - name: Why this run started
+        run: echo "Trigger ${{ github.event_name }}, commit ${GITHUB_SHA::7}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # Checks frozen fingerprints first (free), then generates, scores, appends to the history
+      # file and applies the gates.
+      - name: "Benchmark: AI test generation (prompt v2)"
+        run: python -m bench.run_benchmark --run "${CI_RUN_LABEL}"
+
+      - name: Upload results as a run artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ github.run_number }}
+          path: |
+            results/ci_gates/*bench-${{ github.run_number }}_*
+            results/testgen/*bench-${{ github.run_number }}_*
+            results/testgen_history.csv
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Commit the history file, run files and gate table
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add results/testgen_history.csv
+          git add results/ci_gates/*"${CI_RUN_LABEL}"_* || echo "No gate table from this run."
+          git add results/testgen/*"${CI_RUN_LABEL}"_* || echo "No benchmark files from this run."
+          if git diff --cached --quiet; then
+            echo "No new results; nothing to commit."
+          else
+            git commit -m "CI: results of ${CI_RUN_LABEL}"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

@@ -1,4 +1,5 @@
-"""ci_thresholds.py: the quality gates for the weekly CI run, in one place.
+"""ci_thresholds.py: the quality gates for the CI workflows (evals.yml weekly, benchmark.yml monthly
+and on change), in one place.
 
 Agreed with Roger on 2026-10-29 (project note claude/day5_ci_scope.md). Each
 number is set from a measured baseline, given here next to it.
