@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="1604" viewBox="0 0 920 1604" role="img" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>Day 4 test-generation benchmark: end-to-end flow</title>
+  <desc>Twelve stages from the frozen golden set to notebook 03, each naming the Python module and functions it uses and the reason the stage exists: generation (build the input, generate with gpt-6-luna, check and save the reply) then evaluation (error analysis and blind label sheets, a seeded check of the gpt-6-sol judge, scoring, comparison with the blind labels, history file, notebook).</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .t { font-size: 15px; font-weight: 600; }
+      .d { font-size: 12.5px; }
+      .w { font-size: 12.5px; font-style: italic; }
+      .m { font-size: 12px; font-family: Consolas, Menlo, "Courier New", monospace; }
+      .n { font-size: 12px; fill: #5F5E5A; }
+      .free rect.b { fill: #F1EFE8; stroke: #888780; } .free text { fill: #2C2C2A; }
+      .paid rect.b { fill: #EEEDFE; stroke: #534AB7; } .paid text { fill: #26215C; }
+      .you rect.b { fill: #E1F5EE; stroke: #0F6E56; } .you text { fill: #04342C; }
+      .planned rect.b { stroke-dasharray: 6 4; }
+      .arrow { stroke: #5F5E5A; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+  <rect width="920" height="1604" fill="#FFFFFF"/>
+  <text x="40" y="34" font-size="18" font-weight="600" fill="#2C2C2A">Day 4: AI test-generation benchmark, end-to-end flow</text>
+    <g class="you"><rect class="b" x="40" y="56" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="78">1. Golden set (frozen)</text><text class="m" x="56" y="98">datasets/testgen_golden.json</text><text class="d" x="56" y="116">v1.0 · 10 stories · 39 ACs · 78 expected ideas · fingerprint 228e95aab97e</text><text class="w" x="56" y="136">Why: The answer key: what a good set of tests for each story must contain.</text></g>
+  <line class="arrow" x1="320" y1="148" x2="320" y2="175" marker-end="url(#arr)"/>
+  <g class="free"><rect class="b" x="40" y="178" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="200">2. Validate the golden set</text><text class="m" x="56" y="220">python datasets/validate_testgen_golden.py</text><text class="d" x="56" y="238">Structure checks and derivability warnings → PASS before any run</text><text class="w" x="56" y="258">Why: Catch mistakes in the answer key before it marks anything.</text></g>
+  <line class="arrow" x1="320" y1="270" x2="320" y2="297" marker-end="url(#arr)"/>
+  <g class="free"><rect class="b" x="40" y="300" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="322">3. Build the generator input</text><text class="m" x="56" y="342">bench/golden.py → load_golden() · story_card() · load_prompt(v)</text><text class="d" x="56" y="360">Card: ID, title, story, ACs only · fingerprints: golden, prompt, per story</text><text class="w" x="56" y="380">Why: Give the generator the story card and nothing from the answer key.</text></g>
+  <text class="n" x="640" y="318">Leakage rule enforced in code:</text>
+  <text class="n" x="640" y="334">only the story card reaches the prompt.</text>
+  <text class="n" x="640" y="366">Per-story fingerprints:</text>
+  <text class="n" x="640" y="382">card = what the generator saw,</text>
+  <text class="n" x="640" y="398">ideas = what the judge marks against.</text>
+  <line class="arrow" x1="320" y1="392" x2="320" y2="419" marker-end="url(#arr)"/>
+  <g class="paid"><rect class="b" x="40" y="422" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="444">4. Generate test cases (one call per story)</text><text class="m" x="56" y="464">bench/generate.py → run() → generate_story() → call_generator()</text><text class="d" x="56" y="482">OpenAI Responses API · gpt-6-luna · instructions = prompt, input = story card</text><text class="w" x="56" y="502">Why: Produce the output under test: the system under test is the prompt.</text></g>
+  <line class="arrow" x1="320" y1="514" x2="320" y2="541" marker-end="url(#arr)"/>
+  <g class="free"><rect class="b" x="40" y="544" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="566">5. Check the reply</text><text class="m" x="56" y="586">bench/testcase_schema.py → parse_reply() · check_cases()</text><text class="d" x="56" y="604">Strict and usable JSON · fields, case_id, technique, covers = the story&#x27;s AC IDs</text><text class="w" x="56" y="624">Why: A free check that the output is usable before paying to judge it.</text></g>
+  <line class="arrow" x1="320" y1="636" x2="320" y2="663" marker-end="url(#arr)"/>
+  <g class="free"><rect class="b" x="40" y="666" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="688">6. Save the run</text><text class="m" x="56" y="708">results/testgen/gen_&lt;prompt&gt;_&lt;model&gt;_g&lt;golden&gt;_r&lt;run&gt;_&lt;time&gt;.json</text><text class="d" x="56" y="726">Raw reply, issues, tokens, latency, all fingerprints · never overwritten</text><text class="w" x="56" y="746">Why: Keep every output, so it can be re-scored without paying to regenerate.</text></g>
+  <line class="arrow" x1="320" y1="758" x2="320" y2="811" marker-end="url(#arr)"/>
+  <line x1="40" y1="784" x2="880" y2="784" stroke="#B4B2A9" stroke-width="1" stroke-dasharray="3 3"/><text class="n" x="40" y="778">▲ Generation</text><text class="n" x="40" y="802">▼ Evaluation</text>
+  <g class="you"><rect class="b" x="40" y="814" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="836">7. Error analysis and blind label sheets (prompt v1, run 1)</text><text class="m" x="56" y="856">bench/review_sheet.py · bench/calibration.py build</text><text class="d" x="56" y="874">Cases next to ideas → failure modes F1–F9, rules D1–D4 · 20 cases + 24 ideas labelled</text><text class="w" x="56" y="894">Why: Learn how the generator fails, and label a sample before seeing any judge verdict.</text></g>
+  <line class="arrow" x1="320" y1="906" x2="320" y2="933" marker-end="url(#arr)"/>
+  <g class="paid"><rect class="b" x="40" y="936" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="958">8. Seeded check (gate)</text><text class="m" x="56" y="978">python -m bench.score --seeded</text><text class="d" x="56" y="996">Hand-made cases with known answers, incl. correct controls · judge v1 33/33, judge v2 46/46</text><text class="w" x="56" y="1016">Why: Show the judge can catch each kind of error and does not fail good work.</text></g>
+  <text class="n" x="640" y="954">Defect seeding: like mutation</text>
+  <text class="n" x="640" y="970">testing for the judge.</text>
+  <text class="n" x="640" y="986">Fail here → fix the judge prompts</text>
+  <text class="n" x="640" y="1002">before paying for scoring.</text>
+  <line class="arrow" x1="320" y1="1028" x2="320" y2="1055" marker-end="url(#arr)"/>
+  <g class="paid"><rect class="b" x="40" y="1058" width="560" height="110" rx="6" stroke-width="1"/><text class="t" x="56" y="1080">9. Score each story and run</text><text class="m" x="56" y="1100">bench/score.py → score_run() → judge.py judge_story()</text><text class="d" x="56" y="1118">Free: schema, claimed coverage, count · judge gpt-6-sol: correct, technique, concrete,</text><text class="d" x="56" y="1136">duplicate, verified coverage, recall · precision derived</text><text class="w" x="56" y="1156">Why: Turn each run into comparable numbers: quality, cost and time.</text></g>
+  <text class="n" x="640" y="1076">Two judge calls per story:</text>
+  <text class="n" x="640" y="1092">A = story + cases (no ideas)</text>
+  <text class="n" x="640" y="1108">B = story + ideas + cases</text>
+  <text class="n" x="640" y="1124">Blind to v1 / v2. Recall counts</text>
+  <text class="n" x="640" y="1140">only cases judged correct.</text>
+  <line class="arrow" x1="320" y1="1168" x2="320" y2="1195" marker-end="url(#arr)"/>
+  <g class="you"><rect class="b" x="40" y="1198" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="1220">10. Compare the judge with your blind labels</text><text class="m" x="56" y="1240">python -m bench.calibration compare &lt;score file&gt;</text><text class="d" x="56" y="1258">Agreement per check · confusion tables · false passes · every disagreement with its reason</text><text class="w" x="56" y="1278">Why: Show the judge agrees with an expert on real, messier cases, not just seeded ones.</text></g>
+  <text class="n" x="640" y="1216">Disagreements → fix the judge</text>
+  <text class="n" x="640" y="1232">prompts and re-score (arrow).</text>
+  <text class="n" x="640" y="1248">False passes are reported</text>
+  <text class="n" x="640" y="1264">separately: the costly error.</text>
+  <line class="arrow" x1="320" y1="1290" x2="320" y2="1317" marker-end="url(#arr)"/>
+  <g class="free"><rect class="b" x="40" y="1320" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="1342">11. History file</text><text class="m" x="56" y="1362">results/testgen_history.csv</text><text class="d" x="56" y="1380">One row per story per run: time, model, all fingerprints, scores, cost, seconds</text><text class="w" x="56" y="1400">Why: Track results over time and across prompt or model changes (Day 5 CI).</text></g>
+  <text class="n" x="640" y="1338">Card changed → regenerate story.</text>
+  <text class="n" x="640" y="1354">Ideas changed → re-score story only.</text>
+  <line class="arrow" x1="320" y1="1412" x2="320" y2="1439" marker-end="url(#arr)"/>
+  <g class="free"><rect class="b" x="40" y="1442" width="560" height="92" rx="6" stroke-width="1"/><text class="t" x="56" y="1464">12. Notebook 03</text><text class="m" x="56" y="1484">03_testgen_benchmark.ipynb</text><text class="d" x="56" y="1502">v1 vs v2 over 3 runs: recall, precision, case count, cost · judge errors</text><text class="w" x="56" y="1522">Why: Answer the question: does v2 write better tests than v1, and at what cost?</text></g>
+  <path d="M612 426 L622 426 L622 754 L612 754" fill="none" stroke="#534AB7" stroke-width="1.2"/>
+  <text class="n" x="640" y="440">Repeated for the full runs:</text>
+  <text class="n" x="640" y="456">prompt v1 and v2, 3 runs each</text>
+  <text class="n" x="640" y="488">API error: retried once.</text>
+  <text class="n" x="640" y="504">Invalid JSON: recorded as a</text>
+  <text class="n" x="640" y="520">result, never retried.</text>
+  <text class="n" x="640" y="552">Dry run (free, no API call):</text>
+  <text class="m" x="640" y="570" fill="#5F5E5A">python -m bench.generate</text>
+  <text class="m" x="640" y="586" fill="#5F5E5A">  --prompt v1 --dry-run</text>
+  <path class="arrow" d="M40 1244.0 L22 1244.0 L22 1113.0 L37 1113.0" marker-end="url(#arr)"/><text class="n" x="4" y="1182.5">fix</text>
+  <g transform="translate(40,1558)"><rect x="0" y="0" width="16" height="16" rx="3" fill="#E1F5EE" stroke="#0F6E56"/><text class="n" x="24" y="13">You</text><rect x="80" y="0" width="16" height="16" rx="3" fill="#F1EFE8" stroke="#888780"/><text class="n" x="104" y="13">Free code</text><rect x="200" y="0" width="16" height="16" rx="3" fill="#EEEDFE" stroke="#534AB7"/><text class="n" x="224" y="13">Paid model call</text><rect x="348" y="0" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#5F5E5A" stroke-dasharray="4 3"/><text class="n" x="372" y="13">Dashed border = not built yet</text></g>
+</svg>

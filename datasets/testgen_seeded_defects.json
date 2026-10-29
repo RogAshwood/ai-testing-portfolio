@@ -1,0 +1,712 @@
+{
+  "name": "Seeded defects for the Day 4 judge (testgen benchmark)",
+  "version": "1.1",
+  "change_history": [
+    {
+      "version": "1.1",
+      "date": "2026-10-28",
+      "change": "For judge v2: atomic expectations (SD10 control, SD15 bundled case); concrete counts only inputs that matter (SD16); technique without an explicit value is not boundary (SD17); recall implied outcome (RS08), background assumptions (RS09), range covers member (RS10), and a control that the looser rules still reject a non-boundary case for a boundary idea (RS11)."
+    },
+    {
+      "version": "1.0",
+      "date": "2026-10-24",
+      "change": "First version: 15 case seeds (Call A) and 7 recall seeds (Call B), including controls that should pass."
+    }
+  ],
+  "notes": [
+    "Hand-made cases with a known correct judge verdict. Run with: python -m bench.score --seeded",
+    "Controls (defect starts with 'control') are correct cases: they catch a judge that fails everything.",
+    "Expected values for case seeds: verdict, technique, concrete, atomic, unsupported (AC IDs the judge should not find supported), duplicate_of.",
+    "Recall seeds use real expected ideas from testgen_golden.json v1.0 and test decisions D1 to D3 and the boundary rule."
+  ],
+  "case_seeds": [
+    {
+      "story_id": "S05",
+      "seeds": [
+        {
+          "seed_id": "SD01",
+          "defect": "off-by-one: deadline day treated as late",
+          "case": {
+            "case_id": "SD01",
+            "covers": [
+              "AC1",
+              "AC4"
+            ],
+            "title": "Claim on the deadline day",
+            "preconditions": [
+              "Treatment date 10 March 2027.",
+              "Submission date 10 March 2028."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code LATE_SUBMISSION."
+          },
+          "expect": {
+            "verdict": "incorrect"
+          }
+        },
+        {
+          "seed_id": "SD11",
+          "defect": "control: correct leap-day boundary case",
+          "case": {
+            "case_id": "SD11",
+            "covers": [
+              "AC2"
+            ],
+            "title": "Leap-day treatment submitted on 28 February",
+            "preconditions": [
+              "Treatment date 29 February 2028.",
+              "Submission date 28 February 2029."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is on time and is not routed with LATE_SUBMISSION."
+          },
+          "expect": {
+            "verdict": "correct",
+            "technique": "boundary",
+            "concrete": true,
+            "duplicate_of": ""
+          }
+        },
+        {
+          "seed_id": "SD14",
+          "defect": "control: other side of the same boundary is not a duplicate",
+          "case": {
+            "case_id": "SD14",
+            "covers": [
+              "AC2",
+              "AC4"
+            ],
+            "title": "Leap-day treatment submitted on 1 March",
+            "preconditions": [
+              "Treatment date 29 February 2028.",
+              "Submission date 1 March 2029."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code LATE_SUBMISSION."
+          },
+          "expect": {
+            "verdict": "correct",
+            "duplicate_of": ""
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S06",
+      "seeds": [
+        {
+          "seed_id": "SD02",
+          "defect": "at-limit amount treated as over the limit",
+          "case": {
+            "case_id": "SD02",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "title": "GP visit at 60",
+            "preconditions": [
+              "GP visit claim for 60.00."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code OVER_LIMIT."
+          },
+          "expect": {
+            "verdict": "incorrect"
+          }
+        },
+        {
+          "seed_id": "SD17",
+          "defect": "'greater than the limit' with no value is not a boundary test",
+          "case": {
+            "case_id": "SD17",
+            "covers": [
+              "AC3"
+            ],
+            "title": "Consultant visit above its limit",
+            "preconditions": [
+              "A consultant visit claim for an amount greater than 120."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code OVER_LIMIT."
+          },
+          "expect": {
+            "verdict": "correct",
+            "technique": "positive",
+            "concrete": false
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S09",
+      "seeds": [
+        {
+          "seed_id": "SD03",
+          "defect": "wrong precedence: HIGH_VALUE instead of OVER_LIMIT",
+          "case": {
+            "case_id": "SD03",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "title": "GP visit for 1,000.01",
+            "preconditions": [
+              "GP visit claim for 1,000.01; the GP visit limit is 60."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE."
+          },
+          "expect": {
+            "verdict": "incorrect"
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S04",
+      "seeds": [
+        {
+          "seed_id": "SD04",
+          "defect": "accident accepted from the claimant's note alone",
+          "case": {
+            "case_id": "SD04",
+            "covers": [
+              "AC4"
+            ],
+            "title": "Accident stated by the member",
+            "preconditions": [
+              "Physiotherapy on day 60 of the policy.",
+              "Provider description: 'physiotherapy session, lower back'.",
+              "Claimant note: 'this was from a car accident'."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The accident exemption applies and the claim is not routed with WAITING_PERIOD or UNCLEAR."
+          },
+          "expect": {
+            "verdict": "incorrect"
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S07",
+      "seeds": [
+        {
+          "seed_id": "SD05",
+          "defect": "over-claims AC4, which the case does not test",
+          "case": {
+            "case_id": "SD05",
+            "covers": [
+              "AC1",
+              "AC3",
+              "AC4"
+            ],
+            "title": "Consultant visit with no referral",
+            "preconditions": [
+              "Consultant visit claim with no referral attached."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code MISSING_REFERRAL."
+          },
+          "expect": {
+            "verdict": "correct",
+            "unsupported": [
+              "AC4"
+            ]
+          }
+        },
+        {
+          "seed_id": "SD15",
+          "defect": "several claim types bundled in one case (not atomic)",
+          "case": {
+            "case_id": "SD15",
+            "covers": [
+              "AC4"
+            ],
+            "title": "Claim types that need no referral",
+            "preconditions": [
+              "A GP visit claim with no referral.",
+              "A prescription claim with no referral.",
+              "A day case procedure claim with no referral."
+            ],
+            "steps": [
+              "Triage each of the three claims."
+            ],
+            "expected_result": "None of the three claims is routed with MISSING_REFERRAL."
+          },
+          "expect": {
+            "verdict": "correct",
+            "atomic": false
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S10",
+      "seeds": [
+        {
+          "seed_id": "SD06",
+          "defect": "asserts a response time the story never states",
+          "case": {
+            "case_id": "SD06",
+            "covers": [
+              "AC3"
+            ],
+            "title": "Appeal answered within 10 working days",
+            "preconditions": [
+              "A member has appealed a declined claim through the member portal."
+            ],
+            "steps": [
+              "Wait for the appeal outcome."
+            ],
+            "expected_result": "A senior claims assessor not involved in the original decision responds within 10 working days."
+          },
+          "expect": {
+            "verdict": "not_in_basis"
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S01",
+      "seeds": [
+        {
+          "seed_id": "SD07",
+          "defect": "asserts a confirmation email the story never mentions",
+          "case": {
+            "case_id": "SD07",
+            "covers": [
+              "AC1"
+            ],
+            "title": "Claim with itemised receipt is confirmed by email",
+            "preconditions": [
+              "Member portal claim with an itemised receipt showing treatment, date and amount."
+            ],
+            "steps": [
+              "Submit the claim."
+            ],
+            "expected_result": "The member receives a confirmation email within one hour."
+          },
+          "expect": {
+            "verdict": "not_in_basis"
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S08",
+      "seeds": [
+        {
+          "seed_id": "SD08",
+          "defect": "abstract: no concrete test data",
+          "case": {
+            "case_id": "SD08",
+            "covers": [
+              "AC1",
+              "AC3"
+            ],
+            "title": "Decline an excluded treatment",
+            "preconditions": [
+              "A claim is submitted for an excluded treatment."
+            ],
+            "steps": [
+              "Assess the claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+          },
+          "expect": {
+            "verdict": "correct",
+            "concrete": false
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S02",
+      "seeds": [
+        {
+          "seed_id": "SD09",
+          "defect": "missing input should be classed negative, whatever the case calls itself",
+          "case": {
+            "case_id": "SD09",
+            "technique": "positive",
+            "covers": [
+              "AC2"
+            ],
+            "title": "Inpatient claim with blank pre-authorisation",
+            "preconditions": [
+              "Inpatient stay of two nights.",
+              "Pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code MISSING_PREAUTH."
+          },
+          "expect": {
+            "verdict": "correct",
+            "technique": "negative"
+          }
+        },
+        {
+          "seed_id": "SD16",
+          "defect": "control: concrete enough, because the procedure type does not matter to the rule tested",
+          "case": {
+            "case_id": "SD16",
+            "covers": [
+              "AC2"
+            ],
+            "title": "Day case with blank pre-authorisation",
+            "preconditions": [
+              "Hospital treatment with no overnight stay.",
+              "Pre-authorisation number is blank."
+            ],
+            "steps": [
+              "Triage the claim."
+            ],
+            "expected_result": "The claim is routed to manual_review with reason code MISSING_PREAUTH."
+          },
+          "expect": {
+            "verdict": "correct",
+            "technique": "negative",
+            "concrete": true
+          }
+        }
+      ]
+    },
+    {
+      "story_id": "S03",
+      "seeds": [
+        {
+          "seed_id": "SD10",
+          "defect": "control: correct annual-limit boundary case",
+          "case": {
+            "case_id": "SD10",
+            "covers": [
+              "AC3"
+            ],
+            "title": "Ninth GP visit in the policy year",
+            "preconditions": [
+              "8 GP visits already paid this policy year."
+            ],
+            "steps": [
+              "Triage a new GP visit claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          "expect": {
+            "verdict": "correct",
+            "technique": "boundary",
+            "concrete": true,
+            "duplicate_of": "",
+            "atomic": true
+          }
+        },
+        {
+          "seed_id": "SD12",
+          "defect": "paraphrased duplicate of SD10",
+          "case": {
+            "case_id": "SD12",
+            "covers": [
+              "AC2",
+              "AC3"
+            ],
+            "title": "GP claim after the annual allowance is used up",
+            "preconditions": [
+              "The member has had all 8 GP visits paid in the current policy year."
+            ],
+            "steps": [
+              "Submit one more GP visit claim and triage it."
+            ],
+            "expected_result": "Decline is recommended: decline_recommended, reason ANNUAL_LIMIT_REACHED."
+          },
+          "expect": {
+            "verdict": "correct",
+            "duplicate_of": "SD10"
+          }
+        },
+        {
+          "seed_id": "SD13",
+          "defect": "control: same wording pattern, different category, not a duplicate",
+          "case": {
+            "case_id": "SD13",
+            "covers": [
+              "AC3"
+            ],
+            "title": "Fifth consultant visit in the policy year",
+            "preconditions": [
+              "4 consultant visits already paid this policy year."
+            ],
+            "steps": [
+              "Triage a new consultant visit claim."
+            ],
+            "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+          },
+          "expect": {
+            "verdict": "correct",
+            "duplicate_of": ""
+          }
+        }
+      ]
+    }
+  ],
+  "recall_seeds": [
+    {
+      "story_id": "S04",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Treatment after the waiting period",
+          "preconditions": [
+            "Consultant visit after the waiting period has ended."
+          ],
+          "steps": [
+            "Triage the claim."
+          ],
+          "expected_result": "The claim is not routed with WAITING_PERIOD."
+        },
+        {
+          "case_id": "RC02",
+          "title": "Accident exemption shown by the provider",
+          "preconditions": [
+            "Physiotherapy on day 10 of the policy.",
+            "Provider description: 'physiotherapy session for an ankle sprain from a fall'.",
+            "GP referral attached."
+          ],
+          "steps": [
+            "Triage the claim."
+          ],
+          "expected_result": "The claim is not routed with WAITING_PERIOD."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS01",
+          "idea_id": "S04-I02",
+          "covered": false,
+          "defect": "boundary idea (day 182) against a case with no explicit day"
+        },
+        {
+          "seed_id": "RS02",
+          "idea_id": "S04-I04",
+          "covered": true,
+          "defect": "control: equivalent value (day 10 for day 0), same condition and outcome (D1)"
+        }
+      ]
+    },
+    {
+      "story_id": "S08",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Treatment outside Ireland",
+          "preconditions": [
+            "A claim for treatment received outside Ireland."
+          ],
+          "steps": [
+            "Assess the claim."
+          ],
+          "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+        },
+        {
+          "case_id": "RC02",
+          "title": "Alternative therapy",
+          "preconditions": [
+            "A claim for an alternative therapy, such as acupuncture or homeopathy."
+          ],
+          "steps": [
+            "Assess the claim."
+          ],
+          "expected_result": "The claim is routed to decline_recommended with reason code EXCLUDED."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS03",
+          "idea_id": "S08-I09",
+          "covered": false,
+          "defect": "misses the distinguishing detail: a covered category (GP visit) received abroad (D3)"
+        },
+        {
+          "seed_id": "RS04",
+          "idea_id": "S08-I02",
+          "covered": true,
+          "defect": "control: class with example covers a member of the class (D2)"
+        }
+      ]
+    },
+    {
+      "story_id": "S05",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Leap-day treatment on time",
+          "preconditions": [
+            "Treatment date 29 February 2024.",
+            "Submission date 28 February 2025."
+          ],
+          "steps": [
+            "Triage the claim."
+          ],
+          "expected_result": "The claim is on time."
+        },
+        {
+          "case_id": "RC02",
+          "title": "Late claim",
+          "preconditions": [
+            "The claim is submitted more than 12 months after the treatment date."
+          ],
+          "steps": [
+            "Triage the claim."
+          ],
+          "expected_result": "The claim is routed to decline_recommended with reason code LATE_SUBMISSION."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS05",
+          "idea_id": "S05-I04",
+          "covered": true,
+          "defect": "control: equivalent year, same rule and outcome (D1)"
+        },
+        {
+          "seed_id": "RS06",
+          "idea_id": "S05-I03",
+          "covered": false,
+          "defect": "boundary idea (one day late) against 'more than 12 months' with no date"
+        }
+      ]
+    },
+    {
+      "story_id": "S09",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Day case just over 1,000",
+          "preconditions": [
+            "Day case procedure claim for 1,000.01 with a pre-authorisation number."
+          ],
+          "steps": [
+            "Triage the claim."
+          ],
+          "expected_result": "The claim is not high value and is not routed with HIGH_VALUE."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS07",
+          "idea_id": "S09-I02",
+          "covered": false,
+          "defect": "same condition, opposite outcome"
+        }
+      ]
+    },
+    {
+      "story_id": "S07",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Physiotherapy with a GP referral",
+          "preconditions": [
+            "A physiotherapy claim with a referral from a GP attached."
+          ],
+          "steps": [
+            "Assess the claim."
+          ],
+          "expected_result": "The attached referral meets the referral requirement for physiotherapy."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS08",
+          "idea_id": "S07-I04",
+          "covered": true,
+          "defect": "control: 'meets the referral requirement' implies not MISSING_REFERRAL (implied outcome)"
+        }
+      ]
+    },
+    {
+      "story_id": "S03",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Second day case in the year",
+          "preconditions": [
+            "One day case procedure already paid this policy year."
+          ],
+          "steps": [
+            "Submit a day case procedure claim."
+          ],
+          "expected_result": "The annual limit does not stop the claim."
+        },
+        {
+          "case_id": "RC02",
+          "title": "Paid count is per policy year",
+          "preconditions": [
+            "A later policy year has started.",
+            "The category had paid claims in the previous policy year."
+          ],
+          "steps": [
+            "Submit a claim in that category during the later policy year."
+          ],
+          "expected_result": "The annual limit does not stop the claim when the count for this policy year is below the limit."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS09",
+          "idea_id": "S03-I06",
+          "covered": true,
+          "defect": "control: background assumptions ('all other details correct') need not be restated"
+        },
+        {
+          "seed_id": "RS11",
+          "idea_id": "S03-I09",
+          "covered": false,
+          "defect": "boundary idea (claim on the anniversary after 8 GP visits) against a case with no anniversary date, category or count"
+        }
+      ]
+    },
+    {
+      "story_id": "S04",
+      "cases": [
+        {
+          "case_id": "RC01",
+          "title": "Accident shown by the provider in the waiting period",
+          "preconditions": [
+            "Treatment date before day 182.",
+            "The provider's treatment description shows the injury was accidental."
+          ],
+          "steps": [
+            "Triage the claim."
+          ],
+          "expected_result": "The waiting-period exemption applies; the claim is not routed with WAITING_PERIOD."
+        }
+      ],
+      "expect": [
+        {
+          "seed_id": "RS10",
+          "idea_id": "S04-I04",
+          "covered": true,
+          "defect": "control: a range ('before day 182') covers a member (day 0) for a non-boundary idea"
+        }
+      ]
+    }
+  ]
+}
