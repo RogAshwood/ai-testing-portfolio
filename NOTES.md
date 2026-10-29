@@ -70,8 +70,6 @@ given.** Defects 5, 6 and 8 show that the human and the test definitions need ch
 | 2026-10-13 | Judge labelling, two rounds | `results/judge_labels.csv`, `results/judge_labels_key.csv` |
 | 2026-10-14 | Judge validation, rubric v1 vs v2 | `results/judge_validation.json` |
 
-<!-- Adjust the dates to match your own runs. -->
-
 ### Open items (Day 2 backlog)
 
 - [ ] Tell the judge that "attached", "provided" and "in place" are all acceptable for a pre-authorisation number,
@@ -149,8 +147,6 @@ the document cleaning strips the currency. The bot's behaviour held in every con
 | 2026-10-21 | Judge calibration: my labels, then 8 seeded defects | `results/judge_calibration_sheet.csv`, `results/judge_calibration_key.csv`, `results/judge_seeded_defects_golden_v1.3.csv` |
 | 2026-10-21 | Fix and retest, k=5 | `results/deepeval_e2e_paragraph_k5_golden_v1.3.csv` |
 | 2026-10-21 | CI tests, first run: 5 passed in 28 seconds | Console output (recorded in notebook section 9) |
-
-<!-- Adjust the dates to match your own runs. -->
 
 ### Open items (Day 3 backlog)
 

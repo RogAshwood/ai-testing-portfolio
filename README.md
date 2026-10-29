@@ -47,11 +47,12 @@ result follows from the rules.
 
 ### Headline findings
 
-<!-- Replace the bracketed figures with the numbers from the notebook. -->
-
-1. **The prompt mattered more than the model.** Routing accuracy rose from [v1 %] to [v2 %] to [v3 %] on the
-   cheaper model. Moving date arithmetic out of the model (v3) fixed [n] of the [11] date-dependent claims.
-2. **Safety rule:** [n] false auto-approvals with v3 across both models. [One sentence on where they occurred, if any.]
+1. **The prompt mattered more than the model.** Routing accuracy on the cheaper model rose from 57% (20/35) with
+   v1 to 97% (34/35) with v2 and 94% (33/35) with v3. Prompts v2 and v3 both got all 11 date-dependent claims right,
+   so moving date arithmetic into code (v3) did not change accuracy here; it is still the safer design.
+2. **Safety rule:** 1 false auto-approval with v3 across both models: HLH-009 (a €1,150 day-case claim above the
+   €1,000 manual-review threshold) on the cheaper model. In the 3-run repeat it was auto-approved in 2 of 3 runs with
+   v3 and 1 of 3 with v2, so the error is intermittent. The stronger model made none.
 3. **The LLM judge needed testing as much as the model.** Against my labels, the original rubric failed 11 of 24
    good summaries. Every one of those failures came from missing context: the judge did not know what the claim fields meant. Adding
    field definitions cut false fails to 4 of 24, while the judge still caught all 8 deliberately flawed summaries.
@@ -348,7 +349,8 @@ npx promptfoo@latest view
 ```
 
 Then open the notebook with `jupyter lab` and run all cells. A full run of the main suite makes 210 model calls
-(35 claims × 3 prompts × 2 models) plus the same number of judge calls; [approximate cost].
+(35 claims × 3 prompts × 2 models) plus the same number of judge calls; about $0.60, most of it judge calls
+(an estimate: the triage calls cost $0.09, and the judge is estimated from its token counts).
 
 **Notebook 02 (DeepEval)**
 
@@ -363,7 +365,8 @@ deepeval test run tests/test_rag.py
 Add `DEEPEVAL_TELEMETRY_OPT_OUT=YES` to `.env` to keep DeepEval from sending usage data. Open the notebook and run
 all cells: every step that calls the API is behind a `RUN_... = False` switch and shows the saved results in
 `results/` instead, so a full re-run of the notebook is free. Re-running every paid step, smoke tests included, makes about
-110 generator calls and 485 judge calls; [approximate cost].
+110 generator calls and 485 judge calls; about $0.60, almost all of it judge calls (an estimate from the logged
+token counts and DeepEval's own cost figure for the CI run).
 
 **Notebook 03 (test generation)**
 
@@ -389,8 +392,8 @@ Open the notebook and run all cells: `RUN_GENERATE`, `RUN_SCORE` and `RUN_SEEDED
 the saved results and a full re-run is free. Generating and scoring all six runs costs about $1.60, almost all of
 it judge calls.
 
-Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, Node.js 22.22 and Python 3.11.
+Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, Node.js 22.23 and Python 3.11.
 
 ## About
 
-Built by [your name], Head of QA, as hands-on learning in AI evaluation. Feedback is welcome via issues.
+Built by Roger Ashwood, Head of QA, as hands-on learning in AI evaluation. Feedback is welcome via issues.
