@@ -11,7 +11,8 @@ Gates (bench/ci_thresholds.py):
   HARD  golden set, prompt v2 and both judge prompts match their frozen fingerprints
         (checked before any API call, so a changed file costs nothing)
   HARD  10/10 stories schema-valid
-  WARN  mean recall >= 0.68, mean precision >= 0.85, judge replies complete
+  WARN  mean recall >= 0.68, mean precision >= 0.85, judge replies complete,
+        no cases linked to no acceptance criterion (empty covers)
 
 Usage (from the repo root):
     python -m bench.run_benchmark --check-only     # free: fingerprints only
@@ -19,11 +20,13 @@ Usage (from the repo root):
 
 Change history:
   2026-10-29  v1  first version (Day 5).
+  2026-10-29  v2  WARN gate for cases with empty covers (see testcase_schema.py v2).
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -31,6 +34,7 @@ from bench import ci_thresholds as T
 from bench.ci_report import Gate, report
 from bench.golden import load_golden, load_named_prompt, load_prompt
 from bench.judge import CASES_PROMPT, RECALL_PROMPT
+from bench.testcase_schema import unlinked_cases
 
 
 def fingerprint_gates() -> list[Gate]:
@@ -44,7 +48,7 @@ def fingerprint_gates() -> list[Gate]:
             for k, want in T.FROZEN.items()]
 
 
-def quality_gates(summary: dict, judge_issue_count: int) -> list[Gate]:
+def quality_gates(summary: dict, judge_issue_count: int, unlinked: list[str]) -> list[Gate]:
     def fmt(v):
         return "-" if v is None else f"{v:.2f}"
     recall, precision = summary.get("mean_recall"), summary.get("mean_precision")
@@ -57,6 +61,10 @@ def quality_gates(summary: dict, judge_issue_count: int) -> list[Gate]:
              fmt(precision), f">= {T.MIN_PRECISION:.2f}"),
         Gate("Judge replies complete (no missing or unknown IDs)", "WARN", judge_issue_count == 0,
              str(judge_issue_count), "0"),
+        Gate("Cases linked to no acceptance criterion (empty covers)", "WARN",
+             len(unlinked) <= T.MAX_UNLINKED_CASES,
+             f"{len(unlinked)}" + (f" ({', '.join(unlinked)})" if unlinked else ""),
+             f"<= {T.MAX_UNLINKED_CASES}"),
     ]
 
 
@@ -80,7 +88,9 @@ def main() -> None:
 
     s = result["summary"]
     issues = sum(len(st["metrics"].get("judge_issues") or []) for st in result["stories"])
-    gates += quality_gates(s, issues)
+    run_records = json.loads(Path(gen_path).read_text(encoding="utf-8"))["records"]
+    unlinked = [f"{r['story_id']} {cid}" for r in run_records for cid in unlinked_cases(r.get("parsed"))]
+    gates += quality_gates(s, issues, unlinked)
     notes = [f"Cases {s['total_n_cases']}, incorrect {s['total_incorrect']}, not in basis "
              f"{s['total_not_in_basis']}, duplicates {s['total_dup_cases']}",
              f"Cost: generation ${s['total_gen_cost_usd']}, judge ${s['total_judge_cost_usd']} "

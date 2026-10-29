@@ -13,8 +13,17 @@ written in datasets/testgen_golden.json. It never refers to plan_rules.md, which
 the generator does not see. This check only confirms the IDs exist; whether a
 case really tests the AC it claims is the judge's verified-coverage check.
 
+An empty `covers` list is allowed. It is what an honest answer looks like for a
+specification-gap case (prompt v2 technique 7: "if the story does not define the
+outcome ... say what can be checked"), which tests no acceptance criterion.
+`unlinked_cases()` lists such cases so they are reported, not hidden.
+
 Change history:
   2026-10-23  v1  first version (Day 4).
+  2026-10-29  v2  empty `covers` is no longer a contract break; reported by unlinked_cases()
+                  instead. Found by CI run ci-1: S09 TC06, a spec-gap case with covers [], failed
+                  the whole story although the prompt asks for such cases. No Day 4 run had an
+                  empty covers, so their results are unchanged.
 """
 
 from __future__ import annotations
@@ -84,9 +93,17 @@ def check_cases(obj: dict, story: dict) -> list[str]:
         if isinstance(case.get("technique"), str) and case["technique"] not in TECHNIQUES:
             issues.append(f"{cid}: technique {case['technique']!r} not in {sorted(TECHNIQUES)}")
         if isinstance(case.get("covers"), list):
-            if not case["covers"]:
-                issues.append(f"{cid}: covers is empty")
             unknown = [a for a in case["covers"] if a not in ac_ids]
             if unknown:
                 issues.append(f"{cid}: covers unknown AC {unknown}")
     return issues
+
+
+def unlinked_cases(obj: dict | None) -> list[str]:
+    """IDs of cases whose `covers` is an empty list (linked to no acceptance criterion).
+    Not a contract break (see the module notes); reported so it stays visible."""
+    cases = (obj or {}).get("test_cases")
+    if not isinstance(cases, list):
+        return []
+    return [c.get("case_id", f"#{n}") for n, c in enumerate(cases, start=1)
+            if isinstance(c, dict) and c.get("covers") == []]

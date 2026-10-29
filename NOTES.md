@@ -279,4 +279,33 @@ Areas where the benchmark could be improved further, with what each would add.
 
 ## Day 5: CI, README, LinkedIn
 
-_Not started._
+### Decisions
+
+| Decision | Detail |
+| --- | --- |
+| Two workflows | `evals.yml`: Promptfoo (prompt v3, both models) and DeepEval, every Monday. `benchmark.yml`: the test-generation benchmark on the 1st of each month and whenever a benchmark file changes. Both can also be started by hand |
+| What the benchmark checks in CI | The generator (prompt v2 + `gpt-6-luna`), not the generated test cases. Everything on our side is fingerprinted, so a change in the scores comes from the hosted model or from run-to-run variation |
+| Hard gates vs warnings | Hard: format, schema and traceability; zero false auto-approvals and at least 34/35 routings on `sol-strong`; DeepEval 5/5; benchmark fingerprints and 10/10 schema-valid. Warnings only: anything judged, and `luna-cheap` (known defect HLH-009). All thresholds in `bench/ci_thresholds.py`, each with its baseline |
+| Change control | Changing a frozen file (golden set, prompt, judge prompt) needs `FROZEN` in `bench/ci_thresholds.py` updated in the same push; otherwise the benchmark stops before any API call |
+| What is kept | Committed: history file, each benchmark run's generated cases and judge verdicts, and every gate table (`results/ci_gates/`). Artifact only (90 days): the Promptfoo results file, about 3 MB a run |
+
+### Problems found in the test setup
+
+| # | Symptom | Cause | Fix |
+| --- | --- | --- | --- |
+| 1 | First CI benchmark run failed the hard gate "10/10 schema-valid" with 9/10. All 10 replies were strict JSON | S09 TC06 ("missing or nonnumeric claim amount") had `covers: []`. It is a specification-gap case, which prompt v2 technique 7 asks for, and it tests no acceptance criterion. The schema check treated an empty `covers` as a contract break, so the test basis contradicted itself. In Day 4 run 1 the model wrote the same gap cases but listed all three ACs, which passed the schema check and was then judged "not in basis" | `testcase_schema.py` v2: an empty `covers` is allowed and reported as a warning ("cases linked to no acceptance criterion"). Re-checked all six Day 4 runs: unchanged (none had an empty `covers`). Run ci-1 is 10/10 under the new check; its history rows keep the original result |
+
+Also seen in run ci-1: the judge marked TC06 "correct", while it marked the equivalent Day 4 run 1 cases "not in basis". One case, no gate affected; worth a check in the next calibration.
+
+### Run log
+
+| Date | Run | Output |
+| --- | --- | --- |
+| 2026-10-29 | CI run ci-1 (first run, all suites). Promptfoo passed (sol-strong 35/35, luna-cheap 35/35, no false auto-approvals this run). DeepEval passed. Benchmark failed 9/10 schema-valid (problem 1); recall 0.71, precision 0.91 | `results/ci_gates/gates_*_ci-1_*`, `results/testgen/gen_v2_…_rci-1_…json`, `score_v2_…_rci-1_…json` |
+
+### Possible next steps
+
+| Area | Possible step | What it would add |
+| --- | --- | --- |
+| Prompt | Prompt v3 for test generation: say "use `[]` in covers when a case tests no acceptance criterion, and say so in the expected result" | A clear contract for spec-gap cases. Needs a new fingerprint, three runs and a new baseline |
+| Gates | Promote recall and precision from warnings to hard gates after a few monthly runs | Only once their run-to-run spread in CI is known |

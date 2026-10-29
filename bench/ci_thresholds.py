@@ -66,3 +66,8 @@ MIN_SCHEMA_VALID = 10                  # of 10 stories
 # mean precision 0.91. Thresholds sit just below the observed range.
 MIN_RECALL = 0.68
 MIN_PRECISION = 0.85
+
+# WARN: cases linked to no acceptance criterion (empty covers). Usually a spec-gap
+# question, which the prompt asks for, so it is reported rather than failed.
+# Baseline: 0 in the six Day 4 runs; 1 in CI run ci-1 (S09 TC06).
+MAX_UNLINKED_CASES = 0
