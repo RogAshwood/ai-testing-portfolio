@@ -152,7 +152,7 @@ the document cleaning strips the currency. The bot's behaviour held in every con
 
 - [ ] Re-measure k=5 latency (2.7 to 6.5 seconds on one run) before quoting it, and decide whether to adopt k=5
       in `rag_pipeline.py` (`DEFAULT_K` is still 3).
-- [ ] Review the 3 pytest warnings (`pytest tests/test_rag.py -rw`) before Day 5 CI.
+- [x] Review the 3 pytest warnings (`pytest tests/test_rag.py -rw`) before Day 5 CI. Re-run 2026-10-29: 5 passed, no warnings.
 - [ ] Agree a written definition of a good answer (facts, clarity, what the member should do next), then add a
       member-experience criterion and re-calibrate on a fresh labelled sample.
 - [ ] Make claim-deciding conditions binary checks (for example, "the provider's description is required").

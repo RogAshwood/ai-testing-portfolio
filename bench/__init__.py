@@ -9,6 +9,10 @@ Modules
 - calibration.py     blind label sheets and judge-vs-human agreement
 - review_sheet.py    error-analysis review sheet (cases next to expected ideas) per run
 - pricing.py         token prices (USD per million) for cost reporting
+- run_benchmark.py   Day 5 CI step: fingerprint check, one v2 run, score, history, gates
+- promptfoo_gate.py  Day 5 CI gates for the Promptfoo claim-triage results
+- ci_thresholds.py   every CI threshold, with the baseline it was set from
+- ci_report.py       gate results to console, GitHub run summary and results/ci_gates/
 
 The notebook 03_testgen_benchmark.ipynb and the Day 5 CI job both import these
 modules, so the benchmark logic exists in one place only.

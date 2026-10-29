@@ -1,0 +1,129 @@
+# Weekly AI evals: Promptfoo claim triage, DeepEval RAG tests, test-generation benchmark.
+#
+# Scope and gates agreed 2026-10-29 (see bench/ci_thresholds.py for every threshold and its baseline):
+#   Promptfoo   prompt v3, both models, 35 claims    HARD on sol-strong, luna-cheap reported only
+#   DeepEval    tests/test_rag.py, 5 tests           HARD: 5/5 pass
+#   Benchmark   prompt v2, one run of 10 stories     HARD: fingerprints + schema; recall/precision WARN
+# Estimated cost per run: about $0.55 (OpenAI). The red team is not run here (manual, see README).
+#
+# Every suite runs even if an earlier one fails (if: always()), so one red suite does not hide
+# the others.
+#
+# What is kept where:
+#   committed to the repo (permanent)  results/testgen_history.csv, this run's benchmark files
+#                                      (results/testgen/*ci-N*: generated cases and judge verdicts),
+#                                      and the gate tables (results/ci_gates/)
+#   run artifact only (90 days)        everything above plus results/ci/promptfoo_ci.json (about 3 MB a run,
+#                                      too large to commit weekly; its headline numbers are in the gate table) The job fails if any HARD gate fails; warnings appear in the run summary only.
+#
+# Needs one repository secret: OPENAI_API_KEY (Settings > Secrets and variables > Actions).
+#
+# Change history
+#   2026-10-29  v1  first version (Day 5).
+#   2026-10-29  v2  benchmark run files and gate tables committed as well as the history file.
+
+name: AI evals
+
+on:
+  schedule:
+    - cron: "23 5 * * 1"        # Mondays 05:23 UTC
+  workflow_dispatch: {}          # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write                # to commit the history file, benchmark run files and gate tables
+
+concurrency:
+  group: evals
+  cancel-in-progress: false
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash -el {0}      # login shell, so the conda env is active in every step
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      DEEPEVAL_TELEMETRY_OPT_OUT: "YES"
+      PROMPTFOO_DISABLE_TELEMETRY: "1"
+      PYTHONUTF8: "1"
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Stop if the API key secret is missing
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Repository secret OPENAI_API_KEY is not set"; exit 1
+          fi
+
+      - name: Set up the conda env from environment.yml
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: ai-testing
+          conda-remove-defaults: true
+
+      - name: Show tool versions
+        run: |
+          python --version; node --version
+          python -c "import deepeval; print('deepeval', deepeval.__version__)"
+          npx -y promptfoo@0.124.1 --version
+
+      # 1. Promptfoo. Promptfoo's own exit code would fail on any failed assertion (including the
+      #    known luna-cheap defect), so it is set to 0 and bench.promptfoo_gate applies the agreed gates.
+      - name: "Promptfoo: run claim triage (prompt v3, both models)"
+        id: promptfoo
+        env:
+          PROMPTFOO_FAILED_TEST_EXIT_CODE: "0"
+        run: |
+          mkdir -p results/ci
+          npx -y promptfoo@0.124.1 eval -c promptfoo/promptfooconfig.yaml \
+            --filter-prompts v3-rules-dates --no-cache --no-share --no-table \
+            -o results/ci/promptfoo_ci.json
+
+      - name: "Promptfoo: quality gates"
+        if: always() && steps.promptfoo.outcome == 'success'
+        run: python -m bench.promptfoo_gate results/ci/promptfoo_ci.json
+
+      # 2. DeepEval: the test runner's exit code is the gate (5/5 must pass).
+      - name: "DeepEval: RAG chatbot tests"
+        if: always()
+        run: deepeval test run tests/test_rag.py
+
+      # 3. Benchmark: checks frozen fingerprints first (free), then generates, scores, appends
+      #    to the history file and applies the gates.
+      - name: "Benchmark: AI test generation (prompt v2)"
+        if: always()
+        run: python -m bench.run_benchmark --run ci-${{ github.run_number }}
+
+      - name: Upload results as a run artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results-${{ github.run_number }}
+          path: |
+            results/ci/
+            results/ci_gates/*ci-${{ github.run_number }}_*
+            results/testgen/*ci-${{ github.run_number }}_*
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Commit the history file, benchmark run files and gate tables
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add results/testgen_history.csv
+          if [ -d results/ci_gates ]; then git add results/ci_gates/; fi
+          git add results/testgen/*ci-${{ github.run_number }}_* || echo "No benchmark files from this run."
+          if git diff --cached --quiet; then
+            echo "No new results; nothing to commit."
+          else
+            git commit -m "CI: results of eval run ci-${{ github.run_number }}"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
