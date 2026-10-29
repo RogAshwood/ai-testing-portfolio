@@ -6,6 +6,7 @@
 Practical work from a short upskilling project in testing LLM-based systems, written from a QA-lead perspective.
 Every exercise uses one fictional health insurer, **Harbourlight Health**, so the portfolio reads as one business
 tested at several layers. All data is synthetic: no employer data and no real personal or medical data.
+New to the terms? The [glossary](GLOSSARY.md) explains each one alongside the nearest conventional QA concept.
 
 | # | Notebook | What is tested | Tools | Status |
 | --- | --- | --- | --- | --- |
@@ -453,6 +454,8 @@ ai-testing-portfolio/
 ├── rag_pipeline.py                   Day 3 system under test: chunker, TF-IDF retriever, generator
 ├── rag_metrics.py                    Day 3 free checks (no LLM): key-fact recall, correct-context stub
 ├── rag_judges.py                     Day 3 LLM judge and its G-Eval criteria; shared by notebook and tests
+├── GLOSSARY.md                       AI-testing terms mapped to conventional QA concepts
+├── NOTES.md                          Working log: decisions, problems found, run log, next steps
 ├── environment.yml                   Conda environment
 ├── .github/workflows/
 │   ├── evals.yml                     Weekly CI: Promptfoo claim triage and DeepEval tests, with quality gates
