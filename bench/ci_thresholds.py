@@ -1,8 +1,8 @@
 """ci_thresholds.py: the quality gates for the CI workflows (evals.yml weekly, benchmark.yml monthly
 and on change), in one place.
 
-Agreed with Roger on 2026-10-29 (project note claude/day5_ci_scope.md). Each
-number is set from a measured baseline, given here next to it.
+Agreed on 2026-10-29; the reasoning is in NOTES.md, Day 5. Each number is set
+from a measured baseline, given here next to it.
 
   HARD gate  a failure fails the CI run (red badge).
   WARN       a failure is reported in the run summary but does not fail the run.
