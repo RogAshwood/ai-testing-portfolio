@@ -1,7 +1,7 @@
 # Working notes
 
 The working log behind the README: decisions, problems found in the test setup, and open items.
-The README presents the results; this file records how I got there, including the mistakes.
+The README presents the results; this file records the overall steps in detail, including the mistakes.
 
 ---
 
@@ -18,7 +18,7 @@ The README presents the results; this file records how I got there, including th
 | Promptfoo refused to run | It needs Node.js 22.22 or later; the env had Node 20 | `conda install "nodejs>=22.22,<23"` |
 | `environment.yml` missing DeepEval | `conda env export --from-history` omits pip packages and adds a machine-specific `prefix` line | Added a `pip:` section by hand and removed `prefix` |
 
-Security rules I set: the API key lives only in `.env` (in `.gitignore`), with a monthly spend limit on the key;
+Security rules set: the API key lives only in `.env` (in `.gitignore`), with a monthly spend limit on the key;
 synthetic data only; a personal email address for tool sign-ups.
 
 ---
@@ -29,7 +29,7 @@ synthetic data only; a personal email address for tool sign-ups.
 
 | Decision | Why |
 | --- | --- |
-| Health-insurance claim triage for a fictional insurer, not an online shop | Closer to the regulated domains I have tested in; rules with real consequences give the safety rule meaning |
+| Health-insurance claim triage for a fictional insurer, not an online shop | Closer to a regulated domain where I have experience; rules with real consequences give the safety rule meaning |
 | Write the rules first (`plan_rules.md`), then derive expected results from them | A specification gives every expected result a traceable source, as in conventional test design |
 | Fixed rule order with one reason code per claim | Gives each claim exactly one correct answer, so exact-match assertions work |
 | Reference implementation (`validate_dataset.py`) | Catches errors in my own expected results. Tested by changing one claim's date (HLH-020) on purpose: it flagged the mismatch |
@@ -42,7 +42,7 @@ synthetic data only; a personal email address for tool sign-ups.
 
 ### Problems found in the test setup
 
-Most of the real learning came from defects in my own tests, not in the system under test.
+Most of the real learning came from defects in the tests, not in the system under test.
 
 | # | Symptom | Cause | Fix |
 | --- | --- | --- | --- |
