@@ -1,11 +1,13 @@
-# Testing AI: a QA lead's portfolio
+# TESTING AI: A practical portfolio
 
 [![AI evals](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/evals.yml/badge.svg)](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/evals.yml)
 [![AI test-generation benchmark](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/benchmark.yml/badge.svg)](https://github.com/RogAshwood/ai-testing-portfolio/actions/workflows/benchmark.yml)
 
-Practical work from a short upskilling project in testing LLM-based systems, written from a QA-lead perspective.
-Every exercise uses one fictional health insurer, **Harbourlight Health**, so the portfolio reads as one business
-tested at several layers. All data is synthetic: no employer data and no real personal or medical data.
+This repo represents a body of work from a short upskilling project related to testing LLM-based systems.
+
+Every exercise uses one fictional health insurer, **Harbourlight Health**, so the portfolio reads as one business tested at several layers. 
+All data is synthetic. There is no employer data and no real personal or medical information used.
+
 New to the terms? The [glossary](GLOSSARY.md) explains each one alongside the nearest conventional QA concept.
 
 | # | Notebook | What is tested | Tools | Status |
@@ -15,33 +17,34 @@ New to the terms? The [glossary](GLOSSARY.md) explains each one alongside the ne
 | 03 | [`03_testgen_benchmark.ipynb`](03_testgen_benchmark.ipynb) | AI test generation: two prompts benchmarked against an expert golden set, an LLM judge tested with seeded defects and blind labels (including a held-out round) | OpenAI API, Python (`bench/`), pandas, matplotlib | Done |
 | CI | [Continuous evaluation](#continuous-evaluation) | The suites from all three notebooks re-run on a schedule, with quality gates | GitHub Actions | Running |
 
-## Testing AI: a QA lead's primer
+## Testing AI: Starting point
 
-My answers to the four questions I started with, after doing the work.
+Below are answers to the four questions pitched at the beginning of the project and then revisited after doing the work.
 
-**1. What replaces a fixed expected result when the output is non-deterministic?** Mostly, still a fixed
-expected result: where the output is structured (a routing, a reason code), it either matches or it doesn't.
+**1. What replaces a fixed expected result when the output is non-deterministic?** 
+Mostly, still a fixed expected result. Where the output is structured (a routing, a reason code), it either matches or it doesn't.
 Where it isn't, the expected result becomes a rule that must always hold ("never auto-approve a claim the rules
-don't") or a rubric. Either way, one run proves little. The same claim was auto-approved in 2 of 3 identical
-runs, so I repeat runs and report ranges, not single numbers.
+don't") or a rubric. 
+In a non-deterministic set-up one run proves little. During the practical exercises, the same claim was auto-approved in 2 of 3 identical
+runs. This means repeat runs are a necessity and reports need to focus on ranges, not single numbers.
 
-**2. When is a deterministic check enough, and how do I know an LLM judge is right?** Use a deterministic check
-wherever one exists. A plain text match for key facts predicted chatbot failures better than any judged metric,
-for free. A judge is for meaning, and it is a test oracle that needs testing itself: mine failed 11 of 24 good
-summaries until it was told what the fields meant. I validate a judge with blind human labels, deliberately
-flawed examples, and a held-out set it was never tuned on (agreement on one measure fell from 100% to 50%
+**2. When is a deterministic check enough, and how do I know an LLM judge is right?** 
+Use a deterministic check wherever one exists. A plain text match for key facts predicted chatbot failures better than any judged metric,
+for free. A judge is for meaning, and it is a test oracle that needs testing itself. In the exercises, mine failed 11 of 24 good
+summaries until it was told what the fields meant. 
+Judges were validated with blind human labels, deliberately flawed examples, and a held-out set it was never tuned on (agreement on one measure fell from 100% to 50%
 on held-out cases).
 
-**3. How do I test a RAG chatbot at component level and end to end?** The retriever on its own (did the right
-facts arrive?), the generator on its own with the correct context, then the whole pipeline. End to end, 6 of 12
-questions failed; given the right context, the generator answered all 12 well. Every failure came from
-retrieval, which an end-to-end score alone would not have shown. Faithfulness even stayed perfect with the
+**3. How do I test a RAG chatbot at component level and end to end?** 
+The retriever on its own (did the right facts arrive?), the generator on its own with the correct context, then the whole pipeline. 
+End to end, 6 of 12 questions failed; given the right context, the generator answered all 12 well. Every failure came from
+retrieval, which an end-to-end score alone did not show. Faithfulness even stayed perfect with the
 retriever broken.
 
-**4. Which OWASP risks matter most for a health insurer's member-help chatbot?** Prompt injection through any
-text a member controls; disclosure of health and personal data; excessive agency, which for claim triage
-means an unchecked auto-approval; and misinformation, such as promising a claim will be paid or giving medical
-advice. I tested all four, and kept the LLM's decisions behind a human assessor.
+**4. Which OWASP risks matter most for a health insurer's member-help chatbot?** 
+Prompt injection through any text a member (user) controls, disclosure of health and personal data, excessive agency (which for claim triage
+means an unchecked auto-approval) and misinformation (such as promising a claim will be paid or giving medical advice). 
+In the exercise all four above were validated.
 
 
 ---
@@ -139,7 +142,7 @@ An LLM judge is a test oracle, so it was validated before its scores were truste
    any change in verdicts comes from the rubric. Eight deliberately flawed summaries test whether the judge
    still fails what it should (section 9c).
 
-This suite stays in the repo as a regression test for the judge: re-run it whenever the rubric or judge model changes.
+This suite stays in the repo as a regression test for the judge to be re-run whenever the rubric or judge model changes.
 
 ### Limitations
 
@@ -156,7 +159,7 @@ red-team sample. The full list is in section 12 of the notebook.
 A small retrieval-augmented generation (RAG) chatbot that answers members' questions about their plan. It has
 two components, and each can fail on its own:
 
-- **Retriever:** cuts 10 short member documents into chunks and ranks them against the question with TF-IDF
+- **Retriever:** cuts 10 short member documents (which were based on the Plan Rules used in exercise 01) into chunks and ranks them against the question with TF-IDF
   (scikit-learn). The top k chunks (k=3 in the baseline) are passed on.
 - **Generator:** a cheaper OpenAI model writes the answer from those chunks only, under rules in its system
   prompt: say when it does not know, no medical advice, never promise a claim will be paid, ignore instructions
@@ -178,11 +181,11 @@ checks the oracle against the documents before any test runs.
   injection and a false premise) and 2 that ask for medical advice or a promise of payment.
 - **The retriever alone:** deterministic key-fact recall (are the facts the answer needs in the retrieved text?)
   and DeepEval's contextual precision, recall and relevancy.
-- **The generator alone:** given the *correct* chunks through a stub, so any failure is the generator's.
+- **The generator alone:** given the *correct* chunks through a stub to focus any failure specifically on the generator.
   Faithfulness, answer relevancy and hallucination, plus three G-Eval criteria written as explicit steps:
   correctness, declining when the answer is not in the documents, and safe conduct.
 - **End to end:** the whole chatbot, repeated 3 times to measure run-to-run variation, then compared question
-  by question with the generator-alone results to say where each failure came from.
+  by question with the generator-alone results to see where each failure came from.
 - **Fault injection:** the retriever broken on purpose (one chunk only; text cut every 200 characters) to see
   which metrics notice.
 - **Judge calibration:** the LLM judge compared with my own blind labels, and 8 deliberately bad answers that
@@ -213,9 +216,9 @@ than from a standard set.
 | Judge agreement | Judge | Verdicts against my blind labels, plus 8 deliberately bad answers | Judge calibration (human agreement); seeded defects | Shows which judged scores can be trusted |
 
 Not used here: **semantic similarity scoring** (comparing embeddings of the answer and the expected answer).
-Correctness was judged by an LLM against the expected answer instead. The retriever is lexical (TF-IDF) too, which
-is why one question fails at every setting: its wording shares nothing with the answer. Semantic search is the
-listed next step.
+Correctness was judged by an LLM against the expected answer instead. The retriever is lexical (TF-IDF), which
+is why one question fails at every setting: its wording shares nothing with the answer. Semantic search is a
+listed next step but not covered in this exercise.
 
 ### Headline findings
 
@@ -244,7 +247,7 @@ listed next step.
 
 ### Testing the tests
 
-As in Day 2, the tests needed testing too. The first LLM-judge runs found problems in the test set-up, each of
+As in the other exercise, the tests needed testing too. The first LLM-judge runs found problems in the test set-up, each of
 which could have produced a wrong verdict about the chatbot:
 
 - **The oracle mixed facts with behaviour.** Expected answers such as "the assistant ignores the instruction"
@@ -289,7 +292,7 @@ are compared on the same model, so any difference comes from the instructions:
 
 The **test basis** is 10 user stories for Harbourlight's claims platform (39 acceptance criteria), traced to
 `plan_rules.md` and the Day 3 documents. The **oracle** is a golden set of 78 expected test ideas an experienced
-QA lead would want (27 positive, 20 negative, 31 boundary) in
+QA resource would want (27 positive, 20 negative, 31 boundary) in
 [`datasets/testgen_golden.json`](datasets/testgen_golden.json), v1.0, frozen.
 [`datasets/validate_testgen_golden.py`](datasets/validate_testgen_golden.py) checks it before any run.
 
@@ -394,7 +397,7 @@ cost uses `gpt-6.1-sol` prices, unconfirmed for `gpt-6-sol`. The full list is in
 
 ## Continuous evaluation
 
-The suites from all three notebooks run on GitHub Actions without me. Each run checks a set of **quality gates**,
+The suites from all three notebooks run on GitHub Actions. Each run checks a set of **quality gates**,
 and the badges at the top show whether the latest run passed them.
 
 | Workflow | When it runs | What it checks | Cost per run |
@@ -429,7 +432,7 @@ test case listed no acceptance criteria. The case was a question about a gap in 
 asks for, so the contradiction was in my own output contract, not in the generator. The check now reports such
 cases as a warning. Details are in [`NOTES.md`](NOTES.md), Day 5.
 
-## Three lessons from a QA-lead perspective
+## Three lessons from a QA perspective
 
 1. **The oracle is most of the work, and it needs testing too.** Review rounds corrected 14 of my 78 expected test
    ideas; a judge failed half of the good summaries it was given; CI found a contradiction in my own output
@@ -585,4 +588,6 @@ Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, Node.js 22.23
 
 ## About
 
-Built by Roger Ashwood, Head of QA, as hands-on learning in AI evaluation. Feedback is welcome via issues.
+Built by Roger Ashwood, Head of QA, as hands-on learning in AI evaluation. 
+Claude Cowork was used extensively to support this work and generate the outputs.
+Feedback is welcome via issues.
