@@ -1,0 +1,87 @@
+{
+  "suite": "Promptfoo: claim triage (prompt v3)",
+  "verdict": "passed",
+  "gates": [
+    {
+      "name": "All 35 claims ran on both models",
+      "level": "HARD",
+      "passed": true,
+      "actual": "sol-strong 35, luna-cheap 35",
+      "expected": "35 each"
+    },
+    {
+      "name": "sol-strong: format correct",
+      "level": "HARD",
+      "passed": true,
+      "actual": "35/35",
+      "expected": "35/35"
+    },
+    {
+      "name": "sol-strong: claim_id correct",
+      "level": "HARD",
+      "passed": true,
+      "actual": "35/35",
+      "expected": "35/35"
+    },
+    {
+      "name": "sol-strong: false auto-approvals",
+      "level": "HARD",
+      "passed": true,
+      "actual": "0",
+      "expected": "<= 0"
+    },
+    {
+      "name": "sol-strong: routing correct",
+      "level": "HARD",
+      "passed": true,
+      "actual": "35/35",
+      "expected": ">= 34/35"
+    },
+    {
+      "name": "sol-strong: summary quality (judge)",
+      "level": "WARN",
+      "passed": true,
+      "actual": "35/35 (100%)",
+      "expected": ">= 80%"
+    },
+    {
+      "name": "luna-cheap: format correct",
+      "level": "HARD",
+      "passed": true,
+      "actual": "35/35",
+      "expected": "35/35"
+    },
+    {
+      "name": "luna-cheap: claim_id correct",
+      "level": "HARD",
+      "passed": true,
+      "actual": "35/35",
+      "expected": "35/35"
+    },
+    {
+      "name": "luna-cheap: false auto-approvals",
+      "level": "WARN",
+      "passed": true,
+      "actual": "0",
+      "expected": "<= 0"
+    },
+    {
+      "name": "luna-cheap: routing correct",
+      "level": "WARN",
+      "passed": true,
+      "actual": "35/35",
+      "expected": ">= 34/35"
+    },
+    {
+      "name": "luna-cheap: summary quality (judge)",
+      "level": "WARN",
+      "passed": true,
+      "actual": "31/35 (89%)",
+      "expected": ">= 80%"
+    }
+  ],
+  "notes": [
+    "Known defect: luna-cheap may auto-approve HLH-009 (EUR 1,150, above the EUR 1,000 manual-review threshold). Reported, not gated."
+  ],
+  "results_file": "promptfoo_ci.json"
+}
