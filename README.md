@@ -10,6 +10,13 @@ All data is synthetic. There is no employer data and no real personal or medical
 
 New to the terms? The [glossary](GLOSSARY.md) explains each one alongside the nearest conventional QA concept.
 
+## Three Systems - At a glance
+
+![Overview of the three AI systems tested and how each was tested](images/overview_three_systems.png)
+
+Each lane shows the business process with the AI step in it, how it was tested, and the tools used.
+The sections below cover each system in turn.
+
 | # | Notebook | What is tested | Tools | Status |
 | --- | --- | --- | --- | --- |
 | 01 | [`01_promptfoo_claim_triage.ipynb`](01_promptfoo_claim_triage.ipynb) | An LLM claim-triage step: prompt regression, model comparison, judge validation, red teaming | Promptfoo, pandas | Done |
