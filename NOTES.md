@@ -277,7 +277,7 @@ Areas where the benchmark could be improved further, with what each would add.
 
 ---
 
-## Day 5: CI, README, LinkedIn
+## Day 5: CI, README
 
 ### Decisions
 
@@ -324,3 +324,38 @@ Day 5 CI model spend so far: about $1.30 (ci-1 about $0.55, bench-1 and bench-2 
 | Gates | Promote recall and precision from warnings to hard gates after a few monthly runs | Only once their run-to-run spread in CI is known |
 | Metrics | Report precision with and without "not in basis" cases in the gate table, as notebook 03 does | Stops spec-gap questions showing up as a precision drop (observation 1) |
 | Oracle | Add S09 AC1/AC3 routing (above 1,000 and above the category limit) to the golden set v1.1 review | Resolves observation 3; the same ambiguity could appear in the Day 2 plan rules |
+
+### Day 5 retro (2026-11-02)
+
+**Outcome.** Five planned days became about 15 working days over roughly four weeks.
+The repo went public on 2026-10-29 and a supplementary LinkedIn post was published on 2026-11-02.
+
+**What worked**
+- The aim was met: a better overall understanding of testing AI, learned through two worked processes (claim triage and the member-help chatbot).
+- Promptfoo: hard going at first, but understood well enough to use after a while.
+- Testing the chatbot's components separately showed that the retriever, not the generator, caused every end-to-end failure.
+- The working pattern (handovers between sessions, review before changes, zips that name the files they replace) worked and will continue.
+
+**What didn't work, or cost more than expected**
+- **Time.** The 5-day plan was not realistic. Grasping the concepts and validating the judges took most of the extra time.
+- **Golden sets.** A lot of time went into fixing expected results. Valuable for learning, but in an upskilling exercise it is enough to record the limitation and
+  move on; the full effort belongs to a production system.
+- **Concepts that stayed unclear for a while:** DeepEval metrics, judge rubrics, Promptfoo and how some of the tests were set up. The Python helpers and set-up
+  still feel confusing in places.
+
+**What to take into work first**
+- **An AI test strategy before any tooling.** Teams and organisations typically go to the tooling before understanding what they need to do. The strategy sets scope
+  by the kind of AI being implemented:
+  - RAG: test the components (retriever, generator) as well as end to end.
+  - Prompt-driven systems: compare prompts systematically (Promptfoo or similar).
+  - AI-generated QA artefacts: decide the level of due diligence up front.
+  Supporting practices: an owned oracle, judge validation, repeat runs reported as ranges, hard vs warn gates, and cost per run.
+- **Questions to ask when someone says "our AI is tested":** What metrics come from
+  your own testing? Do you use an LLM as a judge, and how did you validate it (human labels, seeded defects, agreement)? For retrieval-based systems, how do you make
+  sure the right information is retrieved?
+
+**What next: Round 2**
+In order: M0 consolidate (Python helpers walkthrough, metric cards), M1 resolved model version in CI history, M5 multi-step chatbot with a tool and tracing,
+M7 test-generation verification harness (feasibility spike, shareable if it passes), M6 red team in CI (multi-turn), M2 DeepEval custom and DAG metrics,
+M3 judge alternatives (Jev, another model family), M4 RAGAS comparison with statistics, M8 AI test strategy template. Estimated about 17 days of work
+(4–6 weeks). 
