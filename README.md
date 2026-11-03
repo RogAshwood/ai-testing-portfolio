@@ -9,6 +9,8 @@ Every exercise uses one fictional health insurer, **Harbourlight Health**, so th
 All data is synthetic. There is no employer data and no real personal or medical information used.
 
 New to the terms? The [glossary](GLOSSARY.md) explains each one alongside the nearest conventional QA concept.
+The [metric cards](METRICS.md) go deeper: one card per metric, with a project example, a diagram, when it misleads
+and how far to trust it.
 
 ## Three Systems - At a glance
 
@@ -98,7 +100,7 @@ result follows from the rules.
 
 The **industry term** column links each measure to the name it usually goes by in AI evaluation, so the results
 can be compared with other work. "Domain-specific" marks measures that come from this business's rules rather
-than from a standard set.
+than from a standard set. Each measure has a detailed card in [METRICS.md](METRICS.md).
 
 | Measure | How it is measured | Industry term | Why it matters |
 | --- | --- | --- | --- |
@@ -204,7 +206,7 @@ checks the oracle against the documents before any test runs.
 
 The **industry term** column links each measure to the name it usually goes by in AI evaluation, so the results
 can be compared with other work. "Domain-specific" marks measures that come from this business's rules rather
-than from a standard set.
+than from a standard set. Each measure has a detailed card in [METRICS.md](METRICS.md).
 
 | Measure | Component | How it is measured | Industry term | Why it matters |
 | --- | --- | --- | --- | --- |
@@ -328,7 +330,7 @@ One row per story per run. "Correct" always means a case the judge marked correc
 
 The **industry term** column links each measure to the name it usually goes by in AI evaluation, so the results
 can be compared with other work. "Domain-specific" marks measures that come from this business's rules rather
-than from a standard set.
+than from a standard set. Each measure has a detailed card in [METRICS.md](METRICS.md).
 
 | Measure | How it is measured | Industry term | Why it matters |
 | --- | --- | --- | --- |
@@ -465,6 +467,7 @@ ai-testing-portfolio/
 ├── rag_metrics.py                    Day 3 free checks (no LLM): key-fact recall, correct-context stub
 ├── rag_judges.py                     Day 3 LLM judge and its G-Eval criteria; shared by notebook and tests
 ├── GLOSSARY.md                       AI-testing terms mapped to conventional QA concepts
+├── METRICS.md                        Metric cards: one per metric, with examples and diagrams
 ├── NOTES.md                          Working log: decisions, problems found, run log, next steps
 ├── environment.yml                   Conda environment
 ├── .github/workflows/
@@ -500,6 +503,7 @@ ai-testing-portfolio/
 │   ├── test_rag.py                   5 automated tests for CI (deepeval test run)
 │   └── conftest.py                   Test set-up: import path and .env
 ├── images/                           Diagrams used in notebooks 02 and 03
+│   └── metrics/                      Metric-card diagrams and the script that draws them
 ├── promptfoo/
 │   ├── promptfooconfig.yaml          Main regression suite (3 prompts × 2 models × 35 claims)
 │   ├── redteamconfig.yaml            Red-team configuration

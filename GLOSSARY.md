@@ -2,6 +2,7 @@
 
 Each term with its plain meaning, the nearest conventional QA concept, and where it appears in this portfolio
 (01 claim triage, 02 member-help chatbot, 03 AI test generation, CI continuous evaluation).
+For each metric in detail, with a project example and when it misleads, see the [metric cards](METRICS.md).
 
 ## Core concepts
 
