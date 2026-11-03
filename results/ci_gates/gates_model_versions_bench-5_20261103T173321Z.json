@@ -1,0 +1,25 @@
+{
+  "suite": "Model versions: benchmark",
+  "verdict": "passed",
+  "gates": [
+    {
+      "name": "gpt-6-luna: version unchanged since the last run",
+      "level": "WARN",
+      "passed": true,
+      "actual": "gpt-6-luna",
+      "expected": "(first record)"
+    },
+    {
+      "name": "gpt-6-sol: version unchanged since the last run",
+      "level": "WARN",
+      "passed": true,
+      "actual": "gpt-6-sol",
+      "expected": "(first record)"
+    }
+  ],
+  "notes": [
+    "gpt-6-luna: the API reported the alias itself, not a dated version, so a silent update behind this name cannot be detected from the response.",
+    "gpt-6-sol: the API reported the alias itself, not a dated version, so a silent update behind this name cannot be detected from the response.",
+    "Recorded in results/model_versions.csv. Aliases are kept on purpose (M1 decision); a changed version is reported, not failed."
+  ]
+}
