@@ -421,7 +421,7 @@ and the badges at the top show whether the latest run passed them.
 | Valid JSON, schema and claim ID on every claim, both models | Anything an LLM judge scores: summary quality, benchmark recall and precision |
 | Zero false auto-approvals, and at least 34 of 35 routings correct, on the stronger model | The cheaper model's routing and false auto-approvals (a known, intermittent defect on claim HLH-009) |
 | All 5 DeepEval tests pass | Generated test cases linked to no acceptance criterion |
-| Benchmark: golden set, prompt and judge unchanged (checked by fingerprint), and every story returns valid output | |
+| Benchmark: golden set, prompt and judge unchanged (checked by fingerprint), and every story returns valid output | A model's served version differs from the last run (both workflows record it in `results/model_versions.csv`) |
 
 Why the split: deterministic checks are reliable enough to block a release; the judges disagreed with my own
 labels often enough (notebooks 01 to 03) that their scores start as warnings. Every threshold, and the baseline

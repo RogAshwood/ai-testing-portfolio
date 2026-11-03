@@ -26,6 +26,8 @@ Usage (from the repo root, in the ai-testing env):
 Change history:
   2026-10-23  v1  first version (Day 4).
   2026-10-23  v2  per-story fingerprints saved in each record.
+  2026-11-03  v3  M1: the model version the API reports it served (`response.model`) is saved in
+                  each record's usage and, for the run, in meta["model_served"].
 """
 
 from __future__ import annotations
@@ -64,6 +66,7 @@ def call_generator(card: str, prompt_text: str, client, model: str) -> tuple[str
                 "input_tokens": getattr(usage, "input_tokens", None),
                 "output_tokens": getattr(usage, "output_tokens", None),
                 "attempts": attempt,
+                "model_served": getattr(response, "model", None),
             }
         except Exception:
             if attempt == 2:
@@ -114,6 +117,7 @@ def run(prompt_version: str, run_label: str, model: str = GENERATOR_MODEL,
     meta = {
         "started_utc": started.isoformat(timespec="seconds"),
         "model": model,
+        "model_served": ", ".join(sorted({r["usage"].get("model_served") or "?" for r in records})),
         "prompt_version": prompt_version,
         "prompt_fingerprint": prompt_fp,
         "golden_version": golden["version"],

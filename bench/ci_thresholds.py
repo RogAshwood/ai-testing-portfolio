@@ -12,6 +12,7 @@ from a measured baseline, given here next to it.
 
 Change history:
   2026-10-29  v1  first version (Day 5).
+  2026-11-03  v2  MODEL_PROBES: the models whose served version each workflow records (M1).
 """
 
 # ---------------------------------------------------------------------------
@@ -71,3 +72,13 @@ MIN_PRECISION = 0.85
 # question, which the prompt asks for, so it is reported rather than failed.
 # Baseline: 0 in the six Day 4 runs; 1 in CI run ci-1 (S09 TC06).
 MAX_UNLINKED_CASES = 0
+
+# ---------------------------------------------------------------------------
+# Model versions (M1): bench/model_versions.py, first step of both workflows
+# ---------------------------------------------------------------------------
+# WARN only: a served version that differs from the last recorded one is reported, never failed.
+# Aliases are kept on purpose (decision 2026-11-03), so the history shows when the model changes.
+MODEL_PROBES = {
+    "evals": ["gpt-6-sol", "gpt-6-luna"],       # sol-strong + both judges; luna-cheap + chatbot generator
+    "benchmark": ["gpt-6-luna", "gpt-6-sol"],   # test-case generator; benchmark judge
+}

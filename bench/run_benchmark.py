@@ -21,6 +21,7 @@ Usage (from the repo root):
 Change history:
   2026-10-29  v1  first version (Day 5).
   2026-10-29  v2  WARN gate for cases with empty covers (see testcase_schema.py v2).
+  2026-11-03  v3  M1: the run summary names the model versions the API served.
 """
 
 from __future__ import annotations
@@ -88,7 +89,10 @@ def main() -> None:
 
     s = result["summary"]
     issues = sum(len(st["metrics"].get("judge_issues") or []) for st in result["stories"])
-    run_records = json.loads(Path(gen_path).read_text(encoding="utf-8"))["records"]
+    run_file = json.loads(Path(gen_path).read_text(encoding="utf-8"))
+    run_records = run_file["records"]
+    served_gen = run_file["meta"].get("model_served", "?")
+    served_judge = ", ".join(sorted({st["metrics"].get("judge_model_served") or "?" for st in result["stories"]}))
     unlinked = [f"{r['story_id']} {cid}" for r in run_records for cid in unlinked_cases(r.get("parsed"))]
     gates += quality_gates(s, issues, unlinked)
     notes = [f"Cases {s['total_n_cases']}, incorrect {s['total_incorrect']}, not in basis "
@@ -96,7 +100,8 @@ def main() -> None:
              f"Cost: generation ${s['total_gen_cost_usd']}, judge ${s['total_judge_cost_usd']} "
              f"(gpt-6-sol price provisional); time: generation {s['total_gen_latency_s']} s, "
              f"judge {s['total_judge_latency_s']} s",
-             "Baseline (3 runs, 28 Oct 2026): recall 0.75 [0.70-0.78], precision 0.91"]
+             "Baseline (3 runs, 28 Oct 2026): recall 0.75 [0.70-0.78], precision 0.91",
+             f"Served versions: generator {served_gen}, judge {served_judge}"]
     sys.exit(report(suite, gates, notes, {"gen_file": Path(gen_path).name, "score_file": Path(score_path).name}))
 
 

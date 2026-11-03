@@ -52,6 +52,9 @@ Change history:
   2026-10-28  v4  fix: appending after a column was added left a header with fewer columns than
                   the new rows. Appends now rewrite the file first if its header is out of date;
                   --repair-history fixes an existing file (original kept as *_before_repair.csv).
+  2026-11-03  v5  M1: history columns gen_model_served and judge_model_served (the versions the API
+                  reported); rows scored before M1 leave them empty. A repair never overwrites an
+                  earlier *_before_repair.csv backup.
 """
 
 from __future__ import annotations
@@ -81,6 +84,7 @@ HISTORY_COLUMNS = [
     "neg_bnd_pass", "concrete_rate", "atomic_rate",
     "gen_input_tokens", "gen_output_tokens", "gen_cost_usd",
     "judge_input_tokens", "judge_output_tokens", "judge_cost_usd", "gen_latency_s", "judge_latency_s",
+    "gen_model_served", "judge_model_served",
 ]
 
 
@@ -198,11 +202,14 @@ def score_run(gen_path: Path, story_ids: list[str] | None = None, use_judge: boo
                        judge_cost_usd=cost_usd(judge_model, ti, to),
                        judge_latency_s=round(sum(judged[k]["usage"]["latency_s"]
                                                  for k in ("cases_call", "recall_call")), 2),
-                       judge_issues=judged["cases_call"]["issues"] + judged["recall_call"]["issues"])
+                       judge_issues=judged["cases_call"]["issues"] + judged["recall_call"]["issues"],
+                       judge_model_served=", ".join(sorted({judged[k]["usage"].get("model_served") or "?"
+                                                            for k in ("cases_call", "recall_call")})))
         u = rec["usage"]
         row.update(gen_input_tokens=u["input_tokens"], gen_output_tokens=u["output_tokens"],
                    gen_cost_usd=cost_usd(meta["model"], u["input_tokens"], u["output_tokens"]),
-                   gen_latency_s=u["latency_s"], card_fp=now_fp["card"], ideas_fp=now_fp["ideas"])
+                   gen_latency_s=u["latency_s"], gen_model_served=u.get("model_served"),
+                   card_fp=now_fp["card"], ideas_fp=now_fp["ideas"])
         out_stories.append({"metrics": row, "judgement": judged})
         _print_row(row, use_judge)
 
@@ -317,7 +324,10 @@ def repair_history(path: Path = HISTORY) -> None:
     if header == HISTORY_COLUMNS and all(len(r) == len(HISTORY_COLUMNS) for r in rows):
         print(f"{path.name}: already consistent, {len(rows)} rows")
         return
-    backup = path.with_name(path.stem + "_before_repair.csv")
+    backup, n = path.with_name(path.stem + "_before_repair.csv"), 2
+    while backup.exists():                       # never overwrite an earlier backup
+        backup = path.with_name(f"{path.stem}_before_repair_{n}.csv")
+        n += 1
     backup.write_bytes(path.read_bytes())
     with path.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=HISTORY_COLUMNS, extrasaction="ignore")

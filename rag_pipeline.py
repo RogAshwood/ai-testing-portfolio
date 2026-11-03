@@ -23,6 +23,7 @@ Design notes
 
 Change history:
   2026-10-16  v1  first version (Day 3).
+  2026-11-03  v2  M1: generate() also returns the model version the API served, in usage["model_served"].
 """
 
 from __future__ import annotations
@@ -218,6 +219,7 @@ def generate(question: str, contexts: list[str], client=None,
         "latency_s": latency,
         "input_tokens": getattr(usage, "input_tokens", None),
         "output_tokens": getattr(usage, "output_tokens", None),
+        "model_served": getattr(response, "model", None),
     }
 
 

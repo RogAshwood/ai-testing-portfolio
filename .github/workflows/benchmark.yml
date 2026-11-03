@@ -19,7 +19,8 @@
 #
 # What is kept where:
 #   committed to the repo (permanent)  results/testgen_history.csv, this run's generated cases and judge
-#                                      verdicts (results/testgen/*bench-N_*), the gate table (results/ci_gates/)
+#                                      verdicts (results/testgen/*bench-N_*), the gate tables (results/ci_gates/),
+#                                      results/model_versions.csv (the model versions served, M1)
 #   run artifact (90 days)             the same files, as one download
 #
 # Needs one repository secret: OPENAI_API_KEY (Settings > Secrets and variables > Actions).
@@ -28,6 +29,7 @@
 #   2026-10-29  v1  split out of evals.yml (Day 5): monthly + on change instead of weekly.
 #   2026-10-29  v2  actions moved to their Node 24 versions (checkout v7, upload-artifact v7,
 #                   setup-miniconda v4); runner pinned to ubuntu-24.04.
+#   2026-11-03  v3  M1: records the model versions the API served before the run (WARN on change).
 
 name: AI test-generation benchmark
 
@@ -89,6 +91,10 @@ jobs:
       - name: Why this run started
         run: echo "Trigger ${{ github.event_name }}, commit ${GITHUB_SHA::7}" | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # Model versions (M1): one tiny call per model. A changed version is a warning, never a failure.
+      - name: "Model versions: record what the API served"
+        run: python -m bench.model_versions --workflow benchmark
+
       # Checks frozen fingerprints first (free), then generates, scores, appends to the history
       # file and applies the gates.
       - name: "Benchmark: AI test generation (prompt v2)"
@@ -103,6 +109,7 @@ jobs:
             results/ci_gates/*bench-${{ github.run_number }}_*
             results/testgen/*bench-${{ github.run_number }}_*
             results/testgen_history.csv
+            results/model_versions.csv
           retention-days: 90
           if-no-files-found: warn
 
@@ -112,6 +119,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git add results/testgen_history.csv
+          git add results/model_versions.csv || echo "No model versions recorded."
           git add results/ci_gates/*"${CI_RUN_LABEL}"_* || echo "No gate table from this run."
           git add results/testgen/*"${CI_RUN_LABEL}"_* || echo "No benchmark files from this run."
           if git diff --cached --quiet; then

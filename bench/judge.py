@@ -25,6 +25,7 @@ Change history:
   2026-10-28  v2  judge prompts v2 after calibration round 1: atomic check; concrete counts only
                   inputs that matter; technique judges what the case tests; recall accepts
                   implied outcomes, ignores background assumptions, lets ranges cover members.
+  2026-11-03  v3  M1: each call's usage also records the model version the API served.
 """
 
 from __future__ import annotations
@@ -120,7 +121,8 @@ def call_judge(prompt_name: str, input_text: str, schema: dict, client,
             "parsed": parsed,
             "usage": {"input_tokens": getattr(usage, "input_tokens", None),
                       "output_tokens": getattr(usage, "output_tokens", None),
-                      "latency_s": round(latency, 2)}}
+                      "latency_s": round(latency, 2),
+                      "model_served": getattr(resp, "model", None)}}
 
 
 def check_judgement(parsed: dict | None, key: str, id_field: str, expected_ids: list[str]) -> list[str]:
