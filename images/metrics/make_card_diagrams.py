@@ -478,7 +478,7 @@ SPECS.update({
             {"title": "Word matching, as used in this project (project result)", "columns": [
                 [B("INPUT", ["\u201cI joined three months", "ago. Can I claim for", "physiotherapy now?\u201d"], "data")],
                 [B("PROCESSING: SEARCH", ["Ranks passages by", "shared words"], "sut", "Code", "Tool: scikit-learn (TF-IDF)")],
-                [B("OUTPUT", ["Waiting-period passage", "(\u201c182 days\u201d) found", "only at rank 12"], "data")],
+                [B("OUTPUT", ["Waiting-period passage", "(\u201c182 days\u201d) found", "only at rank 18"], "data")],
                 [B("CHECK", ["Expected document", "not in the top 3", "MISSED"], "eval", "Code", "Tool: rag_metrics.py")],
             ]},
             {"title": "Meaning matching, not used (illustration, not a project result)", "columns": [

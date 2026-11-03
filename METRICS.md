@@ -355,8 +355,9 @@ it was never passed on, so the answer could not give the physiotherapy limit. Ra
 correctness rose from about 0.5 to 1.00.
 
 At k=3 the expected document was in the top 3 for 10 of the 12 questions that have an answer. The rank also showed
-where a bigger k would not help: "I joined three months ago. Can I claim for physiotherapy now?" found its document
-only at rank 12, because the question shares almost no words with the passage that answers it.
+where a bigger k would not help: for "I joined three months ago. Can I claim for physiotherapy now?", the first
+passage from an expected document came only at rank 12, and the waiting-period passage that holds the main answer
+at rank 18, because the question shares almost no words with them.
 
 **When it misleads.** It checks the document, not the passage. For the acupuncture question the expected document
 ranked 2nd, a hit at k=3, but the passage it contributed was the wrong paragraph of that document, and the answer
@@ -900,8 +901,9 @@ meaning), and compare with a threshold.
 **Example.** The project used word matching instead (TF-IDF), and two results show where meaning matching might
 help, and where it might not:
 
-- **Search.** "I joined three months ago. Can I claim for physiotherapy now?" found its answer only at rank 12,
-  because the answer talks about a "waiting period" of "182 days", words the question never uses. No value of k
+- **Search.** "I joined three months ago. Can I claim for physiotherapy now?" found the waiting-period passage
+  that answers it only at rank 18 (its other expected document, on cover limits, at rank 12), because the answer
+  talks about a "waiting period" of "182 days", words the question never uses. No value of k
   fixes that; matching on meaning might. This is a listed next step, so the second lane of the diagram is an
   illustration, not a result.
 - **Duplicates.** Word similarity scored distinct boundary test cases (for example €60 and €60.01) as near copies,
