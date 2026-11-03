@@ -150,7 +150,8 @@ the document cleaning strips the currency. The bot's behaviour held in every con
 
 ### Open items (Day 3 backlog)
 
-- [ ] Re-measure k=5 latency (2.7 to 6.5 seconds on one run) before quoting it, and decide whether to adopt k=5
+- [ ] Re-measure k=5 latency (one run of 15 answers: median 4.6 s against 2.6 s at k=3, range 2.6 to 21.6 s) before
+      quoting it, and decide whether to adopt k=5
       in `rag_pipeline.py` (`DEFAULT_K` is still 3).
 - [x] Review the 3 pytest warnings (`pytest tests/test_rag.py -rw`) before Day 5 CI. Re-run 2026-10-29: 5 passed, no warnings.
 - [ ] Agree a written definition of a good answer (facts, clarity, what the member should do next), then add a
@@ -359,3 +360,66 @@ In order: M0 consolidate (Python helpers walkthrough, metric cards), M1 resolved
 M7 test-generation verification harness (feasibility spike, shareable if it passes), M6 red team in CI (multi-turn), M2 DeepEval custom and DAG metrics,
 M3 judge alternatives (Jev, another model family), M4 RAGAS comparison with statistics, M8 AI test strategy template. Estimated about 17 days of work
 (4–6 weeks). 
+
+## Round 2
+
+### M0: consolidate (2026-11-02 to 2026-11-03)
+
+- **Metric cards.** [`METRICS.md`](METRICS.md): 20 cards in five groups, each with the industry term, how it was computed,
+  a project example, when it misleads and how far to trust it. One diagram per card in `images/metrics/`, drawn by
+  `images/metrics/make_card_diagrams.py`. Every figure was checked against the result files, not the working notes.
+- **Corrections found while checking.** The judge costs about 18 to 28 times the generator per benchmark run (an early
+  estimate had said far more). For "I joined three months ago...", rank 12 is the cover-and-limits document; the
+  waiting-period passage that answers it is at rank 18. The k=5 latency open item above now gives the figures in the
+  result file.
+- **Helpers walkthrough.** A private notebook in `study/` (git-ignored) runs each helper on the saved results, free. It
+  reproduces published figures, for example the three judge calibration rounds in notebook 03.
+- **Quiz.** 10 questions on the metrics and helpers: 7 of 10 on the first pass.
+
+### M1: model version in the CI history (2026-11-03)
+
+**Decisions**
+
+| Decision | Reason |
+| --- | --- |
+| Keep the model aliases and record the served version | The portfolio demonstrates drift monitoring; production would usually pin a dated version for the release model |
+| A changed version is a warning, never a failure | A change is a prompt to look at the scores, not a defect in itself |
+| A separate probe at the start of each CI run | Promptfoo and DeepEval make their own calls and do not keep the served version in their results |
+
+**What was built.** `bench/model_versions.py` (first step of both workflows) makes two tiny calls per model and reads the
+models list. It records the served model (Responses and Chat Completions APIs), the backend fingerprint and any dated
+versions in `results/model_versions.csv`, with WARN gates on change. The benchmark's own calls also save the served
+version: new history columns `gen_model_served` and `judge_model_served`, and a "Served versions" line in the run
+summary. Cost: well under $0.001 a run.
+
+**What it found.** The provider exposes no version information for these models:
+
+| Check | gpt-6-luna | gpt-6-sol |
+| --- | --- | --- |
+| Served model (Responses API, bench-5) | the name only | the name only |
+| Served model (Chat Completions, local probe) | the name only | the name only |
+| Backend fingerprint (`system_fingerprint`) | not returned | not returned |
+| Dated versions in the models list | none | none |
+
+So a silent update behind the name cannot be seen from the API; it can only show up in the scores of the frozen,
+fingerprinted tests. Pinning is not possible either: there is nothing to pin to. The probe stays in CI because it costs
+almost nothing and will record a version as soon as the provider starts exposing one.
+
+**Observation.** bench-5 recall was 0.69: the first run just below the original range of 0.70 to 0.78, and above the 0.68
+warning line. One run is not a trend; the monthly history will show whether it is noise.
+
+**Question for vendors:** how would we know if the model behind this name changed?
+
+**Run log**
+
+| Date | Run | Output |
+| --- | --- | --- |
+| 2026-11-03 | bench-5: started by the M1 push. Model versions: names only. Benchmark passed: 10/10 schema-valid, recall 0.69, precision 0.90 | `results/model_versions.csv`, `results/ci_gates/gates_*_bench-5_*`, `results/testgen/*rbench-5_*` |
+| 2026-11-03 | Local probe, `python -m bench.model_versions --workflow evals --no-record`: no fingerprint, no dated versions | Printed only; nothing written |
+
+**Possible next steps**
+
+| Area | Possible step | What it would add |
+| --- | --- | --- |
+| Monitoring | A warning when the list of dated versions changes | Notice automatically if pinning becomes possible |
+| Models | Pin a dated version for the release model once one is offered | Reproducible release gates; the cheaper model can stay on its alias as a canary |

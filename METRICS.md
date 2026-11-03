@@ -932,7 +932,7 @@ person or a judge. Weak as a correctness check where small words such as "not" o
 | **Data drift** | The inputs: members start asking different questions or sending different claims | Comparing input distributions over time | Not measurable: it needs production inputs |
 | **Concept drift** | What counts as correct: the rules change | Accuracy on freshly labelled data falls | Guarded by versioned, fingerprinted golden sets; the plan rules were deliberately left unchanged |
 | **Prediction (output) drift** | The mix of outputs: more manual reviews than last month, lower scores | Monitoring output shares and score distributions | Partly: the CI gate tables and history file record results over time |
-| **Model drift** | The hosted model: the provider updates it behind the same name | Rerunning a fixed test set on a schedule | The weekly and monthly CI runs |
+| **Model drift** | The hosted model: the provider updates it behind the same name | Rerunning a fixed test set on a schedule | The weekly and monthly CI runs; the version the API reports is recorded since M1 (`results/model_versions.csv`) |
 
 **How it's computed.** For model drift, the project reruns frozen tests on a schedule: Claims Triage and the
 Member-Help Chatbot every Monday, and the Test-Case Generator benchmark monthly and whenever its files change.
@@ -955,9 +955,10 @@ chance about 4% of the time. That is not enough to call it a change, but it is t
 for.
 
 **When it misleads.** When the runs are too few to separate drift from run-to-run variation: a single low run is
-not drift. When the model version is not recorded: the history file currently records the model's name, not the
-exact version the provider served, so a silent update could not be pinned to a date (adding it is the next
-milestone). And when the test set is frozen but the world is not: a fixed test set detects model drift, not data
+not drift. When the provider does not expose a version. Since M1 each run records what the API reports, but for
+these models it reports only the name, returns no backend fingerprint and lists no dated versions. A silent update
+behind the name can only show up in the scores, which is why the frozen, fingerprinted test set is the drift
+detector. And when the test set is frozen but the world is not: a fixed test set detects model drift, not data
 or concept drift.
 
 **How far to trust it.** The set-up reliably separates "we changed something" from "the model changed", which is
