@@ -24,6 +24,8 @@ Design notes
 Change history:
   2026-10-16  v1  first version (Day 3).
   2026-11-03  v2  M1: generate() also returns the model version the API served, in usage["model_served"].
+  2026-11-05  v3  fix: RagResult gains model_served. v2 added it to generate()'s usage
+                  but not to RagResult, so ask() raised TypeError (found by the M5 regression run).
 """
 
 from __future__ import annotations
@@ -81,6 +83,7 @@ class RagResult:
     latency_s: float = 0.0
     input_tokens: int | None = None
     output_tokens: int | None = None
+    model_served: str | None = None   # M1: model version the API served
 
     @property
     def retrieval_context(self) -> list[str]:
