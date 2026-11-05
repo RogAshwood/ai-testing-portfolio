@@ -14,3 +14,7 @@ dependencies:
   - pip
   - pip:
       - deepeval==4.2.8
+      - langgraph==1.2.20        # M5: agent graph and memory
+      - langchain-openai==1.7.3  # M5: OpenAI model for the agent
+      - langchain-core==1.7.2    # M5: pinned with langchain-openai
+      - langfuse==5.2.0          # M5: trace viewing (optional at run time)
