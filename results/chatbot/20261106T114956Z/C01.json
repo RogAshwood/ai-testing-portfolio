@@ -1,0 +1,130 @@
+{
+  "conv_id": "C01",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T114956Z",
+  "thread_id": "20261106T114956Z-C01-b9ac7d",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Hi, what's happening with claim HLH-021?",
+      "reply": "Claim HLH-021 was declined under the waiting-period rule, and €0 was paid. The Essential Plus plan has a 182-day waiting period from when cover begins; treatment during that period isn’t covered. You can appeal through the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "WAITING_PERIOD waiting period outpatient consultant rheumatology appeal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "WAITING_PERIOD waiting period outpatient consultant rheumatology appeal",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#4",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.3387,
+              0.2386,
+              0.2104
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#4]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        }
+      ],
+      "search_queries": [
+        "WAITING_PERIOD waiting period outpatient consultant rheumatology appeal"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3471,
+      "output_tokens": 188,
+      "cost_usd": 0.000441,
+      "latency_s": 10.951,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why was it declined?",
+      "reply": "The claim record gives the decision reason as **WAITING_PERIOD**. Your plan has a 182-day waiting period from when cover begins, and treatment during that period isn’t covered.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "WAITING_PERIOD 182 days treatment during waiting period declined decision code"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "WAITING_PERIOD 182 days treatment during waiting period declined decision code",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "01_plan_overview#6",
+              "04_waiting_periods#4"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "01_plan_overview",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.4897,
+              0.3359,
+              0.1676
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#4]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit."
+        }
+      ],
+      "search_queries": [
+        "WAITING_PERIOD 182 days treatment during waiting period declined decision code"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3177,
+      "output_tokens": 138,
+      "cost_usd": 0.000387,
+      "latency_s": 4.519,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "That seems unfair. Can I do anything about it?",
+      "reply": "You can appeal the decision through the member portal. I can’t change or approve the claim, but you can use the portal to submit your appeal.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1812,
+      "output_tokens": 93,
+      "cost_usd": 0.000228,
+      "latency_s": 2.64,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 8460,
+    "output_tokens": 419,
+    "cost_usd": 0.001056,
+    "latency_s": 18.11
+  }
+}

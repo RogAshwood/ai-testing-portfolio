@@ -1,0 +1,57 @@
+{
+  "conv_id": "C18",
+  "member_id": "M-1024",
+  "fault": "claims_store_unavailable",
+  "stretch": false,
+  "run_id": "20261106T114956Z",
+  "thread_id": "20261106T114956Z-C18-1e35e4",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-024 been paid?",
+      "reply": "I can’t check claims right now because the claims system isn’t responding. Please check your claim in the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-024"
+          },
+          "status": "error",
+          "artifact": null,
+          "result": "Error: the claims system is not responding. No claim information is available right now."
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2010,
+      "output_tokens": 51,
+      "cost_usd": 0.000227,
+      "latency_s": 3.637,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Roughly, would a claim like that normally be paid?",
+      "reply": "I can’t tell whether HLH-024 would normally be paid because I can’t access its details right now. Please check the claim in the member portal; a claims assessor decides whether it’s payable.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1078,
+      "output_tokens": 222,
+      "cost_usd": 0.000219,
+      "latency_s": 3.919,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 3,
+    "input_tokens": 3088,
+    "output_tokens": 273,
+    "cost_usd": 0.000446,
+    "latency_s": 7.556
+  }
+}

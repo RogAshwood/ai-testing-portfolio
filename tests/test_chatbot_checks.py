@@ -16,10 +16,16 @@ Change history:
   2026-11-05  v1  first version (M5 step 3).
   2026-11-06  v1.1  tests for pass_earlier (search grounded by an earlier turn) and
                     fact-level retrieval hits; met_earlier test updated.
+  2026-11-06  v1.2  test that a run folder's L01 to L03 records are scored (bug
+                    found in the second full run).
+  2026-11-06  v1.3  test that underscores match as spaces.
+  2026-11-06  v1.4  tests for the date note on R24 turns (W01, W02).
 """
 from __future__ import annotations
 
-from chatbot.checks import check_conversation, check_required, check_turn, contains, norm
+import json
+
+from chatbot.checks import check_conversation, check_required, check_run, check_turn, contains, date_note, norm
 
 
 # ============================================================================
@@ -30,7 +36,7 @@ def golden_turn(**kw):
     """A golden-set turn with every field present; pass only the fields a test needs."""
     base = {"user": "?", "required_tools": [], "forbidden_tools": [], "unexpected_tools": [],
             "key_facts": [], "absent_terms": [], "fact_sources": [], "rules": [],
-            "judge_checks": [], "not_in_corpus": [], "behaviour": ""}
+            "judge_checks": [], "not_in_corpus": [], "behaviour": "", "date_check": None}
     base.update(kw)
     return base
 
@@ -58,6 +64,13 @@ def test_hyphen_matches_space():
     """'waiting-period' in a reply matches the key fact 'waiting period' (found in the
     first live run, C01 turn 2). Hyphens and dashes count as spaces."""
     assert contains("It was declined under the waiting-period rule.", "waiting period")
+
+
+def test_underscore_matches_space():
+    """A decision code written with an underscore ('WAITING_PERIOD') matches the key fact
+    'waiting period' (L01 turn 2 in the second full run). Whether the member should see
+    the code at all is left to the judge's plain_language check."""
+    assert contains("The decision code is **WAITING_PERIOD**.", "waiting period")
 
 
 def test_curly_apostrophe_matches_straight():
@@ -205,3 +218,47 @@ def test_conversation_fails_if_run_stopped_early():
     record = {"turns": [trace_turn("ok")], "error": "turn 2: TimeoutError", "fault": None, "totals": {}}
     r = check_conversation(golden, record)
     assert not r["passed"] and r["turns"][1]["failures"] == ["turn not reached (run error)"]
+
+
+def test_run_scores_every_conversation_file(tmp_path):
+    """A run folder's records are all scored, whatever letter the conversation ID
+    starts with (C01, L01, ...), and checks.json is not mistaken for a record. In the
+    second full run, L01 to L03 were saved but skipped, because only C*.json was read."""
+    for cid in ("C02", "L01"):
+        (tmp_path / f"{cid}.json").write_text(json.dumps(
+            {"conv_id": cid, "turns": [], "error": None, "fault": None, "totals": {}}), encoding="utf-8")
+    (tmp_path / "checks.json").write_text("{}", encoding="utf-8")
+    result = check_run(tmp_path)
+    assert [c["conv_id"] for c in result["conversations"]] == ["C02", "L01"]
+
+
+# ============================================================================
+# 5. Dates (R24): the note for the judge
+# ============================================================================
+
+W01_T1 = {"cover_start": "2026-05-20", "date": "2026-11-17", "day": 181,
+          "inside_waiting_period": True, "covered_from": "2026-11-18"}
+
+
+def test_date_note_gives_the_correct_answer():
+    """On an R24 turn the note states the correct answer computed in code: 17 November
+    is day 181, inside the waiting period, and cover starts on 18 November (W01 turn 1)."""
+    note = date_note(W01_T1, "")
+    assert "17 November is day 181 (inside the waiting period)" in note and "covered from 18 November" in note
+
+
+def test_date_note_reports_what_the_reply_states():
+    """The note says whether the reply states the right day count and covered-from date.
+    An off-by-one reply ('day 182') shows 'no' for day 181, for the reviewer and judge."""
+    right = date_note(W01_T1, "17 November is day 181, so cover starts on 18 November.")
+    off_by_one = date_note(W01_T1, "17 November is day 182, so you'll be covered.")
+    assert "reply states 'day 181': yes" in right and "reply states it: yes" in right
+    assert "reply states 'day 181': no" in off_by_one
+
+
+def test_date_turn_is_noted_not_failed():
+    """A date turn is never failed by the text checks alone: whether the reasoning is
+    right is a question of meaning, so it goes to the judge (correct_date_reasoning)."""
+    exp = golden_turn(date_check=W01_T1, judge_checks=["correct_date_reasoning"])
+    r = check_turn(exp, trace_turn("Yes, you'll be out of the waiting period by then."), [], None)
+    assert r["passed"] and any(n.startswith("date check for the judge") for n in r["notes"])

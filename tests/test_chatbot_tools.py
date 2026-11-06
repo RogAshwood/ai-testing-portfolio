@@ -25,6 +25,8 @@ Each test's docstring says in plain English what it checks and which spec rule
 Change history:
   2026-11-05  v1  first version (M5).
   2026-11-05  v1.1  plain-English docstring for every test and helper; no test changed.
+  2026-11-06  v1.2  section 4b: tests for the M5 chunking (tables split by row, the
+                    exclusions list by item) and the M5 version of document 04.
 """
 from __future__ import annotations
 
@@ -38,9 +40,9 @@ from langchain_core.outputs import ChatGeneration, ChatResult
 
 from chatbot.bot import build_graph, load_golden, run_conversation
 from chatbot.claims import ClaimsStore, ClaimsStoreUnavailable, tidy_id
-from chatbot.policy import build_m5_retriever, load_m5_docs
+from chatbot.policy import SPLIT_LIST_DOCS, build_m5_retriever, chunk_m5, load_m5_docs
 from chatbot.tools import NOT_FOUND, build_tools
-from rag_pipeline import DOCS_DIR
+from rag_pipeline import DOCS_DIR, chunk_docs
 
 
 # ============================================================================
@@ -218,6 +220,71 @@ def test_search_policy_returns_chunk_ids(store, retriever):
                     "args": {"query": "waiting period 182 days"}})
     assert msg.artifact["doc_ids"][0] == "04_waiting_periods"
     assert len(msg.artifact["chunk_ids"]) == 3
+
+
+# ============================================================================
+# 4b. M5 chunking: tables by row, the exclusions list by item (changed 6 November)
+# ============================================================================
+
+@pytest.fixture(scope="module")
+def m5_chunks():
+    """The M5 chunks, keyed by chunk ID."""
+    return {c.chunk_id: c.text for c in chunk_m5(load_m5_docs())}
+
+
+def test_limits_table_is_one_chunk_per_row(m5_chunks):
+    """The cover and limits table becomes six row chunks, one per treatment, and each
+    row repeats the column headings so it makes sense on its own. The physiotherapy
+    row holds the facts C03 and C19 needed: 50 per session, 10 sessions."""
+    rows = [k for k in m5_chunks if k.startswith("02_cover_and_limits#2.")]
+    assert len(rows) == 6
+    physio = m5_chunks["02_cover_and_limits#2.3"]
+    assert "Treatment: Physiotherapy" in physio and "50 per session" in physio and "10 sessions" in physio
+
+
+def test_exclusions_list_is_one_chunk_per_item(m5_chunks):
+    """The exclusions list becomes six item chunks. An item that runs over several
+    lines in the document (fitness classes) is kept whole, and acupuncture has a
+    chunk of its own (the fact C02 needed)."""
+    items = {k: v for k, v in m5_chunks.items() if k.startswith("03_exclusions#2.")}
+    assert len(items) == 6
+    assert any("acupuncture" in v and "Alternative therapies" in v for v in items.values())
+    assert any("pilates" in v and "run at a clinic" in v for v in items.values())
+
+
+def test_only_tables_and_the_exclusions_list_are_split(m5_chunks):
+    """Only the two tables and the exclusions list are split; the numbered lists in
+    documents 04, 06 and 08 stay as paragraphs, as decided (6 November)."""
+    split_docs = {k.split("#")[0] for k in m5_chunks if "." in k.split("#")[1]}
+    assert split_docs == {"02_cover_and_limits", "03_exclusions", "05_pre_authorisation"}
+    assert SPLIT_LIST_DOCS == {"03_exclusions"}
+
+
+def test_other_chunks_identical_to_day3():
+    """Every chunk that is not a table row or list item is exactly the chunk Day 3's
+    paragraph chunker makes, with the same ID: the change is limited to what was decided."""
+    docs = load_m5_docs()
+    day3 = {c.chunk_id: c.text for c in chunk_docs(docs, mode="paragraph")}
+    m5 = {c.chunk_id: c.text for c in chunk_m5(docs)}
+    assert all(day3[k] == v for k, v in m5.items() if k in day3)
+    assert set(day3) - set(m5) == {"02_cover_and_limits#2", "03_exclusions#2", "05_pre_authorisation#3"}
+
+
+def test_split_chunks_are_found_by_the_agents_queries(retriever):
+    """Queries the agent actually wrote in the first two full runs now return the chunk
+    with the answer first: the physiotherapy row (C03, C19) and the acupuncture item (C02)."""
+    assert retriever.retrieve("physiotherapy limit per session", 3)[0][0].chunk_id == "02_cover_and_limits#2.3"
+    assert retriever.retrieve("acupuncture cover exclusions treatment limits", 3)[0][0].chunk_id == "03_exclusions#2.4"
+
+
+def test_m5_document_04_states_the_day_0_rule():
+    """The M5 version of document 04 says how days are counted (cover start date is
+    day 0), with a worked example whose dates differ from the test conversations;
+    the Day 3 document 04 on disk is unchanged."""
+    m5 = " ".join(load_m5_docs()["04_waiting_periods"].split())
+    assert "The date your cover began is day 0" in m5 and "1 March 2026" in m5
+    assert "20 May" not in m5 and "7 July" not in m5          # not the dates W01 and W02 use
+    assert "day 0" not in (DOCS_DIR / "04_waiting_periods.md").read_text(encoding="utf-8")
 
 
 # ============================================================================

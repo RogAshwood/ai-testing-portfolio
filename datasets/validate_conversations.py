@@ -24,7 +24,12 @@ Checks:
      in at least one of the turn's fact_sources. claim:X must be the member's.
   5. No contradiction: no key fact alternative is also an absent term.
   6. not_in_corpus terms appear in no policy document.
-  7. Fingerprints (sha256, first 12 characters) of every input are printed.
+  7. Dates (R24): every date_check is recomputed in code. day is the number of
+     days from cover_start to date (cover start = day 0, as document 04's M5
+     version states); inside_waiting_period is day <= 181; covered_from is
+     cover_start + 182 days. A date_check turn must have the
+     correct_date_reasoning judge check.
+  8. Fingerprints (sha256, first 12 characters) of every input are printed.
 
 Usage:  python datasets/validate_conversations.py
 Exit code 0 when all checks pass, 1 otherwise.
@@ -32,9 +37,12 @@ Exit code 0 when all checks pass, 1 otherwise.
 Change history:
   2026-11-04  v1  first version (M5), with unexpected_tools (soft) beside
                   forbidden_tools (hard).
+  2026-11-06  v2  check 7: date_check arithmetic recomputed in code (golden set
+                  v1.3, W01 and W02); judge_checks_every_turn must be defined.
 """
 from __future__ import annotations
 import csv, hashlib, json, re, sys
+from datetime import date, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,6 +53,7 @@ STATUS = DATA / "claim_status.csv"
 DAY3_DOCS = DATA / "policy_docs"
 M5_DOCS = DATA / "chatbot_docs"
 
+WAITING_DAYS = 182                       # cover starts on day 182 (cover start = day 0)
 TOOLS = {"search_policy", "get_claim_status", "list_my_claims", "request_callback"}
 CLAIM_TOOLS = {"get_claim_status", "list_my_claims"}
 FAULTS = {None, "claims_store_unavailable"}
@@ -69,6 +78,21 @@ def corpus() -> dict[str, str]:
     return docs
 
 
+def check_dates(dc: dict) -> list[str]:
+    """Recompute one date_check in code; return the problems found (empty = correct)."""
+    problems = []
+    start = date.fromisoformat(dc["cover_start"])
+    if dc["covered_from"] != (start + timedelta(days=WAITING_DAYS)).isoformat():
+        problems.append(f"covered_from should be {(start + timedelta(days=WAITING_DAYS)).isoformat()}")
+    if dc.get("date"):
+        day = (date.fromisoformat(dc["date"]) - start).days
+        if dc["day"] != day:
+            problems.append(f"day should be {day}")
+        if dc["inside_waiting_period"] != (day < WAITING_DAYS):
+            problems.append(f"inside_waiting_period should be {day < WAITING_DAYS}")
+    return problems
+
+
 def fingerprint(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
@@ -81,6 +105,9 @@ def main() -> int:
     docs = corpus()
     spec_rules = set(re.findall(r"\*\*(R\d+[a-c]?)\.\*\*", spec))
     judge_defs = set(golden.get("judge_checks", {}))
+    for j in golden.get("judge_checks_every_turn", []):
+        if j not in judge_defs:
+            errors.append(f"judge_checks_every_turn: {j} not defined")
     errors: list[str] = []
     seen = set()
 
@@ -158,6 +185,13 @@ def main() -> int:
             for a in t["absent_terms"]:
                 if norm(a) in key_norm: e(f"{a!r} is both a key fact and an absent term", i)
 
+            # 7. dates
+            if t.get("date_check"):
+                for problem in check_dates(t["date_check"]):
+                    e(f"date_check: {problem}", i)
+                if "correct_date_reasoning" not in t["judge_checks"]:
+                    e("date_check turn needs the correct_date_reasoning judge check", i)
+
             # 6. unanswerable terms
             for term in t["not_in_corpus"]:
                 hits = [d for d, txt in docs.items() if norm(term) in norm(txt)]
@@ -168,7 +202,7 @@ def main() -> int:
           f"{len(golden['conversations']) - len(counted)} stretch), "
           f"{sum(len(c['turns']) for c in golden['conversations'])} turns, "
           f"{len(members)} members, {len(claims)} claims")
-    for p in [GOLDEN, SPEC, STATUS, M5_DOCS / "10_contact_and_privacy.md"]:
+    for p in [GOLDEN, SPEC, STATUS] + sorted(M5_DOCS.glob("*.md")):
         print(f"  {p.relative_to(ROOT)}  {fingerprint(p)}")
     if errors:
         print(f"FAIL: {len(errors)} problem(s)")

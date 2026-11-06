@@ -1,0 +1,270 @@
+{
+  "conv_id": "C19",
+  "member_id": "M-1002",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T114956Z",
+  "thread_id": "20261106T114956Z-C19-af951f",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much does the plan pay for physio?",
+      "reply": "I can’t find the specific physio payment amount in the plan information available to me. The plan pays up to set limits per visit and per policy year; check the member portal for the exact limits.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy limit per session annual limit reimbursement Essential Plus"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy limit per session annual limit reimbursement Essential Plus",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5",
+              "01_plan_overview#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.2327,
+              0.1905,
+              0.1752
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy annual limit amount per visit Essential Plus cover and annual limits"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy annual limit amount per visit Essential Plus cover and annual limits",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#1",
+              "01_plan_overview#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3887,
+              0.3599,
+              0.3192
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#1]\nCover and annual limits. Essential Plus pays up to a set amount for each visit or item, and up to a set number of visits or items in each policy year.\n\n[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy",
+            "chunk_ids": [
+              "05_pre_authorisation#6",
+              "01_plan_overview#4",
+              "06_how_to_claim#2"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "01_plan_overview",
+              "06_how_to_claim"
+            ],
+            "scores": [
+              0.25,
+              0.1471,
+              0.1034
+            ]
+          },
+          "result": "[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\".\n\n[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "Cover annual limits physiotherapy per visit EUR number of visits"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "Cover annual limits physiotherapy per visit EUR number of visits",
+            "chunk_ids": [
+              "02_cover_and_limits#1",
+              "05_pre_authorisation#6",
+              "01_plan_overview#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "05_pre_authorisation",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.4523,
+              0.3312,
+              0.303
+            ]
+          },
+          "result": "[02_cover_and_limits#1]\nCover and annual limits. Essential Plus pays up to a set amount for each visit or item, and up to a set number of visits or items in each policy year.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\"."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy limit per session annual limit reimbursement Essential Plus",
+        "physiotherapy annual limit amount per visit Essential Plus cover and annual limits",
+        "physiotherapy",
+        "Cover annual limits physiotherapy per visit EUR number of visits"
+      ],
+      "llm_calls": 5,
+      "input_tokens": 6918,
+      "output_tokens": 206,
+      "cost_usd": 0.000795,
+      "latency_s": 11.6,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How many sessions do I get a year?",
+      "reply": "I can’t find the specific annual number of physiotherapy sessions in the plan information available to me. Check the member portal for the session limit for your policy year.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy number of visits sessions per policy year annual limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy number of visits sessions per policy year annual limit",
+            "chunk_ids": [
+              "02_cover_and_limits#4",
+              "02_cover_and_limits#1",
+              "01_plan_overview#3"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3425,
+              0.3194,
+              0.2371
+            ]
+          },
+          "result": "[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered.\n\n[02_cover_and_limits#1]\nCover and annual limits. Essential Plus pays up to a set amount for each visit or item, and up to a set number of visits or items in each policy year.\n\n[01_plan_overview#3]\nYour Essential Plus plan: overview. Your policy year. Limits such as \"8 GP visits\" apply per policy year. The policy year starts on the date your cover began and runs for 12 months."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy number of visits sessions per policy year annual limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3949,
+      "output_tokens": 86,
+      "cost_usd": 0.000438,
+      "latency_s": 5.617,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Do I need a referral?",
+      "reply": "Yes. Physiotherapy needs a referral from a GP or consultant. The plan does not require pre-authorisation for physiotherapy.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy referral required GP consultant"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy referral required GP consultant",
+            "chunk_ids": [
+              "05_pre_authorisation#6",
+              "06_how_to_claim#2",
+              "02_cover_and_limits#2"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "06_how_to_claim",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.3305,
+              0.3289,
+              0.2582
+            ]
+          },
+          "result": "[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay.\n\n[02_cover_and_limits#2]\nCover and annual limits. | Treatment | Most we pay per visit or item | Visits or items per policy year | What you also need | | --- | --- | --- | --- | | GP visit | 60 | 8 visits | Nothing extra | | Consultant visit | 120 | 4 visits | A referral from your GP | | Physiotherapy | 50 per session | 10 sessions | A referral from a GP or consultant | | Prescription | 40 per item | 12 items | Nothing extra | | Day case procedure | 1,500 per procedure | 2 procedures | A pre-authorisation number | | Inpatient stay | Assessed individually | Assessed individually | A pre-authorisation number |"
+        }
+      ],
+      "search_queries": [
+        "physiotherapy referral required GP consultant"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 4637,
+      "output_tokens": 53,
+      "cost_usd": 0.00049,
+      "latency_s": 4.38,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "What about pilates for my back?",
+      "reply": "Pilates classes aren’t covered, even if they’re described as therapeutic or run at a clinic. Physiotherapy is covered under separate limits and requires a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "Pilates back classes treatment physiotherapy covered exclusions exercise classes"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "Pilates back classes treatment physiotherapy covered exclusions exercise classes",
+            "chunk_ids": [
+              "03_exclusions#2",
+              "05_pre_authorisation#6",
+              "01_plan_overview#5"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "05_pre_authorisation",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.1517,
+              0.1037,
+              0.075
+            ]
+          },
+          "result": "[03_exclusions#2]\nWhat is not covered. - Cosmetic procedures, for example teeth whitening or cosmetic surgery. - Routine dental care, for example check-ups, cleaning and fillings. - Routine optical care: eye tests, glasses and contact lenses. - Alternative therapies, for example acupuncture and homeopathy. - Fitness and wellness classes, for example yoga, pilates and gym membership. This applies even if a class is described as therapeutic or is run at a clinic. - Treatment received outside Ireland.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[01_plan_overview#5]\nYour Essential Plus plan: overview. What the plan does not pay for. Some treatments are never covered. See \"What is not covered\"."
+        }
+      ],
+      "search_queries": [
+        "Pilates back classes treatment physiotherapy covered exclusions exercise classes"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 5327,
+      "output_tokens": 103,
+      "cost_usd": 0.000584,
+      "latency_s": 4.506,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 11,
+    "input_tokens": 20831,
+    "output_tokens": 448,
+    "cost_usd": 0.002307,
+    "latency_s": 26.103
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "conv_id": "C02",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T114956Z",
+  "thread_id": "20261106T114956Z-C02-060604",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much do you pay for a GP visit?",
+      "reply": "We pay up to €60 per GP visit, for a maximum of 8 visits per policy year.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "GP visit benefit amount reimbursement limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "GP visit benefit amount reimbursement limit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#4",
+              "02_cover_and_limits#2"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.4638,
+              0.2567,
+              0.2011
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered.\n\n[02_cover_and_limits#2]\nCover and annual limits. | Treatment | Most we pay per visit or item | Visits or items per policy year | What you also need | | --- | --- | --- | --- | | GP visit | 60 | 8 visits | Nothing extra | | Consultant visit | 120 | 4 visits | A referral from your GP | | Physiotherapy | 50 per session | 10 sessions | A referral from a GP or consultant | | Prescription | 40 per item | 12 items | Nothing extra | | Day case procedure | 1,500 per procedure | 2 procedures | A pre-authorisation number | | Inpatient stay | Assessed individually | Assessed individually | A pre-authorisation number |"
+        }
+      ],
+      "search_queries": [
+        "GP visit benefit amount reimbursement limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2261,
+      "output_tokens": 48,
+      "cost_usd": 0.00025,
+      "latency_s": 6.462,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "And is acupuncture covered?",
+      "reply": "Acupuncture isn’t listed among the treatments covered by the Essential Plus plan, so I can’t confirm it’s covered. You can check with the member portal for more information.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "acupuncture cover exclusions treatment limits"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "acupuncture cover exclusions treatment limits",
+            "chunk_ids": [
+              "01_plan_overview#4",
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.1355,
+              0.1327,
+              0.1284
+            ]
+          },
+          "result": "[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\".\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor."
+        }
+      ],
+      "search_queries": [
+        "acupuncture cover exclusions treatment limits"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2808,
+      "output_tokens": 62,
+      "cost_usd": 0.000312,
+      "latency_s": 3.787,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 5069,
+    "output_tokens": 110,
+    "cost_usd": 0.000562,
+    "latency_s": 10.249
+  }
+}

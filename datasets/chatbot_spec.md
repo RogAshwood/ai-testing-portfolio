@@ -3,7 +3,11 @@
 > Fictional insurer and plan, written as test data for an AI evaluation project.
 > Not based on any real insurer or policy. All amounts in EUR.
 
-v0.3, 6 November 2026. v0.3: R3 clarified after the first full run (a member
+v0.4, 6 November 2026. v0.4: R23 (off-topic remarks) and R24 (dates the member
+gives) added; M5 chunking of tables and the exclusions list, and the M5 version
+of document 04, recorded in sections 1a, 2 and 7. The bot's prompt was not
+changed for R23 or R24: the conversations test how the current bot handles them.
+v0.3: R3 clarified after the first full run (a member
 who says a claim is someone else's can be given the R2 reply without a lookup).
 v0.2: R6 split into tidy, confirm, then look up (R6a to R6c); R21 (actions the
 bot cannot take) and R22 (tool failure) added.
@@ -43,8 +47,12 @@ A checkpointer keeps the messages of each conversation (one thread per
 conversation), so later turns can refer back to earlier ones.
 
 **What is still RAG.** Only `search_policy`. It wraps the Day 3 retriever
-unchanged (paragraph chunks, k=3) over documents 01 to 09 plus the M5 version
-of document 10. Two things differ from Day 3, and both are new risks:
+(TF-IDF, k=3) over documents 01 to 10, with M5 versions of documents 04 and 10
+(section 7). Since 6 November the M5 chunking differs from Day 3 in one way:
+tables are split into one chunk per row and the exclusions list into one chunk
+per item, because those long chunks were missed by the agent's searches in the
+first two full runs (C02, C03, C11, C19). All other chunks are Day 3's. Two
+things differ from Day 3 in how retrieval is used, and both are new risks:
 
 | | Day 3 | M5 |
 | --- | --- | --- |
@@ -57,8 +65,9 @@ by key in `claim_status.csv`, with the access check in code. Nothing is ranked.
 Memory is the conversation history, passed back to the model in full on each
 turn.
 
-**Reused from Day 3, unchanged:** the retriever, chunking, documents 01 to 09
-and `key_fact_recall`. `generate()` and the Day 3 system prompt are not used by
+**Reused from Day 3, unchanged:** the retriever class and scoring, paragraph
+chunking for everything except tables and the exclusions list, documents 01 to
+03 and 05 to 09, and `key_fact_recall`. `generate()` and the Day 3 system prompt are not used by
 the M5 bot and are not changed; the Day 3 bot still uses them.
 
 **New in M5:** the agent loop, memory, the M5 system prompt, the claim tools
@@ -71,6 +80,7 @@ agent's search queries and whole conversations.
 | --- | --- |
 | Policy documents 01 to 10 (`datasets/policy_docs/`) | What the plan covers and why a rule applies |
 | M5 version of document 10 (`datasets/chatbot_docs/10_contact_and_privacy.md`) | Replaces Day 3 document 10 for the M5 bot only (see 7) |
+| M5 version of document 04 (`datasets/chatbot_docs/04_waiting_periods.md`) | Replaces Day 3 document 04 for the M5 bot only: adds how days are counted (see 7) |
 | `datasets/claim_status.csv`, as of 20 October 2026 | The status of each claim |
 
 ## 3. Session and identity
@@ -151,6 +161,21 @@ the member from the session, never from their arguments.
   and suggests the member portal. It does not guess a status or answer from
   the documents instead.
 
+**Off-topic remarks and the member's own facts**
+- **R23.** If the member says something unrelated to the plan or their claims
+  (small talk such as the weather, or a general question), the bot acknowledges
+  it briefly and in a friendly way, does not answer it or call a tool for it,
+  and says it can help with questions about the plan and the member's claims.
+  The conversation then carries on as before: a later "that claim" still means
+  the claim discussed before the remark.
+- **R24.** If the member gives dates and draws a conclusion about the waiting
+  period ("my cover started on X, so by Y I'm out of it"), the bot does not
+  treat the dates as verified and never confirms a wrong conclusion. It either
+  works out the day correctly using document 04 (the cover start date is day 0;
+  cover starts on day 182) and answers conditionally ("if your cover began
+  on X, ..."), or says it can't confirm and points to the member portal. It
+  makes no promise that a claim will be paid (R12).
+
 ## 6. Stretch: assessor callback (not in v1.0 scores)
 
 - **R18.** Offer a callback only for a claim that is `under_review`,
@@ -159,13 +184,25 @@ the member from the session, never from their arguments.
   request it?". Call the tool only after an explicit yes in the same conversation.
 - **R20.** Never more than one callback request per claim per conversation.
 
-## 7. Change to document 10 for M5 only
+## 7. Changes to documents 04 and 10 for M5 only
 
-Day 3 document 10 says the assistant "cannot see your claims". That is true of
-the Day 3 bot but wrong for M5, and the retriever would surface it. The M5 bot
-builds its retriever from documents 01 to 09 plus an M5 version of document 10
-that says it can look up your own claims when you are signed in. Day 3 files are
-not changed, and no Day 3 golden question cites document 10.
+The M5 bot builds its retriever from the Day 3 documents, with two of them
+replaced by M5 versions in `datasets/chatbot_docs/`. Day 3 files are not
+changed, so the Day 3 bot and its tests are unaffected.
+
+- **Document 10.** Day 3 document 10 says the assistant "cannot see your
+  claims". That is true of the Day 3 bot but wrong for M5, and the retriever
+  would surface it. The M5 version says it can look up your own claims when you
+  are signed in. No Day 3 golden question cites document 10.
+- **Document 04** (added 6 November). Day 3 document 04 says "Treatment in the
+  first 182 days is not covered. Treatment on day 182 or later is covered",
+  which can be read two ways: counting the cover start date as day 0 or as
+  day 1. The two readings differ on exactly one date, the boundary R24 tests.
+  The M5 version adds one paragraph: the cover start date is day 0, so cover
+  starts 182 days after it, with a worked example. This is the convention the
+  Day 2 data uses (HLH-021, day 181, declined; HLH-022, day 182, paid). The
+  example's dates (1 March, 29 and 30 August 2026) are deliberately not the
+  dates used in the golden conversations, so the bot cannot copy the answer.
 
 ## 8. Out of scope for v1.0
 

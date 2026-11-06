@@ -51,12 +51,23 @@ session limit, so it is a miss.
 Behaviour checks named in judge_checks (no_promise, no_leak, ...) are listed in
 the output but not scored here: the conversation judge does those in step 4.
 
+Dates (R24 turns with a date_check)
+-----------------------------------
+Whether the bot reasoned correctly about the waiting period is a judgement about
+meaning (a correct "you won't be out of the waiting period" and a wrong "you'll
+be out of the waiting period" share the same words), so it is left to the judge
+(correct_date_reasoning). This module only adds a note with the correct answer,
+computed in code by the validator, and whether the reply states that day count
+or covered-from date, to make the judge's and the reviewer's job easier.
+
 Matching text
 -------------
 Key facts and absent terms are matched as case-insensitive substrings after
-normalising both sides: curly quotes made straight, hyphens and dashes treated
-as spaces ("waiting-period" matches "waiting period"), the euro sign removed and
-whitespace collapsed.
+normalising both sides: curly quotes made straight, hyphens, dashes and
+underscores treated as spaces ("waiting-period" and the decision code
+"WAITING_PERIOD" both match "waiting period"), the euro sign removed and
+whitespace collapsed. Whether showing a member an internal code is acceptable is
+a separate question, for the judge (plain_language).
 
 Usage (from the repo root)
 --------------------------
@@ -72,6 +83,12 @@ Change history:
                     search_policy when an earlier search returned this turn's
                     facts (met_earlier is now always a fail); retrieval hits
                     measured on the facts in the returned text, not document IDs.
+  2026-11-06  v1.2  fix: score every conversation's record, not only files starting
+                    with C (the L01 to L03 records were being skipped).
+  2026-11-06  v1.3  underscores matched as spaces (L01 t2 wrote the code WAITING_PERIOD
+                    instead of "waiting period"); golden set v1.2.
+  2026-11-06  v1.4  note on R24 turns: the correct day count and covered-from date, and
+                    whether the reply states them (golden set v1.3, W01 and W02).
 """
 from __future__ import annotations
 
@@ -80,6 +97,7 @@ import csv
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 from .bot import RESULTS_DIR, load_golden
@@ -91,14 +109,32 @@ from .policy import load_m5_docs
 # ---------------------------------------------------------------------------
 
 def norm(text: str) -> str:
-    """Normalise text for matching: lower case, straight quotes, hyphens and dashes
-    as spaces, no euro sign, single spaces. Applied to both the reply and the
+    """Normalise text for matching: lower case, straight quotes, hyphens, dashes and
+    underscores as spaces, no euro sign, single spaces. Applied to both the reply and the
     term being looked for."""
     t = text.lower()
     t = t.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
-    t = re.sub(r"[-‐‑‒–—]", " ", t)     # hyphen and the dash family
+    t = re.sub(r"[-_‐‑‒–—]", " ", t)     # hyphen, underscore, the dash family
     t = t.replace("€", "").replace("**", "")                # euro sign, Markdown bold
     return " ".join(t.split())
+
+
+def _date_words(iso: str) -> str:
+    """'2026-11-18' -> '18 November', the way the bot usually writes a date."""
+    d = date.fromisoformat(iso)
+    return f"{d.day} {d.strftime('%B')}"
+
+
+def date_note(dc: dict, reply: str) -> str:
+    """A one-line note for an R24 turn: the correct answer and what the reply states."""
+    parts = []
+    if dc.get("day") is not None:
+        where = "inside" if dc["inside_waiting_period"] else "outside"
+        parts.append(f"correct: {_date_words(dc['date'])} is day {dc['day']} ({where} the waiting period)")
+        parts.append(f"reply states 'day {dc['day']}': {'yes' if contains(reply, 'day ' + str(dc['day'])) else 'no'}")
+    parts.append(f"covered from {_date_words(dc['covered_from'])}; reply states it: "
+                 f"{'yes' if contains(reply, _date_words(dc['covered_from'])) else 'no'}")
+    return "date check for the judge: " + "; ".join(parts)
 
 
 def contains(reply: str, term: str) -> bool:
@@ -218,6 +254,10 @@ def check_turn(exp: dict, got: dict | None, earlier_calls: list[dict], fault: st
     if tool_errors and not fault:
         failures += [f"tool error: {n}" for n in tool_errors]
 
+    # Dates (information only): the correct answer, for the judge
+    if exp.get("date_check"):
+        notes.append(date_note(exp["date_check"], got["reply"]))
+
     # Retrieval (information only): did this turn's searches return the document facts?
     searches = [c for c in calls if c["name"] == "search_policy" and c["status"] == "success"]
     retrieval_hit = None
@@ -253,8 +293,11 @@ def check_conversation(golden_conv: dict, record: dict) -> dict:
 def check_run(run_dir: Path) -> dict:
     """Score every trace record in a run folder and build the summary."""
     golden = {c["conv_id"]: c for c in load_golden()}
+    # Every trace record in the folder whose name is a golden conversation ID
+    # (C01.json, L01.json, ...). checks.json, written by this module, is skipped
+    # because "checks" is not a conversation ID.
     records = [json.loads(p.read_text(encoding="utf-8"))
-               for p in sorted(run_dir.glob("C*.json")) if p.stem in golden]
+               for p in sorted(run_dir.glob("*.json")) if p.stem in golden]
     if not records:
         raise SystemExit(f"no trace records found in {run_dir}")
     convs = [check_conversation(golden[r["conv_id"]], r) for r in records]

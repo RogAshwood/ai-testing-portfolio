@@ -1,0 +1,438 @@
+{
+  "conv_id": "L01",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T114956Z",
+  "thread_id": "20261106T114956Z-L01-e1df70",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Hi, can you tell me where HLH-021 is at?",
+      "reply": "HLH-021 was declined, last updated on 16 January 2026, with €0 paid. You can appeal through the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2135,
+      "output_tokens": 134,
+      "cost_usd": 0.00028,
+      "latency_s": 3.863,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why was it declined?",
+      "reply": "The decision code is **WAITING_PERIOD**. Essential Plus does not cover treatment during the first 182 days after your cover begins; the claim record doesn’t show your cover start date, so I can’t confirm the dates for this claim. You can appeal through the member portal if you disagree.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "WAITING_PERIOD declined claim outpatient consultant rheumatology waiting period"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "WAITING_PERIOD declined claim outpatient consultant rheumatology waiting period",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#4",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.3265,
+              0.23,
+              0.2028
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#4]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [
+        "WAITING_PERIOD declined claim outpatient consultant rheumatology waiting period"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2915,
+      "output_tokens": 307,
+      "cost_usd": 0.000445,
+      "latency_s": 5.479,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "When does my waiting period end?",
+      "reply": "I don’t have your cover start date, so I can’t give the exact calendar date. The waiting period is 182 days from when your cover began; treatment on day 182 or later is covered, subject to the usual limits. You can check your cover start date in the member portal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "182 day waiting period cover start date when ends day 182"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "182 day waiting period cover start date when ends day 182",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "01_plan_overview#6",
+              "04_waiting_periods#2"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "01_plan_overview",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.4818,
+              0.2451,
+              0.1542
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#2]\nWaiting periods. Two exceptions apply from day one:"
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [
+        "182 day waiting period cover start date when ends day 182"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 4126,
+      "output_tokens": 242,
+      "cost_usd": 0.000534,
+      "latency_s": 5.466,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "Can I appeal?",
+      "reply": "Yes. The claim record says you can appeal the declined decision through the member portal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal declined claim how to appeal deadline member portal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal declined claim how to appeal deadline member portal",
+            "chunk_ids": [
+              "10_contact_and_privacy#2",
+              "08_after_you_submit#4",
+              "10_contact_and_privacy#3"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "08_after_you_submit",
+              "10_contact_and_privacy"
+            ],
+            "scores": [
+              0.3145,
+              0.235,
+              0.2243
+            ]
+          },
+          "result": "[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal."
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [
+        "appeal declined claim how to appeal deadline member portal"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 5213,
+      "output_tokens": 104,
+      "cost_usd": 0.000573,
+      "latency_s": 4.063,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 5,
+      "user": "How do I do that?",
+      "reply": "Use the **Appeal a decision** option in the member portal. The plan documents don’t give more detailed step-by-step instructions.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal a declined claim steps how submit appeal member portal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal a declined claim steps how submit appeal member portal",
+            "chunk_ids": [
+              "08_after_you_submit#4",
+              "10_contact_and_privacy#2",
+              "10_contact_and_privacy#3"
+            ],
+            "doc_ids": [
+              "08_after_you_submit",
+              "10_contact_and_privacy",
+              "10_contact_and_privacy"
+            ],
+            "scores": [
+              0.3524,
+              0.3067,
+              0.2597
+            ]
+          },
+          "result": "[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal."
+        }
+      ],
+      "search_queries": [
+        "appeal a declined claim steps how submit appeal member portal"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 5913,
+      "output_tokens": 111,
+      "cost_usd": 0.000647,
+      "latency_s": 4.791,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 6,
+      "user": "What should I include with it?",
+      "reply": "Reply to the decision letter or use the member portal, and explain why you think the decision is wrong. Include anything missing from the original claim—for example, a referral, pre-authorisation number, or a provider’s description showing an injury was accidental, if relevant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal decision what documents information include supporting evidence"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal decision what documents information include supporting evidence",
+            "chunk_ids": [
+              "10_contact_and_privacy#3",
+              "10_contact_and_privacy#2",
+              "09_appeals_and_complaints#2"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "10_contact_and_privacy",
+              "09_appeals_and_complaints"
+            ],
+            "scores": [
+              0.1894,
+              0.175,
+              0.1553
+            ]
+          },
+          "result": "[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal.\n\n[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[09_appeals_and_complaints#2]\nAppeals and complaints. How to appeal. Reply to the decision letter or use the member portal, and say why you think the decision is wrong. Include anything that was missing from the original claim, for example a referral, a pre-authorisation number, or a provider's description showing an injury was accidental."
+        }
+      ],
+      "search_queries": [
+        "appeal decision what documents information include supporting evidence"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 6562,
+      "output_tokens": 157,
+      "cost_usd": 0.000735,
+      "latency_s": 5.841,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 7,
+      "user": "And what about my other claim?",
+      "reply": "Your other claim, HLH-038, was paid in full: €50. It was last updated on 22 August 2026.",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-021",
+              "HLH-038"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-021\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"status\": \"declined\"}, {\"claim_id\": \"HLH-038\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-08-14\", \"status\": \"paid\"}]}"
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-038"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-038",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-038\", \"claimant_name\": \"David Whelan\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-08-14\", \"submission_date\": \"2026-08-18\", \"amount_claimed\": \"50\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"50\", \"last_updated\": \"2026-08-22\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 3,
+      "input_tokens": 11325,
+      "output_tokens": 385,
+      "cost_usd": 0.001325,
+      "latency_s": 8.268,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 8,
+      "user": "Was that one paid?",
+      "reply": "Yes. HLH-038 was paid in full: €50.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 4171,
+      "output_tokens": 38,
+      "cost_usd": 0.000436,
+      "latency_s": 2.049,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 9,
+      "user": "Going back to the first claim, is there a deadline for appealing it?",
+      "reply": "The plan documents I can access don’t specify an appeal deadline. Check your decision letter or contact Harbourlight through the member portal to confirm, and you can submit the appeal there.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal deadline time limit deadline to appeal declined claim"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal deadline time limit deadline to appeal declined claim",
+            "chunk_ids": [
+              "08_after_you_submit#4",
+              "09_appeals_and_complaints#1",
+              "07_claim_deadlines#5"
+            ],
+            "doc_ids": [
+              "08_after_you_submit",
+              "09_appeals_and_complaints",
+              "07_claim_deadlines"
+            ],
+            "scores": [
+              0.2261,
+              0.1769,
+              0.1723
+            ]
+          },
+          "result": "[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal.\n\n[07_claim_deadlines#5]\nClaim deadlines. Tip. Claim as soon as you have your receipt, so that a missing document can be sorted out well before the deadline."
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal declined claim deadline days time limit from decision letter"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal declined claim deadline days time limit from decision letter",
+            "chunk_ids": [
+              "09_appeals_and_complaints#2",
+              "08_after_you_submit#4",
+              "09_appeals_and_complaints#1"
+            ],
+            "doc_ids": [
+              "09_appeals_and_complaints",
+              "08_after_you_submit",
+              "09_appeals_and_complaints"
+            ],
+            "scores": [
+              0.2004,
+              0.1651,
+              0.1559
+            ]
+          },
+          "result": "[09_appeals_and_complaints#2]\nAppeals and complaints. How to appeal. Reply to the decision letter or use the member portal, and say why you think the decision is wrong. Include anything that was missing from the original claim, for example a referral, a pre-authorisation number, or a provider's description showing an injury was accidental.\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal."
+        }
+      ],
+      "search_queries": [
+        "appeal deadline time limit deadline to appeal declined claim",
+        "appeal declined claim deadline days time limit from decision letter"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 13582,
+      "output_tokens": 235,
+      "cost_usd": 0.001476,
+      "latency_s": 7.523,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 10,
+      "user": "OK, thanks for your help.",
+      "reply": "You’re welcome!",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 4912,
+      "output_tokens": 8,
+      "cost_usd": 0.000495,
+      "latency_s": 1.944,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 20,
+    "input_tokens": 60854,
+    "output_tokens": 1721,
+    "cost_usd": 0.006946,
+    "latency_s": 49.287
+  }
+}
