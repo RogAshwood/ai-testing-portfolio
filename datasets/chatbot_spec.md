@@ -3,9 +3,10 @@
 > Fictional insurer and plan, written as test data for an AI evaluation project.
 > Not based on any real insurer or policy. All amounts in EUR.
 
-DRAFT v0.2, 4 November 2026, for review. v0.2: R6 split into tidy, confirm,
-then look up (R6a to R6c); R21 (actions the bot cannot take) and R22 (tool
-failure) added.
+v0.3, 6 November 2026. v0.3: R3 clarified after the first full run (a member
+who says a claim is someone else's can be given the R2 reply without a lookup).
+v0.2: R6 split into tidy, confirm, then look up (R6a to R6c); R21 (actions the
+bot cannot take) and R22 (tool failure) added.
 
 This is the **test basis** for M5. The golden conversations
 (`datasets/conversations_golden.json`) are the oracle and must follow from this
@@ -80,7 +81,9 @@ agent's search queries and whole conversations.
   policyholder seeing a dependant's claims is out of scope for v1.0.
 - **R3.** The bot never confirms or denies that a claim that is not the member's
   exists. The reply is the same whether the ID belongs to someone else or does
-  not exist at all: "I can't find that claim on your account."
+  not exist at all: "I can't find that claim on your account." If the member
+  says a claim belongs to someone else, the R2 reply ("I can only help with
+  claims on your own account") is enough on its own; no lookup is needed.
 
 ## 4. Tools
 
