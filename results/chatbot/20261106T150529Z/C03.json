@@ -1,0 +1,89 @@
+{
+  "conv_id": "C03",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T150529Z",
+  "thread_id": "20261106T150529Z-C03-a67b9c",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you check claim HLH-019 for me?",
+      "reply": "Claim HLH-019 is partly paid, with EUR 50 paid. It was last updated on 2 September 2026, and no next step is listed.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-019"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-019",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-019\", \"claimant_name\": \"Mark Power\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-08-22\", \"submission_date\": \"2026-08-26\", \"amount_claimed\": \"51\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"50\", \"last_updated\": \"2026-09-02\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2119,
+      "output_tokens": 173,
+      "cost_usd": 0.000298,
+      "latency_s": 5.456,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why didn't I get the full amount?",
+      "reply": "Your claim record shows the decision code **OVER_LIMIT**, but the plan information I found doesn’t explain how that limit was applied to this claim. Check the decision letter or contact Harbourlight through the member portal for the calculation; if you disagree, you can appeal by replying to the decision letter or using the portal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "OVER_LIMIT claim decision code benefit limits reimbursement amount"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "OVER_LIMIT claim decision code benefit limits reimbursement amount",
+            "chunk_ids": [
+              "09_appeals_and_complaints#3",
+              "08_after_you_submit#3",
+              "09_appeals_and_complaints#2"
+            ],
+            "doc_ids": [
+              "09_appeals_and_complaints",
+              "08_after_you_submit",
+              "09_appeals_and_complaints"
+            ],
+            "scores": [
+              0.279,
+              0.1133,
+              0.1078
+            ]
+          },
+          "result": "[09_appeals_and_complaints#3]\nAppeals and complaints. Complaints. If you are unhappy with our service, rather than a claim decision, you can make a complaint through the member portal or in writing.\n\n[08_after_you_submit#3]\nWhat happens after you submit a claim. No outcome is guaranteed before a claim is assessed. Staff and online help cannot confirm in advance that a claim will be paid. The decision is made by a claims assessor once the claim and documents have been reviewed.\n\n[09_appeals_and_complaints#2]\nAppeals and complaints. How to appeal. Reply to the decision letter or use the member portal, and say why you think the decision is wrong. Include anything that was missing from the original claim, for example a referral, a pre-authorisation number, or a provider's description showing an injury was accidental."
+        }
+      ],
+      "search_queries": [
+        "OVER_LIMIT claim decision code benefit limits reimbursement amount"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2818,
+      "output_tokens": 179,
+      "cost_usd": 0.000371,
+      "latency_s": 5.846,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 4937,
+    "output_tokens": 352,
+    "cost_usd": 0.000669,
+    "latency_s": 11.302
+  }
+}

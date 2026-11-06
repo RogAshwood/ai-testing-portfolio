@@ -1,0 +1,105 @@
+{
+  "conv_id": "C02",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T150529Z",
+  "thread_id": "20261106T150529Z-C02-24a4dc",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much do you pay for a GP visit?",
+      "reply": "We pay up to €60 per GP visit, for up to 8 visits per policy year.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "GP visit benefit amount reimbursement limit consultation"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "GP visit benefit amount reimbursement limit consultation",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#2.1",
+              "02_cover_and_limits#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.4562,
+              0.3017,
+              0.2534
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.1]\nCover and annual limits. Treatment: GP visit; Most we pay per visit or item: 60; Visits or items per policy year: 8 visits; What you also need: Nothing extra\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+        }
+      ],
+      "search_queries": [
+        "GP visit benefit amount reimbursement limit consultation"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2159,
+      "output_tokens": 48,
+      "cost_usd": 0.00024,
+      "latency_s": 4.667,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "And is acupuncture covered?",
+      "reply": "No. Acupuncture is listed as an alternative therapy and isn’t covered by Essential Plus.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "acupuncture cover benefit limits exclusions"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "acupuncture cover benefit limits exclusions",
+            "chunk_ids": [
+              "03_exclusions#2.4",
+              "01_plan_overview#4",
+              "02_cover_and_limits#3"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "01_plan_overview",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2579,
+              0.1173,
+              0.1163
+            ]
+          },
+          "result": "[03_exclusions#2.4]\nWhat is not covered. Alternative therapies, for example acupuncture and homeopathy.\n\n[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\".\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit."
+        }
+      ],
+      "search_queries": [
+        "acupuncture cover benefit limits exclusions"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2574,
+      "output_tokens": 45,
+      "cost_usd": 0.00028,
+      "latency_s": 3.374,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 4733,
+    "output_tokens": 93,
+    "cost_usd": 0.00052,
+    "latency_s": 8.041
+  }
+}

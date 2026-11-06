@@ -1,0 +1,130 @@
+{
+  "conv_id": "C01",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T150529Z",
+  "thread_id": "20261106T150529Z-C01-9df647",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Hi, what's happening with claim HLH-021?",
+      "reply": "Claim HLH-021 was declined under the waiting-period rule, and €0 was paid. The Essential Plus plan has a 182-day waiting period from when cover begins; treatment during that period isn’t covered. You can appeal through the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "WAITING_PERIOD outpatient rheumatology waiting period appeal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "WAITING_PERIOD outpatient rheumatology waiting period appeal",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#5",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.3674,
+              0.2568,
+              0.2359
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        }
+      ],
+      "search_queries": [
+        "WAITING_PERIOD outpatient rheumatology waiting period appeal"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3470,
+      "output_tokens": 188,
+      "cost_usd": 0.000441,
+      "latency_s": 7.078,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why was it declined?",
+      "reply": "The claim record gives the decision code **WAITING_PERIOD**. Under the plan, treatment in the first 182 days after cover begins isn’t covered.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1490,
+      "output_tokens": 106,
+      "cost_usd": 0.000202,
+      "latency_s": 3.279,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "That seems unfair. Can I do anything about it?",
+      "reply": "Yes. You can appeal the decision through the member portal. I can’t change the decision, but the portal lets you submit an appeal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal declined claim how to appeal deadline member portal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal declined claim how to appeal deadline member portal",
+            "chunk_ids": [
+              "10_contact_and_privacy#2",
+              "08_after_you_submit#4",
+              "10_contact_and_privacy#3"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "08_after_you_submit",
+              "10_contact_and_privacy"
+            ],
+            "scores": [
+              0.3179,
+              0.2413,
+              0.2298
+            ]
+          },
+          "result": "[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal."
+        }
+      ],
+      "search_queries": [
+        "appeal declined claim how to appeal deadline member portal"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3467,
+      "output_tokens": 92,
+      "cost_usd": 0.000393,
+      "latency_s": 4.297,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 8427,
+    "output_tokens": 386,
+    "cost_usd": 0.001036,
+    "latency_s": 14.654
+  }
+}

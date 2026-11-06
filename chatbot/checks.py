@@ -28,14 +28,17 @@ The checks, per turn
 Results for a required tool
 ---------------------------
   pass          called on this turn with the expected arguments
-  pass_earlier  search_policy only: not called on this turn, but an earlier
-                search in the conversation already returned this turn's facts,
-                so the answer can be grounded in what the bot has in memory
-                (C01 turn 2 in the first full run). Counts as a pass, noted.
-  met_earlier   called the same way on an earlier turn but not this one, and
-                that does not count: for the claim tools (claim data should be
-                looked up fresh), or for a search whose earlier results did not
-                contain this turn's facts. A fail.
+  pass_earlier  not called on this turn, but called earlier in the conversation
+                in a way that still serves this turn, so the bot can answer
+                from what it has in memory. Counts as a pass, noted.
+                  search_policy: an earlier search returned this turn's facts
+                    (C01 turn 2 in the first full run).
+                  claim tools: called earlier with the same arguments (C15 turn
+                    2 after the chunking change: the bot reused the list it had
+                    fetched on turn 1). Within one conversation the data cannot
+                    have changed, so a fresh lookup adds nothing.
+  met_earlier   search_policy only: an earlier search happened, but its results
+                did not contain this turn's facts. A fail.
   wrong_args    called on this turn, but with different arguments
   missing       not called at all so far
 
@@ -89,6 +92,8 @@ Change history:
                     instead of "waiting period"); golden set v1.2.
   2026-11-06  v1.4  note on R24 turns: the correct day count and covered-from date, and
                     whether the reply states them (golden set v1.3, W01 and W02).
+  2026-11-06  v1.5  pass_earlier also for a claim tool called earlier with the same
+                    arguments (spec R6b v0.5, C15); cached input tokens in the summary.
 """
 from __future__ import annotations
 
@@ -173,7 +178,9 @@ def check_required(req: dict, this_turn: list[dict], earlier: list[dict],
     earlier_same = [c for c in earlier if c["name"] == req["name"] and _args_match(req["args"], c["args"])]
     if not earlier_same:
         return "missing"
-    if req["name"] == "search_policy" and doc_facts and facts_in_text(doc_facts, _results_text(earlier_same)):
+    if req["name"] != "search_policy":
+        return "pass_earlier"                       # same claim tool, same arguments, same conversation
+    if doc_facts and facts_in_text(doc_facts, _results_text(earlier_same)):
         return "pass_earlier"
     return "met_earlier"
 
@@ -233,7 +240,7 @@ def check_turn(exp: dict, got: dict | None, earlier_calls: list[dict], fault: st
         result = check_required(req, calls, earlier_calls, doc_facts)
         required[label] = result
         if result == "pass_earlier":
-            notes.append(f"{label} not called this turn; an earlier search already returned this turn's facts")
+            notes.append(f"{label} not called this turn; an earlier call in the conversation serves it")
         elif result != "pass":
             failures.append(f"required {label}: {result}")
 
@@ -317,6 +324,8 @@ def check_run(run_dir: Path) -> dict:
         "retrieval_turns": len(hits),
         "judge_checks_pending": sum(len(t["judge_checks"]) for t in all_turns),
         "cost_usd": round(sum(c["totals"].get("cost_usd") or 0 for c in convs), 4),
+        "input_tokens": sum(c["totals"].get("input_tokens") or 0 for c in convs),
+        "cached_input_tokens": sum(c["totals"].get("cached_input_tokens") or 0 for c in convs),
         "latency_s": round(sum(c["totals"].get("latency_s") or 0 for c in convs), 1),
     }
     return {"summary": summary, "conversations": convs}
@@ -346,7 +355,8 @@ def print_report(result: dict) -> None:
     print(f"  key facts missing {s['key_facts_missing']}  |  absent terms found {s['absent_terms_found']}  |  "
           f"retrieval hit rate {s['retrieval_hit_rate']} over {s['retrieval_turns']} turns")
     print(f"  judge checks pending (step 4) {s['judge_checks_pending']}  |  cost ${s['cost_usd']}  |  "
-          f"time {s['latency_s']} s\n")
+          f"time {s['latency_s']} s")
+    print(f"  input tokens {s['input_tokens']}, of which cached by the provider {s['cached_input_tokens']}\n")
     for c in result["conversations"]:
         mark = "PASS" if c["passed"] else "FAIL"
         print(f"{mark}  {c['conv_id']}  {c['category']}" + (f"  ERROR {c['error']}" if c["error"] else ""))

@@ -27,6 +27,7 @@ Change history:
   2026-11-05  v1.1  plain-English docstring for every test and helper; no test changed.
   2026-11-06  v1.2  section 4b: tests for the M5 chunking (tables split by row, the
                     exclusions list by item) and the M5 version of document 04.
+  2026-11-06  v1.3  test that cached input tokens are counted in the trace record.
 """
 from __future__ import annotations
 
@@ -38,7 +39,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
-from chatbot.bot import build_graph, load_golden, run_conversation
+from chatbot.bot import _turn_record, build_graph, load_golden, run_conversation
 from chatbot.claims import ClaimsStore, ClaimsStoreUnavailable, tidy_id
 from chatbot.policy import SPLIT_LIST_DOCS, build_m5_retriever, chunk_m5, load_m5_docs
 from chatbot.tools import NOT_FOUND, build_tools
@@ -338,6 +339,18 @@ def test_run_conversation_trace_record(retriever):
     t2 = rec["turns"][1]["tool_calls"][0]
     assert (t2["name"], t2["args"], t2["status"], t2["artifact"]["found"]) == \
         ("get_claim_status", {"claim_id": "HLH-021"}, "success", True)
+
+
+def test_trace_counts_cached_input_tokens():
+    """The trace record counts input tokens the provider served from its prompt cache,
+    including the service-tier form of the key ('priority_cache_read'), so a run shows
+    how much prompt caching happened. Cost is still worked out at the full price."""
+    msgs = [AIMessage(content="One.", usage_metadata={"input_tokens": 2000, "output_tokens": 20, "total_tokens": 2020,
+                                                       "input_token_details": {"cache_read": 1536}}),
+            AIMessage(content="Two.", usage_metadata={"input_tokens": 1000, "output_tokens": 10, "total_tokens": 1010,
+                                                       "input_token_details": {"priority_cache_read": 512}})]
+    rec = _turn_record(1, "hi", msgs, 0.5, "gpt-6-luna")
+    assert (rec["input_tokens"], rec["cached_input_tokens"]) == (3000, 2048)
 
 
 def test_bot_module_makes_no_api_call_at_import():

@@ -18,8 +18,10 @@ Checks:
        standard, not theirs or unknown -> not passed to a claim tool, and the
                                           turn expects "can't find that claim"
                                           or forbids claim tools;
-       malformed but recognisable      -> claim tools forbidden on that turn and
-                                          the tidied ID is a key fact.
+       malformed but recognisable      -> get_claim_status forbidden on that turn
+                                          (listing the member's own claims is
+                                          allowed, spec R6b v0.5) and the tidied
+                                          ID is a key fact (or one alternative).
   4. Traceability: every key fact (any one of its 'a|b' alternatives) appears
      in at least one of the turn's fact_sources. claim:X must be the member's.
   5. No contradiction: no key fact alternative is also an absent term.
@@ -39,6 +41,8 @@ Change history:
                   forbidden_tools (hard).
   2026-11-06  v2  check 7: date_check arithmetic recomputed in code (golden set
                   v1.3, W01 and W02); judge_checks_every_turn must be defined.
+  2026-11-06  v2.1  check 3 follows spec R6b v0.5: only get_claim_status must be
+                  forbidden before a malformed ID is confirmed.
 """
 from __future__ import annotations
 import csv, hashlib, json, re, sys
@@ -149,8 +153,8 @@ def main() -> int:
                 tidied = tidy_id(raw)
                 if tidied is None: continue
                 if raw.upper() != tidied:                      # malformed -> confirm first (R6b)
-                    if not CLAIM_TOOLS <= set(t["forbidden_tools"]):
-                        e(f"malformed ID {raw!r}: claim tools must be forbidden until confirmed", i)
+                    if "get_claim_status" not in t["forbidden_tools"]:
+                        e(f"malformed ID {raw!r}: get_claim_status must be forbidden until confirmed", i)
                     if norm(tidied) not in key_norm:
                         e(f"malformed ID {raw!r}: tidied {tidied} must be a key fact", i)
                 elif tidied not in claims or claims[tidied]["member_id"] != mid:   # not theirs (R3)

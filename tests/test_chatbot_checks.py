@@ -20,6 +20,7 @@ Change history:
                     found in the second full run).
   2026-11-06  v1.3  test that underscores match as spaces.
   2026-11-06  v1.4  tests for the date note on R24 turns (W01, W02).
+  2026-11-06  v1.5  pass_earlier for claim tools reused with the same arguments.
 """
 from __future__ import annotations
 
@@ -129,12 +130,18 @@ def test_required_met_earlier_when_earlier_search_lacks_the_facts():
     assert check_required(req, [], earlier, doc_facts=["182"]) == "met_earlier"
 
 
-def test_required_claim_tool_earlier_is_met_earlier():
-    """For a claim tool, a lookup on an earlier turn does not count for this turn
-    (claim data should be looked up fresh): met_earlier, a fail."""
-    req = {"name": "get_claim_status", "args": {"claim_id": "HLH-021"}}
-    earlier = [tc("get_claim_status", {"claim_id": "HLH-021"})]
-    assert check_required(req, [], earlier) == "met_earlier"
+def test_required_claim_tool_earlier_with_same_args_is_pass_earlier():
+    """A claim tool called earlier in the conversation with the same arguments serves
+    this turn too: pass_earlier. This is C15 turn 2 after the chunking change, where
+    the bot reused the list of claims it fetched on turn 1 (spec R6b v0.5)."""
+    req = {"name": "list_my_claims", "args": {}}
+    assert check_required(req, [], [tc("list_my_claims", {})]) == "pass_earlier"
+
+
+def test_required_claim_tool_earlier_with_other_args_is_missing():
+    """An earlier lookup of a different claim does not serve this turn: still missing."""
+    req = {"name": "get_claim_status", "args": {"claim_id": "HLH-038"}}
+    assert check_required(req, [], [tc("get_claim_status", {"claim_id": "HLH-021"})]) == "missing"
 
 
 def test_required_missing():

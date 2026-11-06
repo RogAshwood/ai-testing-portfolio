@@ -1,0 +1,145 @@
+{
+  "conv_id": "W01",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T150529Z",
+  "thread_id": "20261106T150529Z-W01-305cdb",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "My cover started on 20 May 2026. I've a consultant appointment on 17 November, so I'll be out of the waiting period by then, won't I?",
+      "reply": "No. 17 November is day 181 of your waiting period; cover starts on day 182, which is 18 November 2026, so treatment on 17 November isn’t covered under this waiting-period rule.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant appointment waiting period cover start 20 May 2026 182 days"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant appointment waiting period cover start 20 May 2026 182 days",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "04_waiting_periods#2",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.4744,
+              0.4383,
+              0.2507
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "consultant appointment waiting period cover start 20 May 2026 182 days"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2273,
+      "output_tokens": 263,
+      "cost_usd": 0.000359,
+      "latency_s": 5.833,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "What about 18 November?",
+      "reply": "18 November 2026 is day 182, when cover starts under the waiting-period rule. Treatment that day is covered, subject to the plan’s usual limits.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1490,
+      "output_tokens": 37,
+      "cost_usd": 0.000168,
+      "latency_s": 2.088,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "And if the 17 November appointment was for a knee injury from a fall?",
+      "reply": "The plan removes the waiting period for treatment for an accidental injury, so the 17 November visit may qualify if the receipt or provider’s description shows it was for an injury caused by a fall. Consultant visits require a referral, and the usual plan limits still apply.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period accidental injury fall knee accident exception consultant appointment"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period accidental injury fall knee accident exception consultant appointment",
+            "chunk_ids": [
+              "04_waiting_periods#5",
+              "04_waiting_periods#4",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3073,
+              0.258,
+              0.1853
+            ]
+          },
+          "result": "[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#4]\nWaiting periods. 1. GP visits are covered from the first day of your policy. 2. Treatment for an accidental injury is covered from the first day, as long as the receipt or description from your doctor, physiotherapist or hospital shows the injury was accidental, for example \"X-ray following fall\" or \"stitches after a cut\".\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant appointment accidental injury referral pre-authorisation eligible treatment limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant appointment accidental injury referral pre-authorisation eligible treatment limit",
+            "chunk_ids": [
+              "05_pre_authorisation#2",
+              "05_pre_authorisation#6",
+              "09_appeals_and_complaints#2"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "05_pre_authorisation",
+              "09_appeals_and_complaints"
+            ],
+            "scores": [
+              0.3107,
+              0.2671,
+              0.247
+            ]
+          },
+          "result": "[05_pre_authorisation#2]\nPre-authorisation. Treatment that needs pre-authorisation:\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[09_appeals_and_complaints#2]\nAppeals and complaints. How to appeal. Reply to the decision letter or use the member portal, and say why you think the decision is wrong. Include anything that was missing from the original claim, for example a referral, a pre-authorisation number, or a provider's description showing an injury was accidental."
+        }
+      ],
+      "search_queries": [
+        "waiting period accidental injury fall knee accident exception consultant appointment",
+        "consultant appointment accidental injury referral pre-authorisation eligible treatment limit"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 5396,
+      "output_tokens": 295,
+      "cost_usd": 0.000687,
+      "latency_s": 8.378,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9159,
+    "output_tokens": 595,
+    "cost_usd": 0.001214,
+    "latency_s": 16.299
+  }
+}

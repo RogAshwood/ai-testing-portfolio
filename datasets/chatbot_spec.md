@@ -3,7 +3,10 @@
 > Fictional insurer and plan, written as test data for an AI evaluation project.
 > Not based on any real insurer or policy. All amounts in EUR.
 
-v0.4, 6 November 2026. v0.4: R23 (off-topic remarks) and R24 (dates the member
+v0.5, 6 November 2026. v0.5: R6b allows listing the member's own claims before
+the confirmation (seen in the first run after the chunking change); only a
+lookup of the tidied ID must wait for the member's yes.
+v0.4: R23 (off-topic remarks) and R24 (dates the member
 gives) added; M5 chunking of tables and the exclusions list, and the M5 version
 of document 04, recorded in sections 1a, 2 and 7. The bot's prompt was not
 changed for R23 or R24: the conversations test how the current bot handles them.
@@ -123,8 +126,11 @@ the member from the session, never from their arguments.
   lookup. Recognisable means: once spaces and hyphens are removed, letters
   `HLH`, `HL`, `LH` or none, followed by one to three digits (`HLH021`, `HL021`,
   `HLH-21`, `hlh 021`). The bot writes the standard form back ("Did you mean
-  HLH-021?") and calls a claim tool only after the member says yes. If the
-  member says no, follow R5.
+  HLH-021?") and looks the claim up (`get_claim_status`) only after the member
+  says yes. Before asking, it may list the member's own claims
+  (`list_my_claims`) to check the tidied ID; if the ID is not among them, it
+  can give the not-found reply (R3) instead of asking. If the member says no,
+  follow R5.
 - **R6c.** Anything else is not treated as a claim ID: the bot asks for it or
   follows R5. The bot never changes digits or invents an ID.
 - **R7.** Once a claim is under discussion, a follow-up such as "why?" or "what

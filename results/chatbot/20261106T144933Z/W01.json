@@ -1,0 +1,145 @@
+{
+  "conv_id": "W01",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261106T144933Z",
+  "thread_id": "20261106T144933Z-W01-c29438",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "My cover started on 20 May 2026. I've a consultant appointment on 17 November, so I'll be out of the waiting period by then, won't I?",
+      "reply": "Not quite: 17 November is day 181 of your waiting period, so treatment that day isn’t covered. Cover starts on day 182, 18 November 2026, subject to the usual limits.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant appointment waiting period 182 days start date cover begins treatment date"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant appointment waiting period 182 days start date cover begins treatment date",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "04_waiting_periods#2",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.5496,
+              0.3484,
+              0.2224
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "consultant appointment waiting period 182 days start date cover begins treatment date"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2251,
+      "output_tokens": 180,
+      "cost_usd": 0.000315,
+      "latency_s": 5.308,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "What about 18 November?",
+      "reply": "18 November 2026 is day 182, when cover starts after the waiting period. The treatment is covered subject to the usual plan limits.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1407,
+      "output_tokens": 33,
+      "cost_usd": 0.000157,
+      "latency_s": 1.614,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "And if the 17 November appointment was for a knee injury from a fall?",
+      "reply": "The plan covers treatment for an accidental injury from the first day of your policy, so the 182-day waiting period wouldn’t apply if the appointment is for an injury from a fall. The receipt or treatment description must show that it was accidental, and the usual requirements and limits still apply.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "accident injury fall waiting period 182 days consultant treatment exception knee injury"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "accident injury fall waiting period 182 days consultant treatment exception knee injury",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "04_waiting_periods#2",
+              "04_waiting_periods#5"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.407,
+              0.239,
+              0.228
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "accident exception sudden accidental injury fall definition waiting period eligibility"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "accident exception sudden accidental injury fall definition waiting period eligibility",
+            "chunk_ids": [
+              "04_waiting_periods#5",
+              "04_waiting_periods#4",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3178,
+              0.2669,
+              0.1917
+            ]
+          },
+          "result": "[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#4]\nWaiting periods. 1. GP visits are covered from the first day of your policy. 2. Treatment for an accidental injury is covered from the first day, as long as the receipt or description from your doctor, physiotherapist or hospital shows the injury was accidental, for example \"X-ray following fall\" or \"stitches after a cut\".\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "accident injury fall waiting period 182 days consultant treatment exception knee injury",
+        "accident exception sudden accidental injury fall definition waiting period eligibility"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 5159,
+      "output_tokens": 142,
+      "cost_usd": 0.000587,
+      "latency_s": 6.158,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 8817,
+    "output_tokens": 355,
+    "cost_usd": 0.001059,
+    "latency_s": 13.08
+  }
+}

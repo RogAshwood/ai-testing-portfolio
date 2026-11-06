@@ -46,6 +46,14 @@ The trace record
 run_conversation() writes results/chatbot/<run_id>/<conv_id>.json. For every
 turn it holds the member's message, each tool the bot called (with arguments,
 whether it worked, and what came back), the bot's reply, tokens, cost and time.
+
+Cached tokens: OpenAI automatically reuses its processing of a long opening
+part of a request that it has seen recently (here the system prompt and the
+tool descriptions). This is "prompt caching". It makes calls faster and the
+cached input tokens cheaper, but the reply is still generated fresh every time,
+so it cannot make two runs give the same answer. The record counts the cached
+input tokens (cached_input_tokens) so this can be seen. cost_usd is worked out
+at the full input price, so it slightly overstates the real cost.
 The checks read this file. They never read Langfuse, so the tests work the
 same with or without a Langfuse account.
 
@@ -56,6 +64,7 @@ Change history:
   2026-11-05  v1  first version (M5).
   2026-11-05  v1.1  comments and docstrings expanded; some variable names made clearer.
                     Behaviour unchanged (same 27 tests pass).
+  2026-11-06  v1.2  trace record counts cached input tokens per turn and in the totals.
 """
 from __future__ import annotations
 
@@ -207,13 +216,14 @@ def _turn_record(n: int, user: str, new_msgs: list, latency: float, model: str) 
 
     Returns a dict with the member's message, every tool call (name, arguments,
     status, artifact and the start of the result text), the reply, the search
-    queries the model wrote, and tokens, cost and time for the turn.
+    queries the model wrote, and tokens (including cached input tokens), cost
+    and time for the turn.
     """
     # Index the tool results by the ID of the request they answer.
     results = {m.tool_call_id: m for m in new_msgs if isinstance(m, ToolMessage)}
 
     calls, reply = [], ""
-    llm_calls, tokens_in, tokens_out, served = 0, 0, 0, None
+    llm_calls, tokens_in, tokens_out, tokens_cached, served = 0, 0, 0, 0, None
     for m in new_msgs:
         if not isinstance(m, AIMessage):
             continue
@@ -222,6 +232,11 @@ def _turn_record(n: int, user: str, new_msgs: list, latency: float, model: str) 
         usage = m.usage_metadata or {}
         tokens_in += usage.get("input_tokens", 0)
         tokens_out += usage.get("output_tokens", 0)
+        # Input tokens the provider served from its prompt cache (see the top of the file).
+        # LangChain reports them as "cache_read", or with a service-tier prefix such as
+        # "priority_cache_read", so any key ending in cache_read is counted.
+        details = usage.get("input_token_details") or {}
+        tokens_cached += sum(v or 0 for k, v in details.items() if k.endswith("cache_read"))
         meta = m.response_metadata or {}
         served = meta.get("model_name") or meta.get("model") or served
         # Pair each tool request with its result.
@@ -238,6 +253,7 @@ def _turn_record(n: int, user: str, new_msgs: list, latency: float, model: str) 
     return {"turn": n, "user": user, "reply": reply, "tool_calls": calls,
             "search_queries": [c["args"].get("query") for c in calls if c["name"] == "search_policy"],
             "llm_calls": llm_calls, "input_tokens": tokens_in, "output_tokens": tokens_out,
+            "cached_input_tokens": tokens_cached,
             "cost_usd": cost_usd(model, tokens_in, tokens_out),      # None if the model has no price
             "latency_s": round(latency, 3), "model_served": served}
 
@@ -320,7 +336,8 @@ def run_conversation(conv: dict, llm=None, retriever=None, model: str = AGENT_MO
         "model_served": next((x["model_served"] for x in turns if x["model_served"]), None),   # as in M1
         "langfuse": bool(handler), "error": error, "turns": turns,
         "totals": {k: round(sum((x[k] or 0) for x in turns), 6)
-                   for k in ("llm_calls", "input_tokens", "output_tokens", "cost_usd", "latency_s")},
+                   for k in ("llm_calls", "input_tokens", "cached_input_tokens", "output_tokens",
+                             "cost_usd", "latency_s")},
     }
     if save:
         out = RESULTS_DIR / run_id

@@ -22,6 +22,7 @@ It does not score anything; the checks (step 3) read the saved records.
 Change history:
   2026-11-05  v1  first version (M5).
   2026-11-05  v1.1  comments expanded; no code change.
+  2026-11-06  v1.2  prints cached input tokens.
 """
 from __future__ import annotations
 
@@ -70,7 +71,8 @@ def main(argv=None) -> int:
             print(f"\n  ERROR {rec['error']}")
         tot = rec["totals"]
         total += tot["cost_usd"] or 0
-        print(f"\n  {tot['llm_calls']} model calls, {tot['input_tokens']} in / {tot['output_tokens']} out tokens, "
+        print(f"\n  {tot['llm_calls']} model calls, {tot['input_tokens']} in "
+              f"({tot.get('cached_input_tokens', 0)} cached) / {tot['output_tokens']} out tokens, "
               f"${tot['cost_usd']:.4f}, {tot['latency_s']:.1f} s")
     print(f"\nSaved to {RESULTS_DIR / run_id}  |  total ${total:.4f}")
     return 0
