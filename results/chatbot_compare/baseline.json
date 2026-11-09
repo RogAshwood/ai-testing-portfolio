@@ -1,0 +1,121 @@
+{
+  "groups": {
+    "baseline": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "turns_text": 95,
+        "turns_judge": 75,
+        "turns_both": 74,
+        "convs_text": 27,
+        "convs_both": 14,
+        "judge_fails": {
+          "plain_language": 12,
+          "no_invented_fact": 6,
+          "treats_member_facts_as_unverified": 4,
+          "friendly_redirect": 2
+        },
+        "retrieval": 0.962,
+        "cost": 0.5607,
+        "name": "results\\chatbot\\20261109T155138Z+results\\chatbot\\20261109T171528Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "turns_text": 95,
+        "turns_judge": 76,
+        "turns_both": 76,
+        "convs_text": 27,
+        "convs_both": 13,
+        "judge_fails": {
+          "plain_language": 14,
+          "treats_member_facts_as_unverified": 5,
+          "no_invented_fact": 3,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.9639999999999999,
+        "cost": 0.5392,
+        "name": "results\\chatbot\\20261109T162148Z+results\\chatbot\\20261109T171704Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "turns_text": 91,
+        "turns_judge": 73,
+        "turns_both": 70,
+        "convs_text": 25,
+        "convs_both": 14,
+        "judge_fails": {
+          "plain_language": 17,
+          "no_invented_fact": 2,
+          "treats_member_facts_as_unverified": 5,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.885,
+        "cost": 0.5451,
+        "name": "results\\chatbot\\20261109T163346Z+results\\chatbot\\20261109T171808Z"
+      }
+    ]
+  },
+  "summary": {
+    "baseline": {
+      "turns_text": {
+        "mean": 93.667,
+        "min": 91,
+        "max": 95
+      },
+      "turns_judge": {
+        "mean": 74.667,
+        "min": 73,
+        "max": 76
+      },
+      "turns_both": {
+        "mean": 73.333,
+        "min": 70,
+        "max": 76
+      },
+      "convs_text": {
+        "mean": 26.333,
+        "min": 25,
+        "max": 27
+      },
+      "convs_both": {
+        "mean": 13.667,
+        "min": 13,
+        "max": 14
+      },
+      "retrieval": {
+        "mean": 0.937,
+        "min": 0.885,
+        "max": 0.9639999999999999
+      },
+      "cost": {
+        "mean": 0.548,
+        "min": 0.5392,
+        "max": 0.5607
+      },
+      "judge_fails": {
+        "friendly_redirect": {
+          "mean": 1.33,
+          "min": 1,
+          "max": 2
+        },
+        "no_invented_fact": {
+          "mean": 3.67,
+          "min": 2,
+          "max": 6
+        },
+        "plain_language": {
+          "mean": 14.33,
+          "min": 12,
+          "max": 17
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 4.67,
+          "min": 4,
+          "max": 5
+        }
+      }
+    }
+  }
+}

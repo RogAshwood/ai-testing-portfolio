@@ -10,6 +10,8 @@ Modules
 - checks.py   the deterministic checks: python -m chatbot.checks --latest
 - judge.py    the conversation judge (gpt-6-sol) for behaviour checks: python -m chatbot.judge --latest
 - labels.py   blind human labels for the judge and the agreement report: python -m chatbot.labels build <run>
+- compare.py  groups of runs side by side, mean [min-max]: python -m chatbot.compare --baseline ... --experiment ...
+- deepeval_compare.py  DeepEval conversational metrics vs our checks: python -m chatbot.deepeval_compare <run>
 
 How the pieces fit: run.py asks bot.py to play a golden conversation; bot.py
 builds the LangGraph agent with prompt.py's instructions and tools.py's tools;
