@@ -1,0 +1,170 @@
+{
+  "conv_id": "C19",
+  "member_id": "M-1002",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T233318Z",
+  "thread_id": "20261109T233318Z-C19-5e80ab",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much does the plan pay for physio?",
+      "reply": "The plan pays up to €50 per physiotherapy session, for up to 10 sessions per policy year. You’ll need a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy benefit limit amount per session annual limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy benefit limit amount per session annual limit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5",
+              "02_cover_and_limits#2.3"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2492,
+              0.1981,
+              0.1944
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant"
+        }
+      ],
+      "search_queries": [
+        "physiotherapy benefit limit amount per session annual limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2430,
+      "output_tokens": 64,
+      "cached_input_tokens": 2240,
+      "cost_usd": 0.000275,
+      "latency_s": 3.307,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How many sessions do I get a year?",
+      "reply": "You can claim up to 10 physiotherapy sessions per policy year.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1359,
+      "output_tokens": 18,
+      "cached_input_tokens": 1304,
+      "cost_usd": 0.000145,
+      "latency_s": 1.465,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Do I need a referral?",
+      "reply": "Yes. Physiotherapy needs a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy referral required GP consultant"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy referral required GP consultant",
+            "chunk_ids": [
+              "02_cover_and_limits#2.3",
+              "05_pre_authorisation#6",
+              "06_how_to_claim#2"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "05_pre_authorisation",
+              "06_how_to_claim"
+            ],
+            "scores": [
+              0.3513,
+              0.3377,
+              0.3227
+            ]
+          },
+          "result": "[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy referral required GP consultant"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3027,
+      "output_tokens": 41,
+      "cached_input_tokens": 2742,
+      "cost_usd": 0.000323,
+      "latency_s": 3.266,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "What about pilates for my back?",
+      "reply": "Pilates classes aren’t covered, even if they’re described as therapeutic or held at a clinic. Physiotherapy is covered up to €50 per session for up to 10 sessions per policy year, with a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "Pilates treatment cover back exercise classes physiotherapy"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "Pilates treatment cover back exercise classes physiotherapy",
+            "chunk_ids": [
+              "03_exclusions#2.5",
+              "05_pre_authorisation#6",
+              "02_cover_and_limits#2.3"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "05_pre_authorisation",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2183,
+              0.1691,
+              0.1248
+            ]
+          },
+          "result": "[03_exclusions#2.5]\nWhat is not covered. Fitness and wellness classes, for example yoga, pilates and gym membership. This applies even if a class is described as therapeutic or is run at a clinic.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant"
+        }
+      ],
+      "search_queries": [
+        "Pilates treatment cover back exercise classes physiotherapy"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3544,
+      "output_tokens": 97,
+      "cached_input_tokens": 3301,
+      "cost_usd": 0.000403,
+      "latency_s": 3.839,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 7,
+    "input_tokens": 10360,
+    "cached_input_tokens": 9587,
+    "output_tokens": 220,
+    "cost_usd": 0.001146,
+    "latency_s": 11.877
+  }
+}

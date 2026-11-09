@@ -1,0 +1,68 @@
+{
+  "conv_id": "C23",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T233318Z",
+  "thread_id": "20261109T233318Z-C23-82a3d8",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-0211 been paid?",
+      "reply": "I can’t look up HLH-0211 because claim IDs have three digits after the hyphen. Please check the ID in your member portal and send me the correct one.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1122,
+      "output_tokens": 168,
+      "cached_input_tokens": 1119,
+      "cost_usd": 0.000196,
+      "latency_s": 2.729,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Sorry, I meant HLH-021.",
+      "reply": "No, claim HLH-021 was declined and €0 was paid. You can appeal through the member portal if you disagree with the decision.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2775,
+      "output_tokens": 129,
+      "cached_input_tokens": 2421,
+      "cost_usd": 0.000342,
+      "latency_s": 3.4,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 3,
+    "input_tokens": 3897,
+    "cached_input_tokens": 3540,
+    "output_tokens": 297,
+    "cost_usd": 0.000538,
+    "latency_s": 6.129
+  }
+}

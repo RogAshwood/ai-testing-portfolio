@@ -1,0 +1,65 @@
+{
+  "conv_id": "C18",
+  "member_id": "M-1024",
+  "fault": "claims_store_unavailable",
+  "stretch": false,
+  "run_id": "20261109T233318Z",
+  "thread_id": "20261109T233318Z-C18-53a2b4",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-024 been paid?",
+      "reply": "I can’t check claims right now because the claims system isn’t responding. Please check your claim in the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-024"
+          },
+          "status": "error",
+          "artifact": null,
+          "result": "Error: the claims system is not responding. No claim information is available right now."
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2294,
+      "output_tokens": 51,
+      "cached_input_tokens": 2288,
+      "cost_usd": 0.000255,
+      "latency_s": 2.749,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Roughly, would a claim like that normally be paid?",
+      "reply": "I can’t see what treatment HLH-024 was for, so I can’t say whether a claim like it would normally be paid. Check the claim details in the member portal; I can explain the plan rules if you ask about the treatment listed there.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1220,
+      "output_tokens": 216,
+      "cached_input_tokens": 1170,
+      "cost_usd": 0.00023,
+      "latency_s": 3.114,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 3,
+    "input_tokens": 3514,
+    "cached_input_tokens": 3458,
+    "output_tokens": 267,
+    "cost_usd": 0.000485,
+    "latency_s": 5.863
+  }
+}

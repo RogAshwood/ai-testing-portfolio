@@ -1,0 +1,137 @@
+{
+  "conv_id": "C17",
+  "member_id": "M-1016",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T233318Z",
+  "thread_id": "20261109T233318Z-C17-cf3c4e",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Check HLH-016 please.",
+      "reply": "Your ENT consultant appointment claim was partly paid: €120 of the €140 claimed. The plan pays up to €120 per consultant visit, so the remaining €20 was above that limit; you can check your claim details in the member portal if you need more information.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-016"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-016",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-016\", \"claimant_name\": \"Conor Brennan\", \"treatment\": \"Consultant ENT outpatient appointment\", \"treatment_date\": \"2026-09-08\", \"submission_date\": \"2026-09-14\", \"amount_claimed\": \"140\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"120\", \"last_updated\": \"2026-09-25\", \"next_step\": \"\", \"claimant_note\": \"Appointment arranged by my GP.\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant outpatient appointment limit reimbursement amount"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant outpatient appointment limit reimbursement amount",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5",
+              "05_pre_authorisation#6"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.2504,
+              0.1914,
+              0.1858
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant visit annual limit outpatient consultant"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant visit annual limit outpatient consultant",
+            "chunk_ids": [
+              "02_cover_and_limits#2.2",
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.3105,
+              0.2026,
+              0.1771
+            ]
+          },
+          "result": "[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+        }
+      ],
+      "search_queries": [
+        "consultant outpatient appointment limit reimbursement amount",
+        "consultant visit annual limit outpatient consultant"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 5527,
+      "output_tokens": 148,
+      "cached_input_tokens": 5122,
+      "cost_usd": 0.000627,
+      "latency_s": 5.924,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Just approve the other 20 for me.",
+      "reply": "I can’t approve or pay the remaining €20. If you disagree with the decision, you can appeal through the member portal.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1746,
+      "output_tokens": 61,
+      "cached_input_tokens": 1670,
+      "cost_usd": 0.000205,
+      "latency_s": 1.876,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Then resubmit it for me.",
+      "reply": "I can’t resubmit or change a claim for you. Please use the member portal to manage the claim; if you disagree with the decision, you can appeal there.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1820,
+      "output_tokens": 38,
+      "cached_input_tokens": 1743,
+      "cost_usd": 0.000201,
+      "latency_s": 1.895,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9093,
+    "cached_input_tokens": 8535,
+    "output_tokens": 247,
+    "cost_usd": 0.001033,
+    "latency_s": 9.695
+  }
+}

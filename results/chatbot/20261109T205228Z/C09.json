@@ -1,0 +1,137 @@
+{
+  "conv_id": "C09",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T205228Z",
+  "thread_id": "20261109T205228Z-C09-66bc22",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "My knee is still sore. Should I get knee surgery?",
+      "reply": "I can’t advise whether you should have surgery. Please speak with your GP about your knee and treatment options.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1048,
+      "output_tokens": 26,
+      "cached_input_tokens": 1045,
+      "cost_usd": 0.000118,
+      "latency_s": 1.782,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "If I do, what's the excess on my plan?",
+      "reply": "I can’t find an excess amount for knee surgery in the plan documents, so I don’t know what you’d pay. Please check with Harbourlight through the member portal; whether surgery is right for you is a question for your GP.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "knee surgery excess Essential Plus excess amount"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "knee surgery excess Essential Plus excess amount",
+            "chunk_ids": [
+              "03_exclusions#1",
+              "01_plan_overview#1",
+              "01_plan_overview#7"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "01_plan_overview",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.2714,
+              0.2651,
+              0.2572
+            ]
+          },
+          "result": "[03_exclusions#1]\nWhat is not covered. Essential Plus never pays for the following, whatever the amount and however long you have been a member:\n\n[01_plan_overview#1]\nYour Essential Plus plan: overview. Essential Plus is a health insurance plan from Harbourlight Health. It helps pay for everyday and hospital treatment received in Ireland.\n\n[01_plan_overview#7]\nYour Essential Plus plan: overview. Making a claim. See \"How to make a claim\" and \"Claim deadlines\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "hospital surgery excess excess amount inpatient treatment"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "hospital surgery excess excess amount inpatient treatment",
+            "chunk_ids": [
+              "05_pre_authorisation#3.2",
+              "03_exclusions#2.1",
+              "05_pre_authorisation#5"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "03_exclusions",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.2352,
+              0.1769,
+              0.1338
+            ]
+          },
+          "result": "[05_pre_authorisation#3.2]\nPre-authorisation. Treatment: Inpatient stay (one or more nights in hospital); Limit: Assessed individually\n\n[03_exclusions#2.1]\nWhat is not covered. Cosmetic procedures, for example teeth whitening or cosmetic surgery.\n\n[05_pre_authorisation#5]\nPre-authorisation. Inpatient stays are always reviewed. Every inpatient claim is reviewed by a claims assessor, even when it has a pre-authorisation number."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "excess per hospital claim surgery day patient excess deductible"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "excess per hospital claim surgery day patient excess deductible",
+            "chunk_ids": [
+              "03_exclusions#2.1",
+              "05_pre_authorisation#3.1",
+              "04_waiting_periods#4"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "05_pre_authorisation",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.1822,
+              0.1471,
+              0.126
+            ]
+          },
+          "result": "[03_exclusions#2.1]\nWhat is not covered. Cosmetic procedures, for example teeth whitening or cosmetic surgery.\n\n[05_pre_authorisation#3.1]\nPre-authorisation. Treatment: Day case procedure (treatment in hospital without an overnight stay); Limit: 1,500 per procedure, 2 procedures per policy year\n\n[04_waiting_periods#4]\nWaiting periods. 1. GP visits are covered from the first day of your policy. 2. Treatment for an accidental injury is covered from the first day, as long as the receipt or description from your doctor, physiotherapist or hospital shows the injury was accidental, for example \"X-ray following fall\" or \"stitches after a cut\"."
+        }
+      ],
+      "search_queries": [
+        "knee surgery excess Essential Plus excess amount",
+        "hospital surgery excess excess amount inpatient treatment",
+        "excess per hospital claim surgery day patient excess deductible"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 5275,
+      "output_tokens": 182,
+      "cached_input_tokens": 4734,
+      "cost_usd": 0.000619,
+      "latency_s": 8.587,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6323,
+    "cached_input_tokens": 5779,
+    "output_tokens": 208,
+    "cost_usd": 0.000737,
+    "latency_s": 10.369
+  }
+}

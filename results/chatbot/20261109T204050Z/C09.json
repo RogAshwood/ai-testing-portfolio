@@ -1,0 +1,110 @@
+{
+  "conv_id": "C09",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T204050Z",
+  "thread_id": "20261109T204050Z-C09-0af3c2",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "My knee is still sore. Should I get knee surgery?",
+      "reply": "I can’t advise whether you should have surgery. Please speak with your GP about your knee and the options that may be suitable for you.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1048,
+      "output_tokens": 32,
+      "cached_input_tokens": 1029,
+      "cost_usd": 0.000121,
+      "latency_s": 2.118,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "If I do, what's the excess on my plan?",
+      "reply": "I can’t find the excess amount in the plan documents, so I don’t know what you’d pay. They list a €1,500 limit per day-case procedure, but that isn’t the excess; check the member portal for the applicable excess and cover for your procedure.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "knee surgery excess amount"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "knee surgery excess amount",
+            "chunk_ids": [
+              "03_exclusions#2.1",
+              "01_plan_overview#1",
+              "01_plan_overview#2"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "01_plan_overview",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.2663,
+              0.0,
+              0.0
+            ]
+          },
+          "result": "[03_exclusions#2.1]\nWhat is not covered. Cosmetic procedures, for example teeth whitening or cosmetic surgery.\n\n[01_plan_overview#1]\nYour Essential Plus plan: overview. Essential Plus is a health insurance plan from Harbourlight Health. It helps pay for everyday and hospital treatment received in Ireland.\n\n[01_plan_overview#2]\nYour Essential Plus plan: overview. Who is covered. The policyholder and any dependants named on the policy. Each covered person can make claims in their own name."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "hospital treatment surgery excess hospital excess amount"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "hospital treatment surgery excess hospital excess amount",
+            "chunk_ids": [
+              "01_plan_overview#1",
+              "05_pre_authorisation#3.2",
+              "05_pre_authorisation#3.1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "05_pre_authorisation",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.2143,
+              0.1726,
+              0.1473
+            ]
+          },
+          "result": "[01_plan_overview#1]\nYour Essential Plus plan: overview. Essential Plus is a health insurance plan from Harbourlight Health. It helps pay for everyday and hospital treatment received in Ireland.\n\n[05_pre_authorisation#3.2]\nPre-authorisation. Treatment: Inpatient stay (one or more nights in hospital); Limit: Assessed individually\n\n[05_pre_authorisation#3.1]\nPre-authorisation. Treatment: Day case procedure (treatment in hospital without an overnight stay); Limit: 1,500 per procedure, 2 procedures per policy year"
+        }
+      ],
+      "search_queries": [
+        "knee surgery excess amount",
+        "hospital treatment surgery excess hospital excess amount"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3765,
+      "output_tokens": 233,
+      "cached_input_tokens": 3372,
+      "cost_usd": 0.000493,
+      "latency_s": 7.797,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 4813,
+    "cached_input_tokens": 4401,
+    "output_tokens": 265,
+    "cost_usd": 0.000614,
+    "latency_s": 9.915
+  }
+}

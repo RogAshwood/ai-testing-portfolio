@@ -1,0 +1,222 @@
+{
+  "groups": {
+    "baseline": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline",
+        "turns_text": 95,
+        "turns_judge": 75,
+        "turns_both": 74,
+        "convs_text": 27,
+        "convs_both": 14,
+        "judge_fails": {
+          "plain_language": 12,
+          "no_invented_fact": 6,
+          "treats_member_facts_as_unverified": 4,
+          "friendly_redirect": 2
+        },
+        "retrieval": 0.962,
+        "cost": 0.5607,
+        "name": "results\\chatbot\\20261109T155138Z+results\\chatbot\\20261109T171528Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline",
+        "turns_text": 95,
+        "turns_judge": 76,
+        "turns_both": 76,
+        "convs_text": 27,
+        "convs_both": 13,
+        "judge_fails": {
+          "plain_language": 14,
+          "treats_member_facts_as_unverified": 5,
+          "no_invented_fact": 3,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.9639999999999999,
+        "cost": 0.5392,
+        "name": "results\\chatbot\\20261109T162148Z+results\\chatbot\\20261109T171704Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline",
+        "turns_text": 91,
+        "turns_judge": 73,
+        "turns_both": 70,
+        "convs_text": 25,
+        "convs_both": 14,
+        "judge_fails": {
+          "plain_language": 17,
+          "no_invented_fact": 2,
+          "treats_member_facts_as_unverified": 5,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.885,
+        "cost": 0.5451,
+        "name": "results\\chatbot\\20261109T163346Z+results\\chatbot\\20261109T171808Z"
+      }
+    ],
+    "experiment": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language",
+        "turns_text": 93,
+        "turns_judge": 88,
+        "turns_both": 87,
+        "convs_text": 26,
+        "convs_both": 22,
+        "judge_fails": {
+          "treats_member_facts_as_unverified": 4,
+          "no_invented_fact": 2,
+          "friendly_redirect": 2,
+          "correct_date_reasoning": 1
+        },
+        "retrieval": 0.923,
+        "cost": 0.5426,
+        "name": "results\\chatbot\\20261109T204050Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language",
+        "turns_text": 93,
+        "turns_judge": 85,
+        "turns_both": 83,
+        "convs_text": 25,
+        "convs_both": 18,
+        "judge_fails": {
+          "no_invented_fact": 5,
+          "treats_member_facts_as_unverified": 5,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.92,
+        "cost": 0.5433,
+        "name": "results\\chatbot\\20261109T205228Z"
+      }
+    ]
+  },
+  "summary": {
+    "baseline": {
+      "turns_text": {
+        "mean": 93.667,
+        "min": 91,
+        "max": 95
+      },
+      "turns_judge": {
+        "mean": 74.667,
+        "min": 73,
+        "max": 76
+      },
+      "turns_both": {
+        "mean": 73.333,
+        "min": 70,
+        "max": 76
+      },
+      "convs_text": {
+        "mean": 26.333,
+        "min": 25,
+        "max": 27
+      },
+      "convs_both": {
+        "mean": 13.667,
+        "min": 13,
+        "max": 14
+      },
+      "retrieval": {
+        "mean": 0.937,
+        "min": 0.885,
+        "max": 0.9639999999999999
+      },
+      "cost": {
+        "mean": 0.548,
+        "min": 0.5392,
+        "max": 0.5607
+      },
+      "judge_fails": {
+        "friendly_redirect": {
+          "mean": 1.33,
+          "min": 1,
+          "max": 2
+        },
+        "no_invented_fact": {
+          "mean": 3.67,
+          "min": 2,
+          "max": 6
+        },
+        "plain_language": {
+          "mean": 14.33,
+          "min": 12,
+          "max": 17
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 4.67,
+          "min": 4,
+          "max": 5
+        }
+      }
+    },
+    "experiment": {
+      "turns_text": {
+        "mean": 93,
+        "min": 93,
+        "max": 93
+      },
+      "turns_judge": {
+        "mean": 86.5,
+        "min": 85,
+        "max": 88
+      },
+      "turns_both": {
+        "mean": 85,
+        "min": 83,
+        "max": 87
+      },
+      "convs_text": {
+        "mean": 25.5,
+        "min": 25,
+        "max": 26
+      },
+      "convs_both": {
+        "mean": 20,
+        "min": 18,
+        "max": 22
+      },
+      "retrieval": {
+        "mean": 0.921,
+        "min": 0.92,
+        "max": 0.923
+      },
+      "cost": {
+        "mean": 0.543,
+        "min": 0.5426,
+        "max": 0.5433
+      },
+      "judge_fails": {
+        "correct_date_reasoning": {
+          "mean": 0.5,
+          "min": 0,
+          "max": 1
+        },
+        "friendly_redirect": {
+          "mean": 1.5,
+          "min": 1,
+          "max": 2
+        },
+        "no_invented_fact": {
+          "mean": 3.5,
+          "min": 2,
+          "max": 5
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 4.5,
+          "min": 4,
+          "max": 5
+        }
+      }
+    }
+  }
+}

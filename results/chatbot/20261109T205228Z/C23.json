@@ -1,0 +1,151 @@
+{
+  "conv_id": "C23",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T205228Z",
+  "thread_id": "20261109T205228Z-C23-653acf",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-0211 been paid?",
+      "reply": "Claim IDs have three digits after “HLH-”. Could you check the ID and send it again?",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "claim ID format identifying claim status paid"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "claim ID format identifying claim status paid",
+            "chunk_ids": [
+              "10_contact_and_privacy#3",
+              "06_how_to_claim#6",
+              "06_how_to_claim#1"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "06_how_to_claim",
+              "06_how_to_claim"
+            ],
+            "scores": [
+              0.1864,
+              0.1691,
+              0.1534
+            ]
+          },
+          "result": "[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal.\n\n[06_how_to_claim#6]\nHow to make a claim. After you claim. See \"What happens after you submit a claim\".\n\n[06_how_to_claim#1]\nHow to make a claim. What to send with every claim:"
+        }
+      ],
+      "search_queries": [
+        "claim ID format identifying claim status paid"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2273,
+      "output_tokens": 170,
+      "cached_input_tokens": 2084,
+      "cost_usd": 0.000312,
+      "latency_s": 5.364,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Sorry, I meant HLH-021.",
+      "reply": "No. HLH-021 was declined and €0 was paid because the treatment was within the plan’s 182-day waiting period; you can appeal through the member portal if you disagree with the decision.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period outpatient consultant treatment claim declined"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period outpatient consultant treatment claim declined",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "08_after_you_submit#4",
+              "04_waiting_periods#5"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "08_after_you_submit",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.2943,
+              0.2884,
+              0.2056
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period specialist outpatient consultant 182 days"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period specialist outpatient consultant 182 days",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "04_waiting_periods#2",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.5128,
+              0.3445,
+              0.2496
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "waiting period outpatient consultant treatment claim declined",
+        "waiting period specialist outpatient consultant 182 days"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 6756,
+      "output_tokens": 217,
+      "cached_input_tokens": 5919,
+      "cost_usd": 0.000784,
+      "latency_s": 8.971,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9029,
+    "cached_input_tokens": 8003,
+    "output_tokens": 387,
+    "cost_usd": 0.001096,
+    "latency_s": 14.335
+  }
+}

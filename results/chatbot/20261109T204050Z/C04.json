@@ -1,0 +1,110 @@
+{
+  "conv_id": "C04",
+  "member_id": "M-1006",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T204050Z",
+  "thread_id": "20261109T204050Z-C04-e2a22d",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "What's the latest on HLH-006?",
+      "reply": "Your claim for a consultant dermatology appointment is awaiting more information. No amount has been paid (€0); it was last updated on 24 September 2026. Please upload your GP referral letter in the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-006"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-006",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-006\", \"claimant_name\": \"Emma Byrne\", \"treatment\": \"Consultant dermatology appointment\", \"treatment_date\": \"2026-09-12\", \"submission_date\": \"2026-09-18\", \"amount_claimed\": \"110\", \"status\": \"information_requested\", \"decision_code\": \"MISSING_REFERRAL\", \"amount_paid\": \"0\", \"last_updated\": \"2026-09-24\", \"next_step\": \"Upload your GP referral letter in the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2255,
+      "output_tokens": 177,
+      "cached_input_tokens": 2071,
+      "cost_usd": 0.000314,
+      "latency_s": 4.232,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "It was for a mole on my back that my sister thought looked odd. Why do they need a referral?",
+      "reply": "Consultant visits under Essential Plus need a referral from your GP, so the plan requires a GP referral letter for this claim. The plan documents don’t give a more specific reason for requiring one.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant dermatology GP referral letter requirement"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant dermatology GP referral letter requirement",
+            "chunk_ids": [
+              "05_pre_authorisation#6",
+              "06_how_to_claim#2",
+              "02_cover_and_limits#2.2"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "06_how_to_claim",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.1967,
+              0.192,
+              0.1798
+            ]
+          },
+          "result": "[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay.\n\n[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP"
+        }
+      ],
+      "search_queries": [
+        "consultant dermatology GP referral letter requirement"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3073,
+      "output_tokens": 112,
+      "cached_input_tokens": 2596,
+      "cost_usd": 0.000363,
+      "latency_s": 4.113,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "How do I send it?",
+      "reply": "Upload your GP referral letter in the member portal, as requested for the claim. I don’t have more specific upload instructions, so check the portal if you need help finding the upload option.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1736,
+      "output_tokens": 136,
+      "cached_input_tokens": 1678,
+      "cost_usd": 0.000242,
+      "latency_s": 2.876,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 7064,
+    "cached_input_tokens": 6345,
+    "output_tokens": 425,
+    "cost_usd": 0.000919,
+    "latency_s": 11.221
+  }
+}

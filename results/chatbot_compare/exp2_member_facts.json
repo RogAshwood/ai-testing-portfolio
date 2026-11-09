@@ -1,0 +1,196 @@
+{
+  "groups": {
+    "baseline": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language",
+        "turns_text": 93,
+        "turns_judge": 88,
+        "turns_both": 87,
+        "convs_text": 26,
+        "convs_both": 22,
+        "judge_fails": {
+          "treats_member_facts_as_unverified": 4,
+          "no_invented_fact": 2,
+          "friendly_redirect": 2,
+          "correct_date_reasoning": 1
+        },
+        "retrieval": 0.923,
+        "cost": 0.5426,
+        "name": "results\\chatbot\\20261109T204050Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language",
+        "turns_text": 93,
+        "turns_judge": 85,
+        "turns_both": 83,
+        "convs_text": 25,
+        "convs_both": 18,
+        "judge_fails": {
+          "no_invented_fact": 5,
+          "treats_member_facts_as_unverified": 5,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.92,
+        "cost": 0.5433,
+        "name": "results\\chatbot\\20261109T205228Z"
+      }
+    ],
+    "experiment": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language, member_facts",
+        "turns_text": 96,
+        "turns_judge": 86,
+        "turns_both": 86,
+        "convs_text": 28,
+        "convs_both": 21,
+        "judge_fails": {
+          "treats_member_facts_as_unverified": 2,
+          "no_invented_fact": 8,
+          "friendly_redirect": 2
+        },
+        "retrieval": 0.9579999999999999,
+        "cost": 0.5498,
+        "name": "results\\chatbot\\20261109T232249Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language, member_facts",
+        "turns_text": 94,
+        "turns_judge": 91,
+        "turns_both": 90,
+        "convs_text": 26,
+        "convs_both": 23,
+        "judge_fails": {
+          "no_invented_fact": 4,
+          "treats_member_facts_as_unverified": 1,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.923,
+        "cost": 0.5597,
+        "name": "results\\chatbot\\20261109T233318Z"
+      }
+    ]
+  },
+  "summary": {
+    "baseline": {
+      "turns_text": {
+        "mean": 93,
+        "min": 93,
+        "max": 93
+      },
+      "turns_judge": {
+        "mean": 86.5,
+        "min": 85,
+        "max": 88
+      },
+      "turns_both": {
+        "mean": 85,
+        "min": 83,
+        "max": 87
+      },
+      "convs_text": {
+        "mean": 25.5,
+        "min": 25,
+        "max": 26
+      },
+      "convs_both": {
+        "mean": 20,
+        "min": 18,
+        "max": 22
+      },
+      "retrieval": {
+        "mean": 0.921,
+        "min": 0.92,
+        "max": 0.923
+      },
+      "cost": {
+        "mean": 0.543,
+        "min": 0.5426,
+        "max": 0.5433
+      },
+      "judge_fails": {
+        "correct_date_reasoning": {
+          "mean": 0.5,
+          "min": 0,
+          "max": 1
+        },
+        "friendly_redirect": {
+          "mean": 1.5,
+          "min": 1,
+          "max": 2
+        },
+        "no_invented_fact": {
+          "mean": 3.5,
+          "min": 2,
+          "max": 5
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 4.5,
+          "min": 4,
+          "max": 5
+        }
+      }
+    },
+    "experiment": {
+      "turns_text": {
+        "mean": 95,
+        "min": 94,
+        "max": 96
+      },
+      "turns_judge": {
+        "mean": 88.5,
+        "min": 86,
+        "max": 91
+      },
+      "turns_both": {
+        "mean": 88,
+        "min": 86,
+        "max": 90
+      },
+      "convs_text": {
+        "mean": 27,
+        "min": 26,
+        "max": 28
+      },
+      "convs_both": {
+        "mean": 22,
+        "min": 21,
+        "max": 23
+      },
+      "retrieval": {
+        "mean": 0.94,
+        "min": 0.923,
+        "max": 0.9579999999999999
+      },
+      "cost": {
+        "mean": 0.555,
+        "min": 0.5498,
+        "max": 0.5597
+      },
+      "judge_fails": {
+        "friendly_redirect": {
+          "mean": 1.5,
+          "min": 1,
+          "max": 2
+        },
+        "no_invented_fact": {
+          "mean": 6,
+          "min": 4,
+          "max": 8
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 1.5,
+          "min": 1,
+          "max": 2
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "conv_id": "C01",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T204050Z",
+  "thread_id": "20261109T204050Z-C01-22a048",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Hi, what's happening with claim HLH-021?",
+      "reply": "Claim HLH-021 was declined because the waiting period applied, and €0 was paid. You can appeal through the member portal; a senior claims assessor who wasn’t involved in the original decision will review it.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period claim declined appeal explanation"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period claim declined appeal explanation",
+            "chunk_ids": [
+              "08_after_you_submit#4",
+              "09_appeals_and_complaints#1",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "08_after_you_submit",
+              "09_appeals_and_complaints",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.4603,
+              0.3054,
+              0.2607
+            ]
+          },
+          "result": "[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "waiting period claim declined appeal explanation"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3620,
+      "output_tokens": 162,
+      "cached_input_tokens": 2253,
+      "cost_usd": 0.000443,
+      "latency_s": 10.937,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why was it declined?",
+      "reply": "The claim record indicates the waiting-period rule was the reason for the decline. Under the plan, days 0–181 after cover begins are the waiting period, and cover starts on day 182; I don’t have your cover start date to confirm the exact timing. You can ask for a review by appealing through the member portal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period consultant rheumatology outpatient review claim treatment date 4 January 2026"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period consultant rheumatology outpatient review claim treatment date 4 January 2026",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#2",
+              "06_how_to_claim#5"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "06_how_to_claim"
+            ],
+            "scores": [
+              0.2309,
+              0.2264,
+              0.2047
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[06_how_to_claim#5]\nHow to make a claim. When to claim. Within 12 months of the treatment date. See \"Claim deadlines\"."
+        }
+      ],
+      "search_queries": [
+        "waiting period consultant rheumatology outpatient review claim treatment date 4 January 2026"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3193,
+      "output_tokens": 245,
+      "cached_input_tokens": 2843,
+      "cost_usd": 0.000442,
+      "latency_s": 5.48,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "That seems unfair. Can I do anything about it?",
+      "reply": "I understand why it feels unfair. You can appeal the decline through the member portal, where a senior claims assessor who wasn’t involved in the original decision will review it; you can also make a complaint there.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal declined claim how to appeal member portal senior claims assessor"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal declined claim how to appeal member portal senior claims assessor",
+            "chunk_ids": [
+              "09_appeals_and_complaints#1",
+              "10_contact_and_privacy#2",
+              "10_contact_and_privacy#3"
+            ],
+            "doc_ids": [
+              "09_appeals_and_complaints",
+              "10_contact_and_privacy",
+              "10_contact_and_privacy"
+            ],
+            "scores": [
+              0.3951,
+              0.2885,
+              0.2158
+            ]
+          },
+          "result": "[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal.\n\n[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal."
+        }
+      ],
+      "search_queries": [
+        "appeal declined claim how to appeal member portal senior claims assessor"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 4091,
+      "output_tokens": 121,
+      "cached_input_tokens": 3632,
+      "cost_usd": 0.00047,
+      "latency_s": 4.709,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 7,
+    "input_tokens": 10904,
+    "cached_input_tokens": 8728,
+    "output_tokens": 528,
+    "cost_usd": 0.001355,
+    "latency_s": 21.126
+  }
+}

@@ -29,6 +29,8 @@ Change history:
                     exclusions list by item) and the M5 version of document 04.
   2026-11-06  v1.3  test that cached input tokens are counted in the trace record.
   2026-11-09  v1.4  R6c cases HLH-01A and HLH-0211 (golden set v1.6, C22 and C23).
+  2026-11-09  v1.5  prompt experiments: the baseline prompt is unchanged, an experiment's
+                    line reaches the model, and the trace record says which prompt was used.
 """
 from __future__ import annotations
 
@@ -41,6 +43,7 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
 from chatbot.bot import _turn_record, build_graph, load_golden, run_conversation
+from chatbot.prompt import EXPERIMENT_LINES, SYSTEM_PROMPT, build_system_prompt
 from chatbot.claims import ClaimsStore, ClaimsStoreUnavailable, tidy_id
 from chatbot.policy import SPLIT_LIST_DOCS, build_m5_retriever, chunk_m5, load_m5_docs
 from chatbot.tools import NOT_FOUND, build_tools
@@ -361,3 +364,39 @@ def test_bot_module_makes_no_api_call_at_import():
     anything else that imports the bot) never need an API key or cost money."""
     import chatbot.bot as b
     assert "ChatOpenAI(" not in inspect.getsource(b).split("def make_llm")[0]
+
+
+
+# ============================================================================
+# 6. Prompt experiments (step 5)
+# ============================================================================
+
+def test_baseline_prompt_is_unchanged_without_experiments():
+    """With no experiment switched on, the bot gets exactly the baseline prompt, so the
+    baseline runs and any later baseline run use the same instructions."""
+    assert build_system_prompt() == SYSTEM_PROMPT and build_system_prompt([]) == SYSTEM_PROMPT
+
+
+def test_experiment_adds_only_its_line():
+    """An experiment adds its one instruction to the end of the baseline prompt and
+    changes nothing else; an unknown name stops the run instead of silently using the baseline."""
+    p = build_system_prompt(["plain_language"])
+    assert p.startswith(SYSTEM_PROMPT) and p.endswith(EXPERIMENT_LINES["plain_language"])
+    with pytest.raises(ValueError):
+        build_system_prompt(["plain_langauge"])
+
+
+def test_experiment_reaches_the_model_and_the_record(retriever):
+    """Running a conversation with an experiment: the model is sent the extra line, and
+    the trace record names the experiment and a prompt fingerprint different from the
+    baseline's, so every result can be traced to its prompt."""
+    conv = next(c for c in load_golden() if c["conv_id"] == "C02")
+    def play(exps):
+        model = ScriptedModel(script=[AIMessage(content="ok")] * len(conv["turns"]), seen=[])
+        rec = run_conversation(conv, llm=model, retriever=retriever, tracing=False, save=False, experiments=exps)
+        return model, rec
+    model, rec = play(["plain_language"])
+    assert EXPERIMENT_LINES["plain_language"] in model.seen[0][0].content
+    assert rec["experiments"] == ["plain_language"]
+    _, base = play([])
+    assert base["experiments"] == [] and base["system_prompt_fp"] != rec["system_prompt_fp"]

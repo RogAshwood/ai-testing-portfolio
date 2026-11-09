@@ -6,8 +6,21 @@ tool and conversation rules from datasets/chatbot_spec.md. Rule numbers in
 brackets match the spec, so a failed check can be traced to the instruction.
 The Day 3 prompt itself is not changed.
 
+Prompt experiments (M5 step 5)
+------------------------------
+SYSTEM_PROMPT is the baseline and is never edited for an experiment. Each
+experiment is one extra instruction in EXPERIMENT_LINES, switched on by name:
+
+  python -m chatbot.run --all --no-tracing --experiment plain_language
+
+build_system_prompt() adds the chosen lines to the end of the baseline prompt.
+The trace record stores which experiments were on and a fingerprint of the
+exact prompt sent, so every result can be traced to its prompt.
+
 Change history:
   2026-11-05  v1  first version (M5).
+  2026-11-09  v2  EXPERIMENT_LINES and build_system_prompt() for the step 5 prompt
+                  experiments. SYSTEM_PROMPT (the baseline) is unchanged.
 """
 
 SYSTEM_PROMPT = """You are the online help assistant for Harbourlight Health, talking to a \
@@ -59,3 +72,41 @@ portal, or to an appeal if they disagree with a decision. [R21]
 - If a claim tool fails, say you can't check claims right now and suggest the member portal. \
 Do not guess a status. [R22]
 - Answer in two to four plain sentences. Use amounts in EUR. [R17]"""
+
+
+# ---------------------------------------------------------------------------
+# Prompt experiments (step 5): one extra instruction each, off by default
+# ---------------------------------------------------------------------------
+
+EXPERIMENT_LINES = {
+    # 1. Internal codes and Markdown shown to members (baseline: 12-17 judge fails a run).
+    "plain_language": "Write as you would speak to the member. Never show internal codes or field names "
+                      "(such as WAITING_PERIOD, OVER_LIMIT or decision_code): say what they mean in plain words. "
+                      "Do not use Markdown or other formatting: no ** for bold, no headings, no bullet lists. "
+                      "[R10, R17]",
+    # 2. Dates and other facts from the member stated as fact (baseline: 4-5 a run).
+    "member_facts": "Dates or other facts the member gives you, such as when their cover began, cannot be checked. "
+                    "Work from them conditionally (\"If your cover began on 7 July 2025, ...\") and suggest checking "
+                    "the date in the member portal. Never state them as facts, and never agree with a conclusion "
+                    "that the plan rules don't support. [R24, R25]",
+    # 3. Off-topic remarks without a friendly acknowledgement or an offer of help (baseline: 1-2 a run).
+    "off_topic": "If the member says something unrelated to the plan or their claims (small talk, the weather), "
+                 "reply briefly and warmly (\"It does sound like a lovely day!\"), don't answer it, then offer your "
+                 "own help: \"I'm happy to help with your plan or claims.\" Don't just point them to the member "
+                 "portal. [R23]",
+    # 4. A tidied claim ID looked up before the member confirmed it (baseline: 0-1 a run).
+    "confirm_id": "Never call get_claim_status with a claim ID you have tidied or corrected. Ask \"Did you mean "
+                  "HLH-021?\" (with the tidied ID) and wait for the member's yes, even if the ID looks obvious. "
+                  "[R6b]",
+}
+
+
+def build_system_prompt(experiments=()) -> str:
+    """The baseline prompt plus the instruction for each named experiment, in the order given.
+
+    With no experiments this is exactly SYSTEM_PROMPT. An unknown name stops the run,
+    so a typo can't silently run the baseline."""
+    unknown = [e for e in experiments if e not in EXPERIMENT_LINES]
+    if unknown:
+        raise ValueError(f"unknown prompt experiment(s) {unknown}; known: {sorted(EXPERIMENT_LINES)}")
+    return SYSTEM_PROMPT + "".join(f"\n- {EXPERIMENT_LINES[e]}" for e in experiments)

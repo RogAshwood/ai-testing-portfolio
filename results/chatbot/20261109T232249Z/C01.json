@@ -1,0 +1,139 @@
+{
+  "conv_id": "C01",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T232249Z",
+  "thread_id": "20261109T232249Z-C01-d9aa5a",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Hi, what's happening with claim HLH-021?",
+      "reply": "Claim HLH-021 was declined because the treatment fell within the plan’s 182-day waiting period. No amount was paid (€0). You can appeal through the member portal if you disagree with the decision.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period consultant rheumatology outpatient review appeal WAITING_PERIOD"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period consultant rheumatology outpatient review appeal WAITING_PERIOD",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#5",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.2876,
+              0.201,
+              0.1847
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        }
+      ],
+      "search_queries": [
+        "waiting period consultant rheumatology outpatient review appeal WAITING_PERIOD"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3898,
+      "output_tokens": 238,
+      "cached_input_tokens": 2407,
+      "cost_usd": 0.000509,
+      "latency_s": 8.482,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why was it declined?",
+      "reply": "The decision says it was declined because the treatment was within the plan’s 182-day waiting period. Treatment during the first 182 days after cover begins isn’t covered. I can’t verify your cover start date here, so please check it in the member portal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "182-day waiting period treatment declined"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "182-day waiting period treatment declined",
+            "chunk_ids": [
+              "04_waiting_periods#1",
+              "04_waiting_periods#2",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "04_waiting_periods",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3493,
+              0.3255,
+              0.2733
+            ]
+          },
+          "result": "[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits.\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "182-day waiting period treatment declined"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3597,
+      "output_tokens": 153,
+      "cached_input_tokens": 3161,
+      "cost_usd": 0.000436,
+      "latency_s": 4.235,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "That seems unfair. Can I do anything about it?",
+      "reply": "Yes. You can appeal the decision through the member portal, especially if you think the waiting-period decision doesn’t match your cover dates. I can’t change or approve the claim here.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 2062,
+      "output_tokens": 99,
+      "cached_input_tokens": 1912,
+      "cost_usd": 0.000256,
+      "latency_s": 2.185,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9557,
+    "cached_input_tokens": 7480,
+    "output_tokens": 490,
+    "cost_usd": 0.001201,
+    "latency_s": 14.902
+  }
+}

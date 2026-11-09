@@ -23,6 +23,8 @@ Safety checks
     the comparison would mix two judges; it stops and says which run differs
   - every run in a group must cover the same conversations; a difference between
     the groups is reported, because the totals would not be comparable
+  - the prompt each run used (baseline, or which experiments) is read from the
+    trace records and printed; one logical run must use one prompt throughout
 
 Usage (from the repo root)
 --------------------------
@@ -34,6 +36,8 @@ No API calls.
 
 Change history:
   2026-11-09  v1  first version (M5 step 4g, for the step 5 prompt experiments).
+  2026-11-09  v1.1  shows which prompt experiments each run used (from the trace records)
+                    and stops if one logical run mixes prompts.
 """
 from __future__ import annotations
 
@@ -52,7 +56,7 @@ def load_run(spec: str) -> dict:
 
     Returns turn-level results keyed by (conv_id, turn): deterministic pass,
     judge verdicts, plus the run totals needed for the table."""
-    det, verdicts, rubric_fps = {}, {}, set()
+    det, verdicts, rubric_fps, prompts = {}, {}, set(), set()
     cost, ret_hits, ret_turns, conv_det = 0.0, 0.0, 0, {}
     for folder in spec.split("+"):
         d = Path(folder)
@@ -67,11 +71,18 @@ def load_run(spec: str) -> dict:
         for c in ck["conversations"]:
             for t in c["turns"]:
                 det[(c["conv_id"], t["turn"])] = t["passed"]
+            rec_path = d / f"{c['conv_id']}.json"
+            if rec_path.exists():                    # records before v1.3 of bot.py have no field: baseline
+                rec = json.loads(rec_path.read_text(encoding="utf-8"))
+                prompts.add(tuple(rec.get("experiments", [])))
         for t in jd["turns"]:
             verdicts[(t["conv_id"], t["turn"])] = {k: v["verdict"] for k, v in t["verdicts"].items()}
     if len(rubric_fps) != 1:
         raise SystemExit(f"{spec}: folders judged with different rubrics {sorted(rubric_fps)}")
-    return {"name": spec, "det": det, "verdicts": verdicts, "rubric_fp": rubric_fps.pop(), "cost": cost,
+    if len(prompts) > 1:
+        raise SystemExit(f"{spec}: conversations were run with different prompts {sorted(prompts)}")
+    prompt = (prompts.pop() if prompts else ())
+    return {"name": spec, "prompt": "baseline" if not prompt else "baseline + " + ", ".join(prompt), "det": det, "verdicts": verdicts, "rubric_fp": rubric_fps.pop(), "cost": cost,
             "retrieval": (ret_hits / ret_turns) if ret_turns else None}
 
 
@@ -86,7 +97,7 @@ def measures(run: dict) -> dict:
         for check, v in run["verdicts"].get(k, {}).items():
             if v != "pass":
                 fails[check] = fails.get(check, 0) + 1
-    return {"turns": len(keys), "conversations": len(convs),
+    return {"turns": len(keys), "conversations": len(convs), "prompt": run["prompt"],
             "turns_text": sum(run["det"][k] for k in keys),
             "turns_judge": sum(judge_ok.values()),
             "turns_both": sum(both.values()),
@@ -123,7 +134,11 @@ def report(groups: dict[str, list[dict]]) -> dict:
     sizes = {n: (groups[n][0]["turns"], groups[n][0]["conversations"]) for n in names}
     print("Runs:")
     for n in names:
-        print(f"  {n}: {len(groups[n])} run(s), {sizes[n][1]} conversations, {sizes[n][0]} turns")
+        prompts = sorted({g["prompt"] for g in groups[n]})
+        print(f"  {n}: {len(groups[n])} run(s), {sizes[n][1]} conversations, {sizes[n][0]} turns; "
+              f"prompt: {' / '.join(prompts)}")
+        if len(prompts) > 1:
+            print(f"  NOTE: the {n} runs used different prompts")
     if len({tuple(groups[n][0]["conv_ids"]) for n in names}) > 1:
         print("  NOTE: the groups cover different conversations, so totals are not directly comparable")
     rows = [("Turns passing the text checks", "turns_text", 0), ("Turns passing the judge", "turns_judge", 0),

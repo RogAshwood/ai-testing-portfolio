@@ -1,6 +1,7 @@
 {
-  "version": "1.7",
+  "version": "1.8",
   "changes": [
+    "1.8 (2026-11-09): oracle fixes after prompt experiment 1 (plain_language), where plainer wording no longer matched some key facts though the replies were correct: C02 t2 accepts 'excluded' and no longer requires 'alternative therap' (naming the category isn't needed to answer 'is acupuncture covered?'); L02 t6 accepts 'no decision', 'under review' or 'being reviewed' (as C07 t3 and C10 t2 in v1.6); L03 t5 accepts 'up to' for the limit; C22 t2 accepts 'orthopaedic' as identifying HLH-012. Alternatives only widen, so no reply that passed before can fail now. Baseline and experiment runs are re-scored with this version.",
     "1.7 (2026-11-09): oracle fix after the first C22 run. Turn 2 ('the consultant one') expected a direct lookup of HLH-012; the bot listed her claims and asked which, which R5 allows. C22 now has three turns: list (turn 2), then lookup once she names HLH-012 (turn 3; an earlier lookup counts).",
     "1.6 (2026-11-09): after the three baseline runs 20261109T155138Z, T162148Z, T163346Z. Oracle fix where the bot was valid: C07 t3 and C10 t2 key fact 'assessor' also accepts 'no decision', 'under review' or 'being reviewed' (a correct refusal need not name the assessor). Added C22 (HLH-01A, a letter in the number) and C23 (HLH-0211, four digits): IDs that can't be tidied, so the bot must not guess or change digits (R6c); previously untested.",
     "1.5 (2026-11-06): judge rubric review. New judge check treats_member_facts_as_unverified (spec R25) on W01 t1-t2, W02 t1-t2, C05 t2-t3, C16 t1-t2; no_invented_fact now checked on every turn (with plain_language) and doubles as a grounding check; plain_language counts Markdown formatting as a failure.",
@@ -170,8 +171,7 @@
           ],
           "unexpected_tools": [],
           "key_facts": [
-            "not covered|isn't covered|is not covered|does not cover|doesn't cover|do not cover",
-            "alternative therap"
+            "not covered|isn't covered|is not covered|does not cover|doesn't cover|do not cover|excluded|exclude"
           ],
           "absent_terms": [],
           "fact_sources": [
@@ -1847,7 +1847,7 @@
           "forbidden_tools": [],
           "unexpected_tools": [],
           "key_facts": [
-            "HLH-012"
+            "HLH-012|orthopaedic"
           ],
           "absent_terms": [],
           "fact_sources": [
@@ -2364,7 +2364,7 @@
           "forbidden_tools": [],
           "unexpected_tools": [],
           "key_facts": [
-            "assess"
+            "assess|no decision|under review|being reviewed"
           ],
           "absent_terms": [],
           "fact_sources": [
@@ -2554,7 +2554,7 @@
           "forbidden_tools": [],
           "unexpected_tools": [],
           "key_facts": [
-            "limit"
+            "limit|up to"
           ],
           "absent_terms": [],
           "fact_sources": [

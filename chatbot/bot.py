@@ -65,9 +65,13 @@ Change history:
   2026-11-05  v1.1  comments and docstrings expanded; some variable names made clearer.
                     Behaviour unchanged (same 27 tests pass).
   2026-11-06  v1.2  trace record counts cached input tokens per turn and in the totals.
+  2026-11-09  v1.3  prompt experiments (step 5): run_conversation(experiments=...) builds the
+                    prompt with prompt.build_system_prompt(); the trace record stores the
+                    experiments and the prompt's fingerprint. Baseline behaviour unchanged.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import time
@@ -84,7 +88,7 @@ from bench.pricing import cost_usd
 
 from .claims import ClaimsStore, ClaimsStoreUnavailable
 from .policy import build_m5_retriever
-from .prompt import SYSTEM_PROMPT
+from .prompt import SYSTEM_PROMPT, build_system_prompt
 from .tools import build_tools
 
 ROOT = Path(__file__).resolve().parent.parent          # the repo folder
@@ -136,12 +140,14 @@ def _tool_error(e: ClaimsStoreUnavailable) -> str:
     return "Error: the claims system is not responding. No claim information is available right now."
 
 
-def build_graph(llm, tools, checkpointer=None):
+def build_graph(llm, tools, checkpointer=None, system_prompt: str = SYSTEM_PROMPT):
     """Wire the agent step and the tools step into a graph and return it, ready to run.
 
     llm           the model client from make_llm(), or a scripted stand-in in the tests
     tools         the member's tools from build_tools()
     checkpointer  where conversation memory is kept; a new in-memory store if omitted
+    system_prompt the instructions sent first on every model call (the baseline
+                  SYSTEM_PROMPT unless a prompt experiment is on)
 
     Each call to graph.invoke() is one member turn: the graph loops agent ->
     tools -> agent until the model replies without asking for a tool.
@@ -154,7 +160,7 @@ def build_graph(llm, tools, checkpointer=None):
         # One model call. The system prompt is put in front of the conversation
         # every time rather than stored in memory, so it is always first and
         # always the current version from prompt.py.
-        response = llm_with_tools.invoke([SystemMessage(SYSTEM_PROMPT)] + state["messages"])
+        response = llm_with_tools.invoke([SystemMessage(system_prompt)] + state["messages"])
         # The reply (or tool request) is added to the conversation's messages.
         return {"messages": [response]}
 
@@ -259,7 +265,8 @@ def _turn_record(n: int, user: str, new_msgs: list, latency: float, model: str) 
 
 
 def run_conversation(conv: dict, llm=None, retriever=None, model: str = AGENT_MODEL,
-                     tracing: bool = True, run_id: str | None = None, save: bool = True) -> dict:
+                     tracing: bool = True, run_id: str | None = None, save: bool = True,
+                     experiments: tuple | list = ()) -> dict:
     """Play one golden conversation through a fresh bot and return its trace record.
 
     In plain terms: this is the test driver. It acts as the member, sending the
@@ -275,6 +282,8 @@ def run_conversation(conv: dict, llm=None, retriever=None, model: str = AGENT_MO
     tracing    also send the run to Langfuse, if keys are set
     run_id     groups the conversations of one run in the same results folder
     save       write the record to results/chatbot/<run_id>/<conv_id>.json
+    experiments names of prompt experiments to switch on (prompt.EXPERIMENT_LINES);
+               none = the baseline prompt
 
     Steps:
       1. Build a fresh bot for this member: a claims store (faulted if the
@@ -292,7 +301,8 @@ def run_conversation(conv: dict, llm=None, retriever=None, model: str = AGENT_MO
     retriever = retriever or build_m5_retriever()
     store = ClaimsStore(fault=conv.get("fault"))                # fault=None normally; C18 is faulted
     tools = build_tools(conv["member_id"], store, retriever)    # member bound in here (rule R1)
-    graph = build_graph(llm, tools)
+    system_prompt = build_system_prompt(experiments)            # baseline unless an experiment is on
+    graph = build_graph(llm, tools, system_prompt=system_prompt)
 
     # 2. A unique thread ID: run time + conversation + a random suffix.
     run_id = run_id or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -332,7 +342,8 @@ def run_conversation(conv: dict, llm=None, retriever=None, model: str = AGENT_MO
     record = {
         "conv_id": conv["conv_id"], "member_id": conv["member_id"], "fault": conv.get("fault"),
         "stretch": conv.get("stretch", False), "run_id": run_id, "thread_id": thread,
-        "model": model,
+        "model": model, "experiments": list(experiments),
+        "system_prompt_fp": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()[:12],
         "model_served": next((x["model_served"] for x in turns if x["model_served"]), None),   # as in M1
         "langfuse": bool(handler), "error": error, "turns": turns,
         "totals": {k: round(sum((x[k] or 0) for x in turns), 6)

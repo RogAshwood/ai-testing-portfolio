@@ -1,0 +1,111 @@
+{
+  "conv_id": "C08",
+  "member_id": "M-1009",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T232249Z",
+  "thread_id": "20261109T232249Z-C08-d19527",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Was HLH-009 paid?",
+      "reply": "Yes. HLH-009 was paid €1,150.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-009"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-009",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-009\", \"claimant_name\": \"Michael Daly\", \"treatment\": \"Day case procedure - inguinal hernia repair\", \"treatment_date\": \"2026-09-01\", \"submission_date\": \"2026-09-04\", \"amount_claimed\": \"1150\", \"status\": \"paid\", \"decision_code\": \"HIGH_VALUE\", \"amount_paid\": \"1150\", \"last_updated\": \"2026-09-18\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2398,
+      "output_tokens": 40,
+      "cached_input_tokens": 2223,
+      "cost_usd": 0.00026,
+      "latency_s": 3.326,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How many day case procedures can I have in a year?",
+      "reply": "You can have up to 2 day case procedures per policy year. Each requires a pre-authorisation number, and the plan pays up to €1,500 per procedure.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "day case procedures annual limit number per year"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "day case procedures annual limit number per year",
+            "chunk_ids": [
+              "02_cover_and_limits#2.5",
+              "01_plan_overview#4",
+              "05_pre_authorisation#3.1"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "01_plan_overview",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.2853,
+              0.2749,
+              0.2675
+            ]
+          },
+          "result": "[02_cover_and_limits#2.5]\nCover and annual limits. Treatment: Day case procedure; Most we pay per visit or item: 1,500 per procedure; Visits or items per policy year: 2 procedures; What you also need: A pre-authorisation number\n\n[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\".\n\n[05_pre_authorisation#3.1]\nPre-authorisation. Treatment: Day case procedure (treatment in hospital without an overnight stay); Limit: 1,500 per procedure, 2 procedures per policy year"
+        }
+      ],
+      "search_queries": [
+        "day case procedures annual limit number per year"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2816,
+      "output_tokens": 64,
+      "cached_input_tokens": 2585,
+      "cost_usd": 0.000314,
+      "latency_s": 3.339,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "So was that claim paid in full?",
+      "reply": "Yes. The claim was for €1,150, and €1,150 was paid.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1556,
+      "output_tokens": 68,
+      "cached_input_tokens": 1500,
+      "cost_usd": 0.00019,
+      "latency_s": 1.93,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6770,
+    "cached_input_tokens": 6308,
+    "output_tokens": 172,
+    "cost_usd": 0.000764,
+    "latency_s": 8.595
+  }
+}

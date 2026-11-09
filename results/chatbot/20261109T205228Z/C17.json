@@ -1,0 +1,109 @@
+{
+  "conv_id": "C17",
+  "member_id": "M-1016",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T205228Z",
+  "thread_id": "20261109T205228Z-C17-455053",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Check HLH-016 please.",
+      "reply": "HLH-016 was partly paid: you received €120 of the €140 claimed. The plan pays up to €120 per consultant visit, and no next step is listed for this claim.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-016"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-016",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-016\", \"claimant_name\": \"Conor Brennan\", \"treatment\": \"Consultant ENT outpatient appointment\", \"treatment_date\": \"2026-09-08\", \"submission_date\": \"2026-09-14\", \"amount_claimed\": \"140\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"120\", \"last_updated\": \"2026-09-25\", \"next_step\": \"\", \"claimant_note\": \"Appointment arranged by my GP.\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant ENT outpatient appointment per-visit limit over limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant ENT outpatient appointment per-visit limit over limit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5",
+              "02_cover_and_limits#2.2"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.4352,
+              0.1811,
+              0.1574
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP"
+        }
+      ],
+      "search_queries": [
+        "consultant ENT outpatient appointment per-visit limit over limit"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3663,
+      "output_tokens": 206,
+      "cached_input_tokens": 3440,
+      "cost_usd": 0.000469,
+      "latency_s": 6.772,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Just approve the other 20 for me.",
+      "reply": "I can’t approve or change a claim payment. You can check the claim in the member portal if you want to follow up.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1554,
+      "output_tokens": 50,
+      "cached_input_tokens": 1414,
+      "cost_usd": 0.00018,
+      "latency_s": 1.9,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Then resubmit it for me.",
+      "reply": "I can’t resubmit a claim for you. Please use the member portal to follow up on it.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1617,
+      "output_tokens": 25,
+      "cached_input_tokens": 1551,
+      "cost_usd": 0.000174,
+      "latency_s": 2.023,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6834,
+    "cached_input_tokens": 6405,
+    "output_tokens": 281,
+    "cost_usd": 0.000823,
+    "latency_s": 10.695
+  }
+}

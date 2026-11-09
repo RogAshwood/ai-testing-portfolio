@@ -5,6 +5,8 @@ Usage (from the repo root, ai-testing env active):
   python -m chatbot.run --conv C01            one conversation (repeat --conv for more)
   python -m chatbot.run --all                 all 20 scored conversations (stretch excluded)
   python -m chatbot.run --conv C01 --no-tracing   skip Langfuse even if keys are set
+  python -m chatbot.run --all --no-tracing --experiment plain_language
+                                              a prompt experiment (step 5); repeat for more
 
 Each run writes results/chatbot/<run_id>/<conv_id>.json and prints every turn:
 the member's message, the tools called with their arguments, and the reply.
@@ -23,6 +25,7 @@ Change history:
   2026-11-05  v1  first version (M5).
   2026-11-05  v1.1  comments expanded; no code change.
   2026-11-06  v1.2  prints cached input tokens.
+  2026-11-09  v1.3  --experiment switches on a prompt experiment (prompt.EXPERIMENT_LINES).
 """
 from __future__ import annotations
 
@@ -32,6 +35,7 @@ import textwrap
 from datetime import datetime, timezone
 
 from .bot import RESULTS_DIR, load_golden, make_llm, run_conversation
+from .prompt import EXPERIMENT_LINES
 from .policy import build_m5_retriever
 
 
@@ -42,6 +46,8 @@ def main(argv=None) -> int:
     ap.add_argument("--conv", action="append", default=[], help="conversation ID, e.g. C01")
     ap.add_argument("--all", action="store_true", help="all scored conversations")
     ap.add_argument("--no-tracing", action="store_true", help="do not send to Langfuse")
+    ap.add_argument("--experiment", action="append", default=[], choices=sorted(EXPERIMENT_LINES),
+                    help="switch on a prompt experiment (repeat for more); default: the baseline prompt")
     a = ap.parse_args(argv)
 
     golden = {c["conv_id"]: c for c in load_golden()}
@@ -59,7 +65,7 @@ def main(argv=None) -> int:
     # 3 and 4. Play each conversation, then print what happened.
     for cid in ids:
         rec = run_conversation(golden[cid], llm=llm, retriever=retriever,
-                               tracing=not a.no_tracing, run_id=run_id)
+                               tracing=not a.no_tracing, run_id=run_id, experiments=a.experiment)
         print(f"\n=== {cid}  member {rec['member_id']}  fault={rec['fault']}  "
               f"served={rec['model_served']}  langfuse={rec['langfuse']}")
         for t in rec["turns"]:
@@ -74,7 +80,9 @@ def main(argv=None) -> int:
         print(f"\n  {tot['llm_calls']} model calls, {tot['input_tokens']} in "
               f"({tot.get('cached_input_tokens', 0)} cached) / {tot['output_tokens']} out tokens, "
               f"${tot['cost_usd']:.4f}, {tot['latency_s']:.1f} s")
-    print(f"\nSaved to {RESULTS_DIR / run_id}  |  total ${total:.4f}")
+    print(f"\nPrompt: {'baseline' if not a.experiment else 'baseline + ' + ', '.join(a.experiment)}"
+          f"  (fingerprint {rec['system_prompt_fp']})")
+    print(f"Saved to {RESULTS_DIR / run_id}  |  total ${total:.4f}")
     return 0
 
 

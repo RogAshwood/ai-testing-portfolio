@@ -15,6 +15,7 @@ counts) is tested here with made-up data and a stand-in metric. No API calls.
 Change history:
   2026-11-09  v1  first version (M5 step 4g).
   2026-11-09  v1.1  test that the general metric only reads fields DeepEval supports.
+  2026-11-09  v1.2  the prompt each run used is read from the trace records.
 """
 from __future__ import annotations
 
@@ -156,3 +157,20 @@ def test_general_metric_reads_only_supported_fields(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "sk-test-not-used")
     geval = [m for m in make_metrics(model="gpt-6-sol") if m.__class__.__name__ == "ConversationalGEval"][0]
     assert all(p in CONVERSATIONAL_G_EVAL_PARAMS for p in geval.evaluation_params)
+
+
+def test_prompt_used_is_read_from_the_records(tmp_path):
+    """compare shows which prompt a run used: records from before the experiments (no
+    'experiments' field) count as the baseline, and an experiment run is named. A run
+    whose conversations used different prompts is refused."""
+    base = write_run(tmp_path / "b", [("C01", 1, True)])
+    (base / "C01.json").write_text(json.dumps({"conv_id": "C01", "turns": []}), encoding="utf-8")
+    exp = write_run(tmp_path / "e", [("C01", 1, True), ("C02", 1, True)])
+    for c in ("C01", "C02"):
+        (exp / f"{c}.json").write_text(json.dumps({"conv_id": c, "turns": [], "experiments": ["plain_language"]}),
+                                       encoding="utf-8")
+    assert load_run(str(base))["prompt"] == "baseline"
+    assert load_run(str(exp))["prompt"] == "baseline + plain_language"
+    (exp / "C02.json").write_text(json.dumps({"conv_id": "C02", "turns": [], "experiments": []}), encoding="utf-8")
+    with pytest.raises(SystemExit):
+        load_run(str(exp))

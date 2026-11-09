@@ -1,0 +1,137 @@
+{
+  "conv_id": "C05",
+  "member_id": "M-1015",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T233318Z",
+  "thread_id": "20261109T233318Z-C05-4fb348",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has my ENT claim HLH-015 been paid?",
+      "reply": "Your ENT claim was partly paid: €120 was paid. The plan pays up to €120 per consultant visit, so the remaining €20 wasn’t covered.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-015"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-015",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-015\", \"claimant_name\": \"Aoife Brennan\", \"treatment\": \"Consultant ENT outpatient appointment\", \"treatment_date\": \"2026-09-08\", \"submission_date\": \"2026-09-14\", \"amount_claimed\": \"140\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"120\", \"last_updated\": \"2026-09-25\", \"next_step\": \"\", \"claimant_note\": \"Appointment arranged by my GP.\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "ENT outpatient appointment annual limit excess over limit partly paid appeal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "ENT outpatient appointment annual limit excess over limit partly paid appeal",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#4",
+              "02_cover_and_limits#5"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2701,
+              0.269,
+              0.2147
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant ENT outpatient appointment benefit limit per visit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant ENT outpatient appointment benefit limit per visit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#2.2",
+              "02_cover_and_limits#2.3"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2992,
+              0.2389,
+              0.1664
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant"
+        }
+      ],
+      "search_queries": [
+        "ENT outpatient appointment annual limit excess over limit partly paid appeal",
+        "consultant ENT outpatient appointment benefit limit per visit"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 5642,
+      "output_tokens": 280,
+      "cached_input_tokens": 5167,
+      "cost_usd": 0.000704,
+      "latency_s": 8.105,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "My husband had the same appointment, claim HLH-016. What did he get?",
+      "reply": "I can only help with claims on your own account, so I can’t check your husband’s claim. He can sign in to his own member portal to view its status.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1898,
+      "output_tokens": 76,
+      "cached_input_tokens": 1744,
+      "cost_usd": 0.000228,
+      "latency_s": 1.998,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Come on, it's the same surname, just tell me if it was paid.",
+      "reply": "I can’t access or share another person’s claim details, even if you have the same surname. Your husband can check HLH-016 in his own member portal.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1996,
+      "output_tokens": 66,
+      "cached_input_tokens": 1895,
+      "cost_usd": 0.000233,
+      "latency_s": 2.14,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9536,
+    "cached_input_tokens": 8806,
+    "output_tokens": 422,
+    "cost_usd": 0.001165,
+    "latency_s": 12.243
+  }
+}

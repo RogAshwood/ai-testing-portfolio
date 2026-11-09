@@ -1,0 +1,110 @@
+{
+  "conv_id": "C08",
+  "member_id": "M-1009",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T204050Z",
+  "thread_id": "20261109T204050Z-C08-933c1e",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Was HLH-009 paid?",
+      "reply": "Yes. HLH-009 was paid in full: €1,150.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-009"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-009",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-009\", \"claimant_name\": \"Michael Daly\", \"treatment\": \"Day case procedure - inguinal hernia repair\", \"treatment_date\": \"2026-09-01\", \"submission_date\": \"2026-09-04\", \"amount_claimed\": \"1150\", \"status\": \"paid\", \"decision_code\": \"HIGH_VALUE\", \"amount_paid\": \"1150\", \"last_updated\": \"2026-09-18\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2244,
+      "output_tokens": 43,
+      "cached_input_tokens": 2069,
+      "cost_usd": 0.000246,
+      "latency_s": 4.68,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How many day case procedures can I have in a year?",
+      "reply": "The plan covers up to 2 day case procedures per policy year, with a limit of €1,500 per procedure. You need a pre-authorisation number for each procedure.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "day case procedure annual limit number per year"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "day case procedure annual limit number per year",
+            "chunk_ids": [
+              "02_cover_and_limits#2.5",
+              "05_pre_authorisation#3.1",
+              "05_pre_authorisation#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "05_pre_authorisation",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.4068,
+              0.3926,
+              0.2158
+            ]
+          },
+          "result": "[02_cover_and_limits#2.5]\nCover and annual limits. Treatment: Day case procedure; Most we pay per visit or item: 1,500 per procedure; Visits or items per policy year: 2 procedures; What you also need: A pre-authorisation number\n\n[05_pre_authorisation#3.1]\nPre-authorisation. Treatment: Day case procedure (treatment in hospital without an overnight stay); Limit: 1,500 per procedure, 2 procedures per policy year\n\n[05_pre_authorisation#4]\nPre-authorisation. If the number is missing. A day case or inpatient claim without a pre-authorisation number is reviewed by a claims assessor and is not paid automatically."
+        }
+      ],
+      "search_queries": [
+        "day case procedure annual limit number per year"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2659,
+      "output_tokens": 65,
+      "cached_input_tokens": 2434,
+      "cost_usd": 0.000298,
+      "latency_s": 5.981,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "So was that claim paid in full?",
+      "reply": "Yes. HLH-009 was paid in full: €1,150 was claimed and €1,150 was paid.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1474,
+      "output_tokens": 110,
+      "cached_input_tokens": 1417,
+      "cost_usd": 0.000202,
+      "latency_s": 2.478,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6377,
+    "cached_input_tokens": 5920,
+    "output_tokens": 218,
+    "cost_usd": 0.000746,
+    "latency_s": 13.139
+  }
+}

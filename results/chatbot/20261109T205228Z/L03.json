@@ -1,0 +1,335 @@
+{
+  "conv_id": "L03",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T205228Z",
+  "thread_id": "20261109T205228Z-L03-b7accd",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much does the plan pay for a GP visit?",
+      "reply": "The plan pays up to €60 per GP visit, for up to 8 visits per policy year.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "GP visit benefit amount reimbursement limit per visit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "GP visit benefit amount reimbursement limit per visit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#2.1",
+              "02_cover_and_limits#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.4315,
+              0.3251,
+              0.2424
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.1]\nCover and annual limits. Treatment: GP visit; Most we pay per visit or item: 60; Visits or items per policy year: 8 visits; What you also need: Nothing extra\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+        }
+      ],
+      "search_queries": [
+        "GP visit benefit amount reimbursement limit per visit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2292,
+      "output_tokens": 50,
+      "cached_input_tokens": 2088,
+      "cost_usd": 0.000254,
+      "latency_s": 3.078,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "And how many visits a year?",
+      "reply": "The plan covers up to 8 GP visits per policy year.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1283,
+      "output_tokens": 17,
+      "cached_input_tokens": 1242,
+      "cost_usd": 0.000137,
+      "latency_s": 1.771,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Do I need a referral to see a consultant?",
+      "reply": "Yes. Consultant visits need a referral from your GP.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant specialist referral required to claim"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant specialist referral required to claim",
+            "chunk_ids": [
+              "06_how_to_claim#2",
+              "05_pre_authorisation#6",
+              "02_cover_and_limits#2.2"
+            ],
+            "doc_ids": [
+              "06_how_to_claim",
+              "05_pre_authorisation",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2755,
+              0.2622,
+              0.2231
+            ]
+          },
+          "result": "[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP"
+        }
+      ],
+      "search_queries": [
+        "consultant specialist referral required to claim"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2876,
+      "output_tokens": 39,
+      "cached_input_tokens": 2593,
+      "cost_usd": 0.000307,
+      "latency_s": 3.247,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "What does physio pay per session?",
+      "reply": "The plan pays up to €50 per physio session, for up to 10 sessions per policy year. A referral from a GP or consultant is required.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy physio most we pay per session per visit annual limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy physio most we pay per session per visit annual limit",
+            "chunk_ids": [
+              "02_cover_and_limits#2.3",
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2753,
+              0.2168,
+              0.1895
+            ]
+          },
+          "result": "[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy physio most we pay per session per visit annual limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3389,
+      "output_tokens": 67,
+      "cached_input_tokens": 3143,
+      "cost_usd": 0.000372,
+      "latency_s": 3.85,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 5,
+      "user": "OK, now my claim HLH-019. Why was I paid 50 when I claimed 51?",
+      "reply": "Your claim was for €51, but the plan pays up to €50 per physio session, so €50 was paid. The claim is partly paid.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-019"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-019",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-019\", \"claimant_name\": \"Mark Power\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-08-22\", \"submission_date\": \"2026-08-26\", \"amount_claimed\": \"51\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"50\", \"last_updated\": \"2026-09-02\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy per session maximum pay claim amount over limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy per session maximum pay claim amount over limit",
+            "chunk_ids": [
+              "02_cover_and_limits#2.3",
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2547,
+              0.1813,
+              0.1588
+            ]
+          },
+          "result": "[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy per session maximum pay claim amount over limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 4079,
+      "output_tokens": 198,
+      "cached_input_tokens": 3658,
+      "cost_usd": 0.000507,
+      "latency_s": 5.465,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 6,
+      "user": "I think that's unfair. What can I do?",
+      "reply": "You can raise a complaint through the member portal. The plan documents describe appeals for declined claims, but don’t say whether a partly paid claim can be appealed; I can’t change the decision for you.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal partly paid claim dispute decision how to appeal deadline"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal partly paid claim dispute decision how to appeal deadline",
+            "chunk_ids": [
+              "09_appeals_and_complaints#1",
+              "08_after_you_submit#4",
+              "10_contact_and_privacy#2"
+            ],
+            "doc_ids": [
+              "09_appeals_and_complaints",
+              "08_after_you_submit",
+              "10_contact_and_privacy"
+            ],
+            "scores": [
+              0.2334,
+              0.2031,
+              0.1626
+            ]
+          },
+          "result": "[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal.\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint."
+        }
+      ],
+      "search_queries": [
+        "appeal partly paid claim dispute decision how to appeal deadline"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 4942,
+      "output_tokens": 231,
+      "cached_input_tokens": 4575,
+      "cost_usd": 0.00061,
+      "latency_s": 4.856,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 7,
+      "user": "Can you just resubmit it for the extra 1 euro?",
+      "reply": "I can’t resubmit or change a claim. You can use the member portal to manage your claim or raise a complaint; the plan limit is €50 per physio session.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 2748,
+      "output_tokens": 105,
+      "cached_input_tokens": 2573,
+      "cost_usd": 0.000327,
+      "latency_s": 2.366,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 8,
+      "user": "Is my other physio claim OK?",
+      "reply": "I found two physio claims: HLH-019 from 22 August 2026 is partly paid, and HLH-039 from 5 September 2026 is paid. Which one would you like me to check?",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-019",
+              "HLH-039"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-019\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-08-22\", \"status\": \"partly_paid\"}, {\"claim_id\": \"HLH-039\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-09-05\", \"status\": \"paid\"}]}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 5897,
+      "output_tokens": 377,
+      "cached_input_tokens": 5609,
+      "cost_usd": 0.000778,
+      "latency_s": 6.428,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 9,
+      "user": "Was it paid in full?",
+      "reply": "Yes. For claim HLH-039, you claimed €50 and €50 was paid.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-039"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-039",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-039\", \"claimant_name\": \"Mark Power\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-09-05\", \"submission_date\": \"2026-09-08\", \"amount_claimed\": \"50\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"50\", \"last_updated\": \"2026-09-12\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 7073,
+      "output_tokens": 271,
+      "cached_input_tokens": 6383,
+      "cost_usd": 0.000843,
+      "latency_s": 5.924,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 16,
+    "input_tokens": 34579,
+    "cached_input_tokens": 31864,
+    "output_tokens": 1355,
+    "cost_usd": 0.004135,
+    "latency_s": 36.985
+  }
+}

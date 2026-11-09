@@ -1,0 +1,123 @@
+{
+  "conv_id": "C14",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T232249Z",
+  "thread_id": "20261109T232249Z-C14-be1e46",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "What's the status of HLH021?",
+      "reply": "Did you mean HLH-021?",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1121,
+      "output_tokens": 48,
+      "cached_input_tokens": 1106,
+      "cost_usd": 0.000136,
+      "latency_s": 1.656,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Yes, that's it.",
+      "reply": "HLH-021 was declined, and €0 was paid. The plan’s 182-day waiting period means treatment during the first 182 days of cover isn’t covered. You can appeal through the member portal if you disagree with the decision.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period outpatient consultant rheumatology claim treatment date"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period outpatient consultant rheumatology claim treatment date",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "06_how_to_claim#5",
+              "07_claim_deadlines#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "06_how_to_claim",
+              "07_claim_deadlines"
+            ],
+            "scores": [
+              0.307,
+              0.2722,
+              0.269
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[06_how_to_claim#5]\nHow to make a claim. When to claim. Within 12 months of the treatment date. See \"Claim deadlines\".\n\n[07_claim_deadlines#1]\nClaim deadlines. You must submit a claim within 12 months of the treatment date."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting periods rheumatology outpatient treatment cover start duration"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting periods rheumatology outpatient treatment cover start duration",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#3",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.424,
+              0.4058,
+              0.2865
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#3]\nWaiting periods. Two exceptions apply from day one:\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        }
+      ],
+      "search_queries": [
+        "waiting period outpatient consultant rheumatology claim treatment date",
+        "waiting periods rheumatology outpatient treatment cover start duration"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 5754,
+      "output_tokens": 326,
+      "cached_input_tokens": 5151,
+      "cost_usd": 0.000738,
+      "latency_s": 8.793,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6875,
+    "cached_input_tokens": 6257,
+    "output_tokens": 374,
+    "cost_usd": 0.000874,
+    "latency_s": 10.449
+  }
+}

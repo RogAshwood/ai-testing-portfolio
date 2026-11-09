@@ -1,0 +1,108 @@
+{
+  "conv_id": "C12",
+  "member_id": "M-1031",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T204050Z",
+  "thread_id": "20261109T204050Z-C12-62e94e",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much did I get back on HLH-031?",
+      "reply": "You got back €50 for HLH-031.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-031"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-031",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-031\", \"claimant_name\": \"Niall Corcoran\", \"treatment\": \"Physiotherapy session and yoga class\", \"treatment_date\": \"2026-09-19\", \"submission_date\": \"2026-09-24\", \"amount_claimed\": \"95\", \"status\": \"partly_paid\", \"decision_code\": \"EXCLUDED_ITEM\", \"amount_paid\": \"50\", \"last_updated\": \"2026-10-01\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2255,
+      "output_tokens": 38,
+      "cached_input_tokens": 2074,
+      "cost_usd": 0.000244,
+      "latency_s": 3.672,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why not the whole 95?",
+      "reply": "The claim included a yoga class, which the plan excludes, even if it’s described as therapeutic or held at a clinic. Physiotherapy is covered up to €50 per session, and €50 was paid on this claim. You can appeal if you disagree with the decision.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "EXCLUDED_ITEM excluded treatment items yoga class physiotherapy"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "EXCLUDED_ITEM excluded treatment items yoga class physiotherapy",
+            "chunk_ids": [
+              "03_exclusions#4",
+              "03_exclusions#2.5",
+              "02_cover_and_limits#2.3"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "03_exclusions",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2486,
+              0.1698,
+              0.1126
+            ]
+          },
+          "result": "[03_exclusions#4]\nWhat is not covered. Claims for excluded treatment are normally declined. You can appeal a decline; see \"Appeals and complaints\".\n\n[03_exclusions#2.5]\nWhat is not covered. Fitness and wellness classes, for example yoga, pilates and gym membership. This applies even if a class is described as therapeutic or is run at a clinic.\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant"
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-031"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-031",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-031\", \"claimant_name\": \"Niall Corcoran\", \"treatment\": \"Physiotherapy session and yoga class\", \"treatment_date\": \"2026-09-19\", \"submission_date\": \"2026-09-24\", \"amount_claimed\": \"95\", \"status\": \"partly_paid\", \"decision_code\": \"EXCLUDED_ITEM\", \"amount_paid\": \"50\", \"last_updated\": \"2026-10-01\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [
+        "EXCLUDED_ITEM excluded treatment items yoga class physiotherapy"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2812,
+      "output_tokens": 121,
+      "cached_input_tokens": 2436,
+      "cost_usd": 0.000342,
+      "latency_s": 3.862,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 5067,
+    "cached_input_tokens": 4510,
+    "output_tokens": 159,
+    "cost_usd": 0.000586,
+    "latency_s": 7.534
+  }
+}

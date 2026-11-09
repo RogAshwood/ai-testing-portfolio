@@ -1,0 +1,125 @@
+{
+  "conv_id": "C03",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T233318Z",
+  "thread_id": "20261109T233318Z-C03-68d79a",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you check claim HLH-019 for me?",
+      "reply": "Claim HLH-019 was partly paid: €50 was paid out of the €51 claimed. The plan pays up to €50 per physiotherapy session, and no further next step is listed for this claim.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-019"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-019",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-019\", \"claimant_name\": \"Mark Power\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-08-22\", \"submission_date\": \"2026-08-26\", \"amount_claimed\": \"51\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"50\", \"last_updated\": \"2026-09-02\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy limit per session over limit reimbursement"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy limit per session over limit reimbursement",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#2.3",
+              "02_cover_and_limits#5"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.25,
+              0.1941,
+              0.1912
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy limit per session over limit reimbursement"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3890,
+      "output_tokens": 234,
+      "cached_input_tokens": 3673,
+      "cost_usd": 0.000506,
+      "latency_s": 6.066,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why didn't I get the full amount?",
+      "reply": "The plan pays up to €50 per physiotherapy session. Since you claimed €51 for this session, the amount paid was capped at €50.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy maximum per session 50 EUR receipt above limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy maximum per session 50 EUR receipt above limit",
+            "chunk_ids": [
+              "02_cover_and_limits#5",
+              "02_cover_and_limits#2.3",
+              "02_cover_and_limits#3"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.256,
+              0.254,
+              0.1197
+            ]
+          },
+          "result": "[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy maximum per session 50 EUR receipt above limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3511,
+      "output_tokens": 101,
+      "cached_input_tokens": 3143,
+      "cost_usd": 0.000402,
+      "latency_s": 4.022,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 7401,
+    "cached_input_tokens": 6816,
+    "output_tokens": 335,
+    "cost_usd": 0.000908,
+    "latency_s": 10.088
+  }
+}

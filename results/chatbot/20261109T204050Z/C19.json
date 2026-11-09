@@ -1,0 +1,140 @@
+{
+  "conv_id": "C19",
+  "member_id": "M-1002",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T204050Z",
+  "thread_id": "20261109T204050Z-C19-2a75ef",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language"
+  ],
+  "system_prompt_fp": "a9afa3849175",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much does the plan pay for physio?",
+      "reply": "The plan pays up to €50 per physiotherapy session, for up to 10 sessions per policy year. You’ll need a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy cover limit amount per session annual limit reimbursement"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy cover limit amount per session annual limit reimbursement",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5",
+              "02_cover_and_limits#2.3"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.274,
+              0.2227,
+              0.2144
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant"
+        }
+      ],
+      "search_queries": [
+        "physiotherapy cover limit amount per session annual limit reimbursement"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2277,
+      "output_tokens": 65,
+      "cached_input_tokens": 2072,
+      "cost_usd": 0.00026,
+      "latency_s": 3.149,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How many sessions do I get a year?",
+      "reply": "You’re covered for up to 10 physiotherapy sessions per policy year.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1283,
+      "output_tokens": 41,
+      "cached_input_tokens": 1228,
+      "cost_usd": 0.000149,
+      "latency_s": 1.887,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Do I need a referral?",
+      "reply": "Yes. You’ll need a referral from a GP or consultant.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1336,
+      "output_tokens": 37,
+      "cached_input_tokens": 1280,
+      "cost_usd": 0.000152,
+      "latency_s": 2.402,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "What about pilates for my back?",
+      "reply": "Pilates classes aren’t covered, even if they’re described as therapeutic or held at a clinic.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "Pilates back treatment cover exclusion"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "Pilates back treatment cover exclusion",
+            "chunk_ids": [
+              "03_exclusions#2.5",
+              "01_plan_overview#6",
+              "04_waiting_periods#2"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "01_plan_overview",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.1596,
+              0.0955,
+              0.0908
+            ]
+          },
+          "result": "[03_exclusions#2.5]\nWhat is not covered. Fitness and wellness classes, for example yoga, pilates and gym membership. This applies even if a class is described as therapeutic or is run at a clinic.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered."
+        }
+      ],
+      "search_queries": [
+        "Pilates back treatment cover exclusion"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3015,
+      "output_tokens": 69,
+      "cached_input_tokens": 2717,
+      "cost_usd": 0.000336,
+      "latency_s": 3.797,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 7911,
+    "cached_input_tokens": 7297,
+    "output_tokens": 212,
+    "cost_usd": 0.000897,
+    "latency_s": 11.235
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "conv_id": "C23",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T232249Z",
+  "thread_id": "20261109T232249Z-C23-16760c",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts"
+  ],
+  "system_prompt_fp": "456a8446b5b0",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-0211 been paid?",
+      "reply": "Claim IDs have three digits after the hyphen. Could you check the ID and send it again?",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "claim ID format status amount paid"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "claim ID format status amount paid",
+            "chunk_ids": [
+              "10_contact_and_privacy#3",
+              "08_after_you_submit#3",
+              "05_pre_authorisation#4"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "08_after_you_submit",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.1832,
+              0.1278,
+              0.1172
+            ]
+          },
+          "result": "[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal.\n\n[08_after_you_submit#3]\nWhat happens after you submit a claim. No outcome is guaranteed before a claim is assessed. Staff and online help cannot confirm in advance that a claim will be paid. The decision is made by a claims assessor once the claim and documents have been reviewed.\n\n[05_pre_authorisation#4]\nPre-authorisation. If the number is missing. A day case or inpatient claim without a pre-authorisation number is reviewed by a claims assessor and is not paid automatically."
+        }
+      ],
+      "search_queries": [
+        "claim ID format status amount paid"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2475,
+      "output_tokens": 167,
+      "cached_input_tokens": 2225,
+      "cost_usd": 0.000331,
+      "latency_s": 3.872,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Sorry, I meant HLH-021.",
+      "reply": "No. Claim HLH-021 was declined and EUR 0 was paid because the 182-day waiting period applied; treatment during the first 182 days of cover isn’t covered. You can appeal through the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period outpatient consultant rheumatology claim waiting period cover start"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period outpatient consultant rheumatology claim waiting period cover start",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#5",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.4077,
+              0.2646,
+              0.2618
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal declined claim member portal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal declined claim member portal",
+            "chunk_ids": [
+              "10_contact_and_privacy#3",
+              "10_contact_and_privacy#2",
+              "08_after_you_submit#4"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "10_contact_and_privacy",
+              "08_after_you_submit"
+            ],
+            "scores": [
+              0.2953,
+              0.2805,
+              0.2692
+            ]
+          },
+          "result": "[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal.\n\n[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\"."
+        }
+      ],
+      "search_queries": [
+        "waiting period outpatient consultant rheumatology claim waiting period cover start",
+        "appeal declined claim member portal"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 5317,
+      "output_tokens": 262,
+      "cached_input_tokens": 4533,
+      "cost_usd": 0.000663,
+      "latency_s": 6.128,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 7792,
+    "cached_input_tokens": 6758,
+    "output_tokens": 429,
+    "cost_usd": 0.000994,
+    "latency_s": 10.0
+  }
+}
