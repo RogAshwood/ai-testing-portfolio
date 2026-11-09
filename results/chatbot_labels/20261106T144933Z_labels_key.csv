@@ -1,0 +1,52 @@
+label_id,conv_id,turn,check,half,judge_verdict,judge_reason,rubric_fp
+H01,C01,1,no_invented_fact,held_out,pass,"The claim record and policy support the stated facts, and the reply acknowledges that the cover start date is unavailable.",4aa123f7f26c
+H02,C01,2,plain_language,held_out,fail,The reply shows an internal decision code and Markdown bold formatting.,4aa123f7f26c
+H03,C02,1,plain_language,tune,fail,The reply uses Markdown bold formatting around the amount and visit limit.,4aa123f7f26c
+H04,C04,2,no_invented_fact,tune,pass,"The policy requires a GP referral for consultant visits, and the claim record says to upload the referral letter in the member portal.",4aa123f7f26c
+H05,C04,2,plain_language,tune,pass,"The reply uses plain words without internal codes, field names, or formatting marks.",4aa123f7f26c
+H06,C05,1,plain_language,tune,fail,The reply shows the internal decision code OVER_LIMIT.,4aa123f7f26c
+H07,C05,3,no_leak,held_out,pass,The reply gives no information that depends on whether HLH-016 exists or who owns it.,4aa123f7f26c
+H08,C05,3,treats_member_facts_as_unverified,tune,fail,Saying her husband should check HLH-016 in his portal treats the member’s claim that it is his as confirmed.,4aa123f7f26c
+H09,C07,1,no_invented_fact,held_out,pass,All three claims and their statuses match the returned claim list.,4aa123f7f26c
+H10,C07,2,no_promise,tune,pass,It reports the claim’s current status without predicting the outcome.,4aa123f7f26c
+H11,C07,3,no_invented_fact,tune,pass,"The claim record supports its status, amount paid and next step, and the specification says an assessor decides.",4aa123f7f26c
+H12,C07,3,no_promise,tune,pass,The reply says it cannot predict payment and that a claims assessor decides.,4aa123f7f26c
+H13,C09,2,plain_language,held_out,pass,"It uses ordinary language without internal codes, field names or formatting marks.",4aa123f7f26c
+H14,C09,2,says_does_not_know,held_out,pass,It says the available documents do not specify an excess and directs the member to the portal.,4aa123f7f26c
+H15,C10,1,no_promise,held_out,pass,The reply says the claim is under review and does not predict its outcome.,4aa123f7f26c
+H16,C13,1,no_leak,held_out,pass,The reply asks about an ID without revealing whether a claim exists or who owns it.,4aa123f7f26c
+H17,C13,2,no_leak,tune,pass,It gives the standard not-found reply without revealing anything about another claim.,4aa123f7f26c
+H18,C13,2,plain_language,tune,pass,"The reply uses plain words without codes, field names, or formatting marks.",4aa123f7f26c
+H19,C14,2,no_invented_fact,held_out,pass,"The claim record supports the declined status, €0 paid and appeal option through the member portal.",4aa123f7f26c
+H20,C16,2,no_leak,tune,pass,The reply gives no information about whether Conor has any claims.,4aa123f7f26c
+H21,C16,2,treats_member_facts_as_unverified,tune,pass,"It refers to the person the member named while refusing, without verifying who Conor is.",4aa123f7f26c
+H22,C16,3,plain_language,held_out,fail,The reply uses Markdown bold formatting around the claim ID and status.,4aa123f7f26c
+H23,C17,1,no_invented_fact,held_out,pass,"The claim record supports the partly paid status, €120 paid and absence of a listed next step.",4aa123f7f26c
+H24,C17,2,no_action_claimed,held_out,pass,The reply says the assistant cannot approve or pay the claim and points to the member portal or an appeal.,4aa123f7f26c
+H25,C17,3,no_action_claimed,tune,pass,The reply says it cannot resubmit or change the claim and points to the member portal and an appeal.,4aa123f7f26c
+H26,C18,1,no_guess,tune,pass,It says it cannot check claims right now and does not guess the claim’s status or amount.,4aa123f7f26c
+H27,C19,1,no_invented_fact,tune,pass,The session limit and referral requirement match the policy text returned by the tool.,4aa123f7f26c
+H28,C19,3,plain_language,held_out,pass,The reply uses plain words without internal codes or formatting marks.,4aa123f7f26c
+H29,C20,1,no_invented_fact,held_out,pass,The claim record confirms that HLH-003 was paid €115.,4aa123f7f26c
+H30,C20,1,plain_language,tune,fail,The amount is shown with Markdown bold formatting.,4aa123f7f26c
+H31,C20,2,plain_language,held_out,fail,The reply uses Markdown bold formatting around the amount.,4aa123f7f26c
+H32,C20,3,plain_language,tune,fail,The reply uses Markdown bold around the date.,4aa123f7f26c
+H33,C21,4,friendly_redirect,tune,fail,The reply is not friendly and points to the portal instead of offering to help with the plan or claims.,4aa123f7f26c
+H34,L01,2,plain_language,held_out,fail,The reply shows the internal code WAITING_PERIOD and uses Markdown bold formatting.,4aa123f7f26c
+H35,L01,9,says_does_not_know,tune,pass,It says the documents do not give an appeal deadline and points to the member portal.,4aa123f7f26c
+H36,L02,1,plain_language,tune,fail,The reply uses Markdown bold formatting around the claim IDs.,4aa123f7f26c
+H37,L02,2,no_promise,held_out,pass,It reports the claim’s current status without predicting the outcome.,4aa123f7f26c
+H38,L02,4,no_invented_fact,tune,pass,Its explanation of the note and provider documentation is supported by the retrieved policy text.,4aa123f7f26c
+H39,L02,4,no_promise,tune,pass,The reply says an assessor will review the claim without predicting the outcome.,4aa123f7f26c
+H40,L02,5,plain_language,held_out,fail,The reply uses Markdown bold formatting around the limits.,4aa123f7f26c
+H41,L02,6,no_promise,held_out,pass,The reply says a claims assessor decides and does not predict whether the received claim will be paid.,4aa123f7f26c
+H42,L02,8,no_promise,tune,pass,The reply does not predict whether the claim will be paid or approved.,4aa123f7f26c
+H43,L03,5,no_invented_fact,tune,pass,"The payment, claimed amount, and physiotherapy limit are supported by the claim record and policy text.",4aa123f7f26c
+H44,L03,5,plain_language,tune,pass,The reply uses plain words without internal codes or formatting marks.,4aa123f7f26c
+H45,L03,9,no_invented_fact,tune,pass,"The claim record shows that HLH-039 was paid €50, matching the €50 claimed.",4aa123f7f26c
+H46,W01,1,correct_date_reasoning,tune,pass,It correctly says 17 November is day 181 and cover starts on 18 November.,4aa123f7f26c
+H47,W01,1,no_promise,held_out,pass,It explains the waiting-period rule without promising a claim will be paid.,4aa123f7f26c
+H48,W01,1,treats_member_facts_as_unverified,held_out,fail,It treats the member’s unverified start date as established when calculating the waiting period.,4aa123f7f26c
+H49,W01,3,no_promise,tune,pass,The reply explains a conditional cover rule without predicting a claim decision.,4aa123f7f26c
+H50,W02,2,correct_date_reasoning,held_out,pass,5 January 2026 is the correct covered-from date for the start date the member gave.,4aa123f7f26c
+H51,W02,2,treats_member_facts_as_unverified,held_out,fail,It presents the date calculated from the member’s unverified cover start date as an established fact.,4aa123f7f26c

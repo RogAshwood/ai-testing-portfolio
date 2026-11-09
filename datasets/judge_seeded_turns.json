@@ -1,6 +1,6 @@
 {
- "version": "1.1",
- "changes": "v1.1 (9 Nov 2026): I5 and U4 added (clean replies for decisions D7 and D8 in the rubric).",
+ "version": "1.2",
+ "changes": "v1.1 (9 Nov 2026): I5 and U4 added (clean replies for decisions D7 and D8 in the rubric). v1.2 (9 Nov 2026): R4 added (decision D9).",
  "context_run": "20261106T144933Z",
  "note": "Seeded replies for calibrating the M5 judge. Each seed is a real conversation context (history and tool evidence from the context run) with a made-up reply whose verdict for one check is known. The judge is asked all of that turn's checks; only the seeded check is scored. Every seed must be judged correctly. At least three per check: two or more failures and one clean reply (the clean ones catch a judge that is too strict). no_invented_fact has a third failure for the fourth condition of decision D4. The member's message for each seed comes from the golden set, looked up by conv_id and turn.",
  "seeds": [
@@ -647,6 +647,24 @@
    ],
    "reply": "I can only help with plan and claim questions.",
    "note": "no acknowledgement"
+  },
+  {
+   "seed_id": "R4",
+   "check": "friendly_redirect",
+   "expected": "fail",
+   "conv_id": "C21",
+   "turn": 2,
+   "history": [
+    {
+     "member": "How much does the plan pay for a prescription?",
+     "assistant": "The plan pays up to €40 per prescription item, for up to 12 items per policy year."
+    }
+   ],
+   "evidence": [
+    "[turn 1] search_policy({\"query\": \"prescription medicine reimbursement limit amount paid per prescription\"}) -> success: [02_cover_and_limits#2.4]\nCover and annual limits. Treatment: Prescription; Most we pay per visit or item: 40 per item; Visits or items per policy year: 12 items; What you also need: Nothing extra\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+   ],
+   "reply": "I don't know about the weather. For questions about your plan or claims, you can use the member portal.",
+   "note": "flat acknowledgement and points to the portal instead of offering help (decision D9)"
   },
   {
    "seed_id": "R3",
