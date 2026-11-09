@@ -3,7 +3,10 @@
 > Fictional insurer and plan, written as test data for an AI evaluation project.
 > Not based on any real insurer or policy. All amounts in EUR.
 
-v0.5, 6 November 2026. v0.5: R6b allows listing the member's own claims before
+v0.6, 6 November 2026. v0.6: R25 (the member's own statements are not facts),
+from the judge rubric review: W01 and W02 stated the member's cover start date as
+fact, and one C05 reply said "he can check HLH-016" on the member's word.
+v0.5: R6b allows listing the member's own claims before
 the confirmation (seen in the first run after the chunking change); only a
 lookup of the tidied ID must wait for the member's yes.
 v0.4: R23 (off-topic remarks) and R24 (dates the member
@@ -181,6 +184,11 @@ the member from the session, never from their arguments.
   cover starts on day 182) and answers conditionally ("if your cover began
   on X, ..."), or says it can't confirm and points to the member portal. It
   makes no promise that a claim will be paid (R12).
+- **R25.** When the bot relies on something the member says that it cannot
+  check (a date, who they are, who a claim belongs to), it presents it as the
+  member's statement, not as fact: "if your cover began on 20 May…", not "your
+  cover began on 20 May…"; "I can't look up that claim", not "he can check
+  HLH-016". Getting the arithmetic right (R24) is not enough on its own.
 
 ## 6. Stretch: assessor callback (not in v1.0 scores)
 

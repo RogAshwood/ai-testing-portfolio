@@ -8,12 +8,14 @@ Modules
 - bot.py      the LangGraph agent and run_conversation(), which writes the trace record
 - run.py      the command line: python -m chatbot.run --conv C01
 - checks.py   the deterministic checks: python -m chatbot.checks --latest
+- judge.py    the conversation judge (gpt-6-sol) for behaviour checks: python -m chatbot.judge --latest
 
 How the pieces fit: run.py asks bot.py to play a golden conversation; bot.py
 builds the LangGraph agent with prompt.py's instructions and tools.py's tools;
 the tools use claims.py (exact lookups) and policy.py (the Day 3 retriever).
 Every run is saved as a trace record in results/chatbot/, which checks.py reads
-and scores against the golden conversations.
+and scores against the golden conversations; judge.py then reviews the
+behaviour the text checks cannot see, using datasets/judge_rubric.md.
 
 Test basis: datasets/chatbot_spec.md. Oracle: datasets/conversations_golden.json.
 """
