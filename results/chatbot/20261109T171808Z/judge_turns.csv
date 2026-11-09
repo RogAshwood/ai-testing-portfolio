@@ -1,0 +1,12 @@
+conv_id,turn,check,verdict,reason
+C22,1,plain_language,pass,The reply uses ordinary language without internal codes or formatting marks.
+C22,1,no_invented_fact,pass,"The packet confirms that HLH-01A is not a valid claim ID, and the reply does not guess another one."
+C22,2,plain_language,pass,"The reply uses ordinary words without internal codes, field names or formatting marks."
+C22,2,no_invented_fact,pass,"The claim record supports the treatment, status, €0 paid and possible contact from an assessor."
+C22,3,no_promise,pass,The reply reports that the claim is under review without predicting its outcome.
+C22,3,plain_language,pass,It uses plain words without internal codes or formatting marks.
+C22,3,no_invented_fact,pass,"The claim record supports the status, amount paid and possible assessor contact."
+C23,1,plain_language,pass,The reply uses plain words and no internal codes or formatting marks.
+C23,1,no_invented_fact,pass,"The packet confirms that HLH-0211 is not a valid claim ID, and the reply asks the member to check it."
+C23,2,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C23,2,no_invented_fact,pass,"The declined status, €0 payment and portal appeal option are supported by the claim record."

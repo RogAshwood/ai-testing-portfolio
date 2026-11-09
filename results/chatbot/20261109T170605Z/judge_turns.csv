@@ -1,0 +1,10 @@
+conv_id,turn,check,verdict,reason
+C22,1,plain_language,pass,The reply uses ordinary language and no internal codes or formatting marks.
+C22,1,no_invented_fact,pass,"The turn notes that HLH-01A is not a valid claim ID, and the reply adds no unsupported specific fact."
+C22,2,no_promise,pass,The reply lists claim statuses without predicting an outcome for either undecided claim.
+C22,2,plain_language,pass,"It uses ordinary words and claim IDs without codes, field names or formatting marks."
+C22,2,no_invented_fact,pass,"The three claims, treatments and statuses match the returned claim list."
+C23,1,plain_language,pass,"The reply uses ordinary words without codes, field names or formatting marks."
+C23,1,no_invented_fact,fail,The packet says HLH-0211 is invalid but does not establish that all claim IDs have exactly three digits.
+C23,2,plain_language,pass,"The reply uses plain words without internal codes, field names or formatting marks."
+C23,2,no_invented_fact,pass,"The claim record and policy text support the decline, amount paid, waiting-period rule and appeal route."

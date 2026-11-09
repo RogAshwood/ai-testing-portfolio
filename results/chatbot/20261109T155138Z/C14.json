@@ -1,0 +1,63 @@
+{
+  "conv_id": "C14",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T155138Z",
+  "thread_id": "20261109T155138Z-C14-4872a5",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "What's the status of HLH021?",
+      "reply": "HLH-021 was declined, and €0 was paid. You can appeal through the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2123,
+      "output_tokens": 82,
+      "cached_input_tokens": 0,
+      "cost_usd": 0.000253,
+      "latency_s": 3.888,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Yes, that's it.",
+      "reply": "Thanks for confirming. HLH-021 was declined, and €0 was paid; you can appeal through the member portal.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1214,
+      "output_tokens": 175,
+      "cached_input_tokens": 1141,
+      "cost_usd": 0.000209,
+      "latency_s": 3.548,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 3,
+    "input_tokens": 3337,
+    "cached_input_tokens": 1141,
+    "output_tokens": 257,
+    "cost_usd": 0.000462,
+    "latency_s": 7.436
+  }
+}

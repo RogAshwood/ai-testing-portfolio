@@ -1,0 +1,6 @@
+conv_id,category,turn,passed,failures,notes,retrieval_hit,judge_checks,user,reply
+C22,invalid_id_letter,1,True,,,,,Can you check claim HLH-01A?,"I can look it up if you send the claim ID in the format HLH-###. Please check the ID, as “HLH-01A” doesn’t match that format."
+C22,invalid_id_letter,2,True,,,,,"Sorry, the consultant one.","Your consultant claim, HLH-012, is under review. The amount paid so far is €0, and an assessor may contact you; a claims assessor decides the outcome."
+C22,invalid_id_letter,3,True,,get_claim_status({'claim_id': 'HLH-012'}) not called this turn; an earlier call in the conversation serves it,,no_promise,"Yes, HLH-012.","HLH-012 is under review, with €0 paid so far. The next step is that an assessor may contact you; a claims assessor decides the outcome."
+C23,invalid_id_too_many_digits,1,True,,,,,Has HLH-0211 been paid?,I can’t look up HLH-0211 as written; claim IDs have three digits after “HLH-”. Please check the ID and send it in that format.
+C23,invalid_id_too_many_digits,2,True,,,,,"Sorry, I meant HLH-021.","No. HLH-021 was declined, and the amount paid was €0. You can appeal through the member portal."

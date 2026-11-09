@@ -1,0 +1,108 @@
+{
+  "conv_id": "C02",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T162148Z",
+  "thread_id": "20261109T162148Z-C02-aa593a",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much do you pay for a GP visit?",
+      "reply": "We pay up to €60 per GP visit, for a maximum of 8 visits per policy year. Once you’ve used all 8, further GP visits that year aren’t covered.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "GP visit benefit amount reimbursement limit per visit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "GP visit benefit amount reimbursement limit per visit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#2.1",
+              "02_cover_and_limits#4"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.4315,
+              0.3251,
+              0.2424
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.1]\nCover and annual limits. Treatment: GP visit; Most we pay per visit or item: 60; Visits or items per policy year: 8 visits; What you also need: Nothing extra\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+        }
+      ],
+      "search_queries": [
+        "GP visit benefit amount reimbursement limit per visit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2160,
+      "output_tokens": 67,
+      "cached_input_tokens": 0,
+      "cost_usd": 0.000249,
+      "latency_s": 3.643,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "And is acupuncture covered?",
+      "reply": "No. Acupuncture is listed as an alternative therapy and isn’t covered under Essential Plus.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "acupuncture covered limit per visit annual visits"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "acupuncture covered limit per visit annual visits",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "03_exclusions#2.4",
+              "02_cover_and_limits#2.1"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "03_exclusions",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2664,
+              0.2447,
+              0.2214
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[03_exclusions#2.4]\nWhat is not covered. Alternative therapies, for example acupuncture and homeopathy.\n\n[02_cover_and_limits#2.1]\nCover and annual limits. Treatment: GP visit; Most we pay per visit or item: 60; Visits or items per policy year: 8 visits; What you also need: Nothing extra"
+        }
+      ],
+      "search_queries": [
+        "acupuncture covered limit per visit annual visits"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2611,
+      "output_tokens": 47,
+      "cached_input_tokens": 2405,
+      "cost_usd": 0.000285,
+      "latency_s": 9.391,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 4771,
+    "cached_input_tokens": 2405,
+    "output_tokens": 114,
+    "cost_usd": 0.000534,
+    "latency_s": 13.034
+  }
+}

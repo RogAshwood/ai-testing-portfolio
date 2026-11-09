@@ -1,0 +1,119 @@
+{
+  "conv_id": "C12",
+  "member_id": "M-1031",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T155138Z",
+  "thread_id": "20261109T155138Z-C12-aaed8c",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much did I get back on HLH-031?",
+      "reply": "You got back €50 on claim HLH-031. It was partly paid.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-031"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-031",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-031\", \"claimant_name\": \"Niall Corcoran\", \"treatment\": \"Physiotherapy session and yoga class\", \"treatment_date\": \"2026-09-19\", \"submission_date\": \"2026-09-24\", \"amount_claimed\": \"95\", \"status\": \"partly_paid\", \"decision_code\": \"EXCLUDED_ITEM\", \"amount_paid\": \"50\", \"last_updated\": \"2026-10-01\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2125,
+      "output_tokens": 44,
+      "cached_input_tokens": 0,
+      "cost_usd": 0.000235,
+      "latency_s": 3.973,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why not the whole 95?",
+      "reply": "The plan excludes yoga classes as fitness or wellness activities, even when described as therapeutic. Because your receipt also included physiotherapy, it was reviewed as a mixed claim; the record shows €50 paid, but doesn’t specify how the remaining €45 was allocated.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "EXCLUDED_ITEM partly paid mixed treatment excluded item yoga class physiotherapy"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "EXCLUDED_ITEM partly paid mixed treatment excluded item yoga class physiotherapy",
+            "chunk_ids": [
+              "03_exclusions#3",
+              "03_exclusions#2.5",
+              "03_exclusions#4"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "03_exclusions",
+              "03_exclusions"
+            ],
+            "scores": [
+              0.251,
+              0.1618,
+              0.1178
+            ]
+          },
+          "result": "[03_exclusions#3]\nWhat is not covered. If a receipt includes an excluded item alongside a covered one, the claim is reviewed by a claims assessor.\n\n[03_exclusions#2.5]\nWhat is not covered. Fitness and wellness classes, for example yoga, pilates and gym membership. This applies even if a class is described as therapeutic or is run at a clinic.\n\n[03_exclusions#4]\nWhat is not covered. Claims for excluded treatment are normally declined. You can appeal a decline; see \"Appeals and complaints\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "yoga class exclusion Essential Plus plan"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "yoga class exclusion Essential Plus plan",
+            "chunk_ids": [
+              "01_plan_overview#5",
+              "01_plan_overview#7",
+              "01_plan_overview#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "01_plan_overview",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3373,
+              0.3294,
+              0.3085
+            ]
+          },
+          "result": "[01_plan_overview#5]\nYour Essential Plus plan: overview. What the plan does not pay for. Some treatments are never covered. See \"What is not covered\".\n\n[01_plan_overview#7]\nYour Essential Plus plan: overview. Making a claim. See \"How to make a claim\" and \"Claim deadlines\".\n\n[01_plan_overview#1]\nYour Essential Plus plan: overview. Essential Plus is a health insurance plan from Harbourlight Health. It helps pay for everyday and hospital treatment received in Ireland."
+        }
+      ],
+      "search_queries": [
+        "EXCLUDED_ITEM partly paid mixed treatment excluded item yoga class physiotherapy",
+        "yoga class exclusion Essential Plus plan"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2657,
+      "output_tokens": 284,
+      "cached_input_tokens": 2312,
+      "cost_usd": 0.000408,
+      "latency_s": 6.656,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 4782,
+    "cached_input_tokens": 2312,
+    "output_tokens": 328,
+    "cost_usd": 0.000643,
+    "latency_s": 10.629
+  }
+}

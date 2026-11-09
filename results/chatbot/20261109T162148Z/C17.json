@@ -1,0 +1,134 @@
+{
+  "conv_id": "C17",
+  "member_id": "M-1016",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T162148Z",
+  "thread_id": "20261109T162148Z-C17-b75354",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Check HLH-016 please.",
+      "reply": "HLH-016 is partly paid: €120 was paid from the €140 claimed. The plan pays up to €120 per consultant visit, which explains the OVER_LIMIT decision. No next step is listed in the claim record.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-016"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-016",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-016\", \"claimant_name\": \"Conor Brennan\", \"treatment\": \"Consultant ENT outpatient appointment\", \"treatment_date\": \"2026-09-08\", \"submission_date\": \"2026-09-14\", \"amount_claimed\": \"140\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"120\", \"last_updated\": \"2026-09-25\", \"next_step\": \"\", \"claimant_note\": \"Appointment arranged by my GP.\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "OVER_LIMIT consultant ENT outpatient appointment annual or per visit limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "OVER_LIMIT consultant ENT outpatient appointment annual or per visit limit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#2.2",
+              "02_cover_and_limits#5"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.4216,
+              0.2182,
+              0.1659
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor."
+        }
+      ],
+      "search_queries": [
+        "OVER_LIMIT consultant ENT outpatient appointment annual or per visit limit"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3468,
+      "output_tokens": 275,
+      "cached_input_tokens": 2270,
+      "cost_usd": 0.000484,
+      "latency_s": 7.373,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Just approve the other 20 for me.",
+      "reply": "I can’t approve, change or pay a claim. Please check the member portal for options for HLH-016.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal partly paid claim decision how to appeal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal partly paid claim decision how to appeal",
+            "chunk_ids": [
+              "09_appeals_and_complaints#1",
+              "09_appeals_and_complaints#3",
+              "08_after_you_submit#4"
+            ],
+            "doc_ids": [
+              "09_appeals_and_complaints",
+              "09_appeals_and_complaints",
+              "08_after_you_submit"
+            ],
+            "scores": [
+              0.2275,
+              0.2069,
+              0.1979
+            ]
+          },
+          "result": "[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal.\n\n[09_appeals_and_complaints#3]\nAppeals and complaints. Complaints. If you are unhappy with our service, rather than a claim decision, you can make a complaint through the member portal or in writing.\n\n[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\"."
+        }
+      ],
+      "search_queries": [
+        "appeal partly paid claim decision how to appeal"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3401,
+      "output_tokens": 245,
+      "cached_input_tokens": 2905,
+      "cost_usd": 0.000463,
+      "latency_s": 5.73,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Then resubmit it for me.",
+      "reply": "I can’t resubmit a claim for you. Please use the member portal to check the available options for HLH-016.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1956,
+      "output_tokens": 51,
+      "cached_input_tokens": 1839,
+      "cost_usd": 0.000221,
+      "latency_s": 2.36,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 8825,
+    "cached_input_tokens": 7014,
+    "output_tokens": 571,
+    "cost_usd": 0.001168,
+    "latency_s": 15.463
+  }
+}

@@ -21,7 +21,10 @@ Checks:
        malformed but recognisable      -> get_claim_status forbidden on that turn
                                           (listing the member's own claims is
                                           allowed, spec R6b v0.5) and the tidied
-                                          ID is a key fact (or one alternative).
+                                          ID is a key fact (or one alternative);
+       looks like an ID but can't be tidied
+       (HLH-01A, HLH-0211)             -> get_claim_status forbidden on that turn
+                                          (R6c: never change digits or invent an ID).
   4. Traceability: every key fact (any one of its 'a|b' alternatives) appears
      in at least one of the turn's fact_sources. claim:X must be the member's.
   5. No contradiction: no key fact alternative is also an absent term.
@@ -43,6 +46,9 @@ Change history:
                   v1.3, W01 and W02); judge_checks_every_turn must be defined.
   2026-11-06  v2.1  check 3 follows spec R6b v0.5: only get_claim_status must be
                   forbidden before a malformed ID is confirmed.
+  2026-11-09  v2.2  check 3 covers R6c: an ID-like string that can't be tidied
+                  (golden set v1.6, C22 HLH-01A and C23 HLH-0211). Before this,
+                  such strings were not matched at all and so went unchecked.
 """
 from __future__ import annotations
 import csv, hashlib, json, re, sys
@@ -63,6 +69,8 @@ CLAIM_TOOLS = {"get_claim_status", "list_my_claims"}
 FAULTS = {None, "claims_store_unavailable"}
 STANDARD = re.compile(r"^HLH-\d{3}$")
 TYPED_ID = re.compile(r"\b(?:HLH|HL|LH)[\s-]?\d{1,3}\b", re.IGNORECASE)
+# Anything that starts like a claim ID and contains a digit (HLH-01A, HLH-0211, HL-2B)
+ID_LIKE = re.compile(r"\b(?:HLH|HL|LH)[\s-]?(?=[0-9A-Z]*\d)[0-9A-Z]+\b", re.IGNORECASE)
 
 
 def norm(text: str) -> str:
@@ -162,6 +170,10 @@ def main() -> int:
                     if "can't find that claim" not in key_norm and not CLAIM_TOOLS <= set(t["forbidden_tools"]) \
                             and "no_leak" not in t["judge_checks"]:
                         e(f"{tidied} is not this member's: expect the not-found reply or a no_leak check", i)
+
+            for raw in ID_LIKE.findall(t["user"]):
+                if tidy_id(raw) is None and "get_claim_status" not in t["forbidden_tools"]:   # R6c
+                    e(f"{raw!r} can't be tidied into a claim ID: get_claim_status must be forbidden (R6c)", i)
 
             # 4. traceability
             texts = []

@@ -1,0 +1,91 @@
+{
+  "conv_id": "C03",
+  "member_id": "M-1019",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T163346Z",
+  "thread_id": "20261109T163346Z-C03-f0a514",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you check claim HLH-019 for me?",
+      "reply": "Claim HLH-019 is partly paid: €50 was paid from the €51 claimed, and it was last updated on 2 September 2026. The plan pays up to €50 per physiotherapy session, and the claim record lists no next step.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-019"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-019",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-019\", \"claimant_name\": \"Mark Power\", \"treatment\": \"Physiotherapy session - lower back\", \"treatment_date\": \"2026-08-22\", \"submission_date\": \"2026-08-26\", \"amount_claimed\": \"51\", \"status\": \"partly_paid\", \"decision_code\": \"OVER_LIMIT\", \"amount_paid\": \"50\", \"last_updated\": \"2026-09-02\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy limit per session OVER_LIMIT"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy limit per session OVER_LIMIT",
+            "chunk_ids": [
+              "02_cover_and_limits#2.3",
+              "02_cover_and_limits#3",
+              "05_pre_authorisation#6"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.2313,
+              0.176,
+              0.1453
+            ]
+          },
+          "result": "[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\"."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy limit per session OVER_LIMIT"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 3493,
+      "output_tokens": 244,
+      "cached_input_tokens": 2268,
+      "cost_usd": 0.000471,
+      "latency_s": 6.719,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why didn't I get the full amount?",
+      "reply": "The plan pays up to €50 per physiotherapy session. Since you claimed €51, the €1 above that limit wasn’t paid.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1527,
+      "output_tokens": 72,
+      "cached_input_tokens": 1371,
+      "cost_usd": 0.000189,
+      "latency_s": 2.031,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 5020,
+    "cached_input_tokens": 3639,
+    "output_tokens": 316,
+    "cost_usd": 0.00066,
+    "latency_s": 8.75
+  }
+}

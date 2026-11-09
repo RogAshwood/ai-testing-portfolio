@@ -1,0 +1,91 @@
+{
+  "conv_id": "C20",
+  "member_id": "M-1003",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T155138Z",
+  "thread_id": "20261109T155138Z-C20-fcfe49",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-003 been paid?",
+      "reply": "Yes. HLH-003 has been paid: €115. There’s no further step listed.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-003"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-003",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-003\", \"claimant_name\": \"Patrick O'Connor\", \"treatment\": \"Consultant cardiology outpatient review\", \"treatment_date\": \"2025-10-01\", \"submission_date\": \"2026-10-01\", \"amount_claimed\": \"115\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"115\", \"last_updated\": \"2026-10-06\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2114,
+      "output_tokens": 47,
+      "cached_input_tokens": 0,
+      "cost_usd": 0.000235,
+      "latency_s": 3.408,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How much did I get?",
+      "reply": "You received €115 for HLH-003.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1171,
+      "output_tokens": 34,
+      "cached_input_tokens": 1132,
+      "cost_usd": 0.000134,
+      "latency_s": 2.139,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "When was it processed?",
+      "reply": "The claim record shows it was last updated on 6 October 2026.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1216,
+      "output_tokens": 84,
+      "cached_input_tokens": 1168,
+      "cost_usd": 0.000164,
+      "latency_s": 2.314,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "Is there anything I need to do?",
+      "reply": "No further step is listed for HLH-003.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1314,
+      "output_tokens": 41,
+      "cached_input_tokens": 1213,
+      "cost_usd": 0.000152,
+      "latency_s": 2.249,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 5815,
+    "cached_input_tokens": 3513,
+    "output_tokens": 206,
+    "cost_usd": 0.000685,
+    "latency_s": 10.11
+  }
+}

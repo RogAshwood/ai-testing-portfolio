@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "run": "20261109T171808Z",
+    "judge_model": "gpt-6-sol",
+    "rubric_fp": "4aa123f7f26c",
+    "spec_fp": "975dadfd7e66",
+    "golden_fp": "6f6a9a4c6d4f",
+    "judged_at": "2026-11-09T17:18:57+00:00",
+    "limit": null
+  },
+  "turns": [
+    {
+      "conv_id": "C22",
+      "turn": 1,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses ordinary language without internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The packet confirms that HLH-01A is not a valid claim ID, and the reply does not guess another one."
+        }
+      },
+      "error": null,
+      "input_tokens": 1330,
+      "output_tokens": 186,
+      "cost_usd": 0.00452,
+      "latency_s": 3.58,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C22",
+      "turn": 2,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses ordinary words without internal codes, field names or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The claim record supports the treatment, status, €0 paid and possible contact from an assessor."
+        }
+      },
+      "error": null,
+      "input_tokens": 1664,
+      "output_tokens": 74,
+      "cost_usd": 0.004068,
+      "latency_s": 1.84,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C22",
+      "turn": 3,
+      "checks": [
+        "no_promise",
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "no_promise": {
+          "verdict": "pass",
+          "reason": "The reply reports that the claim is under review without predicting its outcome."
+        },
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "It uses plain words without internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The claim record supports the status, amount paid and possible assessor contact."
+        }
+      },
+      "error": null,
+      "input_tokens": 1986,
+      "output_tokens": 125,
+      "cost_usd": 0.005222,
+      "latency_s": 2.45,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "4f160a26191e"
+    },
+    {
+      "conv_id": "C23",
+      "turn": 1,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses plain words and no internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The packet confirms that HLH-0211 is not a valid claim ID, and the reply asks the member to check it."
+        }
+      },
+      "error": null,
+      "input_tokens": 1320,
+      "output_tokens": 247,
+      "cost_usd": 0.00511,
+      "latency_s": 3.12,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C23",
+      "turn": 2,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses plain words without internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The declined status, €0 payment and portal appeal option are supported by the claim record."
+        }
+      },
+      "error": null,
+      "input_tokens": 1454,
+      "output_tokens": 120,
+      "cost_usd": 0.004108,
+      "latency_s": 1.99,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    }
+  ],
+  "summary": {
+    "per_check": {
+      "plain_language": {
+        "pass": 5,
+        "fail": 0,
+        "judge_error": 0
+      },
+      "no_invented_fact": {
+        "pass": 5,
+        "fail": 0,
+        "judge_error": 0
+      },
+      "no_promise": {
+        "pass": 1,
+        "fail": 0,
+        "judge_error": 0
+      }
+    },
+    "judge_errors": 0,
+    "cost_usd": 0.023,
+    "latency_s": 13.0,
+    "combined": {
+      "turns_judged": 5,
+      "turns_passing_both": 5,
+      "conversations": 2,
+      "conversations_passing_both": 2
+    }
+  }
+}

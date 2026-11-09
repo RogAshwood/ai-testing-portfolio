@@ -1,0 +1,91 @@
+{
+  "conv_id": "C20",
+  "member_id": "M-1003",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T162148Z",
+  "thread_id": "20261109T162148Z-C20-fb7a0f",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-003 been paid?",
+      "reply": "Yes. Claim HLH-003 has been paid, and €115 was paid.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-003"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-003",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-003\", \"claimant_name\": \"Patrick O'Connor\", \"treatment\": \"Consultant cardiology outpatient review\", \"treatment_date\": \"2025-10-01\", \"submission_date\": \"2026-10-01\", \"amount_claimed\": \"115\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"115\", \"last_updated\": \"2026-10-06\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2114,
+      "output_tokens": 44,
+      "cached_input_tokens": 1132,
+      "cost_usd": 0.000233,
+      "latency_s": 3.586,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How much did I get?",
+      "reply": "You received €115 for claim HLH-003.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1168,
+      "output_tokens": 35,
+      "cached_input_tokens": 1132,
+      "cost_usd": 0.000134,
+      "latency_s": 2.094,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "When was it processed?",
+      "reply": "The claim record shows it was last updated on 6 October 2026.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1214,
+      "output_tokens": 51,
+      "cached_input_tokens": 1165,
+      "cost_usd": 0.000147,
+      "latency_s": 2.01,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "Is there anything I need to do?",
+      "reply": "The claim record doesn’t list a next step, so there’s nothing further noted for you to do.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1279,
+      "output_tokens": 51,
+      "cached_input_tokens": 1211,
+      "cost_usd": 0.000153,
+      "latency_s": 2.148,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 5775,
+    "cached_input_tokens": 4640,
+    "output_tokens": 181,
+    "cost_usd": 0.000667,
+    "latency_s": 9.838
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "conv_id": "C15",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T163346Z",
+  "thread_id": "20261109T163346Z-C15-df1ebd",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Is HL021 paid yet?",
+      "reply": "Did you mean HLH-021?",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 977,
+      "output_tokens": 80,
+      "cached_input_tokens": 0,
+      "cost_usd": 0.000138,
+      "latency_s": 2.23,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "No, I'm not sure of the number.",
+      "reply": "I found two claims: HLH-021 for a consultant rheumatology outpatient review, which was declined, and HLH-038 for a GP visit, which was paid. Which claim did you mean?",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-021",
+              "HLH-038"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-021\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"status\": \"declined\"}, {\"claim_id\": \"HLH-038\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-08-14\", \"status\": \"paid\"}]}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2275,
+      "output_tokens": 158,
+      "cached_input_tokens": 1069,
+      "cost_usd": 0.000307,
+      "latency_s": 4.34,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "The GP visit in August.",
+      "reply": "Your GP visit claim, HLH-038, has been paid. The amount paid was €50, and it was last updated on 22 August 2026; no next step is listed.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-038"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-038",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-038\", \"claimant_name\": \"David Whelan\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-08-14\", \"submission_date\": \"2026-08-18\", \"amount_claimed\": \"50\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"50\", \"last_updated\": \"2026-08-22\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2845,
+      "output_tokens": 129,
+      "cached_input_tokens": 2536,
+      "cost_usd": 0.000349,
+      "latency_s": 4.181,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6097,
+    "cached_input_tokens": 3605,
+    "output_tokens": 367,
+    "cost_usd": 0.000794,
+    "latency_s": 10.751
+  }
+}

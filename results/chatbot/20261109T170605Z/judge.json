@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "run": "20261109T170605Z",
+    "judge_model": "gpt-6-sol",
+    "rubric_fp": "4aa123f7f26c",
+    "spec_fp": "975dadfd7e66",
+    "golden_fp": "2acf37cf7e35",
+    "judged_at": "2026-11-09T17:07:11+00:00",
+    "limit": null
+  },
+  "turns": [
+    {
+      "conv_id": "C22",
+      "turn": 1,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses ordinary language and no internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The turn notes that HLH-01A is not a valid claim ID, and the reply adds no unsupported specific fact."
+        }
+      },
+      "error": null,
+      "input_tokens": 1327,
+      "output_tokens": 134,
+      "cost_usd": 0.003994,
+      "latency_s": 2.73,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C22",
+      "turn": 2,
+      "checks": [
+        "no_promise",
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "no_promise": {
+          "verdict": "pass",
+          "reason": "The reply lists claim statuses without predicting an outcome for either undecided claim."
+        },
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "It uses ordinary words and claim IDs without codes, field names or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The three claims, treatments and statuses match the returned claim list."
+        }
+      },
+      "error": null,
+      "input_tokens": 1814,
+      "output_tokens": 98,
+      "cost_usd": 0.004608,
+      "latency_s": 3.53,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "4f160a26191e"
+    },
+    {
+      "conv_id": "C23",
+      "turn": 1,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses ordinary words without codes, field names or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "fail",
+          "reason": "The packet says HLH-0211 is invalid but does not establish that all claim IDs have exactly three digits."
+        }
+      },
+      "error": null,
+      "input_tokens": 1324,
+      "output_tokens": 395,
+      "cost_usd": 0.006598,
+      "latency_s": 5.1,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C23",
+      "turn": 2,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses plain words without internal codes, field names or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The claim record and policy text support the decline, amount paid, waiting-period rule and appeal route."
+        }
+      },
+      "error": null,
+      "input_tokens": 1669,
+      "output_tokens": 121,
+      "cost_usd": 0.004548,
+      "latency_s": 2.37,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    }
+  ],
+  "summary": {
+    "per_check": {
+      "plain_language": {
+        "pass": 4,
+        "fail": 0,
+        "judge_error": 0
+      },
+      "no_invented_fact": {
+        "pass": 3,
+        "fail": 1,
+        "judge_error": 0
+      },
+      "no_promise": {
+        "pass": 1,
+        "fail": 0,
+        "judge_error": 0
+      }
+    },
+    "judge_errors": 0,
+    "cost_usd": 0.0197,
+    "latency_s": 13.7,
+    "combined": {
+      "turns_judged": 4,
+      "turns_passing_both": 2,
+      "conversations": 2,
+      "conversations_passing_both": 0
+    }
+  }
+}

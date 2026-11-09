@@ -28,6 +28,7 @@ Change history:
   2026-11-06  v1.2  section 4b: tests for the M5 chunking (tables split by row, the
                     exclusions list by item) and the M5 version of document 04.
   2026-11-06  v1.3  test that cached input tokens are counted in the trace record.
+  2026-11-09  v1.4  R6c cases HLH-01A and HLH-0211 (golden set v1.6, C22 and C23).
 """
 from __future__ import annotations
 
@@ -102,10 +103,12 @@ def call(name, args, cid="c1"):
 @pytest.mark.parametrize("raw, tidied", [
     ("HLH-021", "HLH-021"), ("hlh-021", "HLH-021"), ("HLH021", "HLH-021"), ("HL021", "HLH-021"),
     ("HLH-21", "HLH-021"), ("hlh 021", "HLH-021"), ("021", "HLH-021"), ("ABC-021", None), ("HLH-0213", None),
+    ("HLH-01A", None), ("HLH-0211", None),                       # R6c: golden set C22, C23
 ])
 def test_tidy_id(raw, tidied):
     """Each way a member might type a claim ID is tidied to HLH-NNN, and things that
-    aren't claim IDs (wrong letters, four digits) are not. Rule R6b.
+    aren't claim IDs (wrong letters, four digits, a letter among the digits) are not.
+    Rules R6b and R6c.
     One test per row in the table above, so a failure names the exact input."""
     assert tidy_id(raw) == tidied
 

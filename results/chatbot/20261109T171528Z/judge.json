@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "run": "20261109T171528Z",
+    "judge_model": "gpt-6-sol",
+    "rubric_fp": "4aa123f7f26c",
+    "spec_fp": "975dadfd7e66",
+    "golden_fp": "6f6a9a4c6d4f",
+    "judged_at": "2026-11-09T17:16:42+00:00",
+    "limit": null
+  },
+  "turns": [
+    {
+      "conv_id": "C22",
+      "turn": 1,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses ordinary wording without internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "fail",
+          "reason": "The packet says HLH-01A is invalid but does not establish that all claim IDs must end in three digits."
+        }
+      },
+      "error": null,
+      "input_tokens": 1330,
+      "output_tokens": 273,
+      "cost_usd": 0.00539,
+      "latency_s": 3.9,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C22",
+      "turn": 2,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses plain words without internal codes, field names or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The claim record supports the status, amount paid and next step stated in the reply."
+        }
+      },
+      "error": null,
+      "input_tokens": 1662,
+      "output_tokens": 109,
+      "cost_usd": 0.004414,
+      "latency_s": 2.83,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C22",
+      "turn": 3,
+      "checks": [
+        "no_promise",
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "no_promise": {
+          "verdict": "pass",
+          "reason": "It reports the claim’s current status without predicting an outcome."
+        },
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "It uses normal text without codes, field names or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The status, amount paid and next step all match the claim record."
+        }
+      },
+      "error": null,
+      "input_tokens": 1989,
+      "output_tokens": 93,
+      "cost_usd": 0.004908,
+      "latency_s": 1.93,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "4f160a26191e"
+    },
+    {
+      "conv_id": "C23",
+      "turn": 1,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "pass",
+          "reason": "The reply uses plain words without internal codes or formatting marks."
+        },
+        "no_invented_fact": {
+          "verdict": "fail",
+          "reason": "No tool results or documents support the statement that claim IDs have exactly three digits after “HLH-”."
+        }
+      },
+      "error": null,
+      "input_tokens": 1317,
+      "output_tokens": 539,
+      "cost_usd": 0.008024,
+      "latency_s": 5.77,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    },
+    {
+      "conv_id": "C23",
+      "turn": 2,
+      "checks": [
+        "plain_language",
+        "no_invented_fact"
+      ],
+      "verdicts": {
+        "plain_language": {
+          "verdict": "fail",
+          "reason": "The reply shows the internal decision code WAITING_PERIOD."
+        },
+        "no_invented_fact": {
+          "verdict": "pass",
+          "reason": "The claim record and policy text support the status, amount paid, waiting-period rule, and appeal option."
+        }
+      },
+      "error": null,
+      "input_tokens": 1661,
+      "output_tokens": 104,
+      "cost_usd": 0.004362,
+      "latency_s": 2.55,
+      "model_served": "gpt-6-sol",
+      "system_prompt_fp": "0ed7dbf6726c"
+    }
+  ],
+  "summary": {
+    "per_check": {
+      "plain_language": {
+        "pass": 4,
+        "fail": 1,
+        "judge_error": 0
+      },
+      "no_invented_fact": {
+        "pass": 3,
+        "fail": 2,
+        "judge_error": 0
+      },
+      "no_promise": {
+        "pass": 1,
+        "fail": 0,
+        "judge_error": 0
+      }
+    },
+    "judge_errors": 0,
+    "cost_usd": 0.0271,
+    "latency_s": 17.0,
+    "combined": {
+      "turns_judged": 5,
+      "turns_passing_both": 2,
+      "conversations": 2,
+      "conversations_passing_both": 0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+conv_id,category,turn,passed,failures,notes,retrieval_hit,judge_checks,user,reply
+C22,invalid_id_letter,1,True,,,,,Can you check claim HLH-01A?,I can’t match “HLH-01A” to the standard claim ID format. Please check the ID in your member portal and send it as shown.
+C22,invalid_id_letter,2,False,required get_claim_status({'claim_id': 'HLH-012'}): missing,,,no_promise,"Sorry, the consultant one.","I found three claims: HLH-012 (consultant orthopaedic review, under review), HLH-036 (GP visit, paid), and HLH-037 (physiotherapy session, received). Which claim would you like me to check?"
+C23,invalid_id_too_many_digits,1,True,,,,,Has HLH-0211 been paid?,Claim IDs have the format HLH- followed by three digits. Please check the ID in your portal and send it exactly as shown.
+C23,invalid_id_too_many_digits,2,True,,,,,"Sorry, I meant HLH-021.","HLH-021 was declined under the waiting-period rule, and €0 was paid. Essential Plus has a 182-day waiting period from when cover starts; treatment in the first 182 days isn’t covered. You can appeal through the member portal."

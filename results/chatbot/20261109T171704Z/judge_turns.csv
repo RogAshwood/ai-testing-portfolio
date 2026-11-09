@@ -1,0 +1,12 @@
+conv_id,turn,check,verdict,reason
+C22,1,plain_language,pass,The reply uses ordinary language and shows no internal codes or formatting marks.
+C22,1,no_invented_fact,pass,The turn note confirms that HLH-01A is not a valid claim ID.
+C22,2,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+C22,2,no_invented_fact,fail,"The record says an assessor may contact the member, but does not say a claims assessor decides the outcome."
+C22,3,no_promise,pass,The reply reports the claim is under review and says an assessor decides the outcome without predicting it.
+C22,3,plain_language,pass,"It uses ordinary wording without internal codes, field names or formatting marks."
+C22,3,no_invented_fact,pass,"The status, amount paid and next step match the claim record, and the assessor statement is supported by the specification."
+C23,1,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+C23,1,no_invented_fact,pass,"It identifies the claim ID as invalid and asks the member to check it, consistent with the turn note."
+C23,2,plain_language,pass,"The reply uses ordinary words without internal codes, field names or formatting marks."
+C23,2,no_invented_fact,pass,"The declined status, €0 paid and portal appeal option all appear in the claim record."

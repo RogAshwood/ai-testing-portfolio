@@ -1,0 +1,151 @@
+{
+  "summary": {
+    "run": "20261109T171808Z",
+    "conversations": 2,
+    "conversations_passed": 2,
+    "turns": 5,
+    "turns_passed": 5,
+    "required_tools": {
+      "pass": 2,
+      "pass_earlier": 1,
+      "met_earlier": 0,
+      "wrong_args": 0,
+      "missing": 0
+    },
+    "forbidden_tool_calls": 0,
+    "unexpected_tool_calls": 0,
+    "key_facts_missing": 0,
+    "absent_terms_found": 0,
+    "retrieval_hit_rate": null,
+    "retrieval_turns": 0,
+    "judge_checks_pending": 1,
+    "cost_usd": 0.0015,
+    "input_tokens": 10618,
+    "cached_input_tokens": 5455,
+    "latency_s": 23.3
+  },
+  "conversations": [
+    {
+      "conv_id": "C22",
+      "category": "invalid_id_letter",
+      "passed": true,
+      "error": null,
+      "turns": [
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 1,
+          "user": "Can you check claim HLH-01A?",
+          "reply": "Claim IDs use the format HLH- followed by three digits, so I can’t check HLH-01A as written. Please send the claim ID in that format."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "list_my_claims": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 2,
+          "user": "Sorry, the consultant one.",
+          "reply": "The consultant claim is HLH-012 for a consultant orthopaedic review, and it’s under review. The amount paid is €0; an assessor may contact you."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [
+            "get_claim_status({'claim_id': 'HLH-012'}) not called this turn; an earlier call in the conversation serves it"
+          ],
+          "required": {
+            "get_claim_status({'claim_id': 'HLH-012'})": "pass_earlier"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [
+            "no_promise"
+          ],
+          "turn": 3,
+          "user": "Yes, HLH-012.",
+          "reply": "Thanks for confirming. HLH-012 is under review, with €0 paid; an assessor may contact you."
+        }
+      ],
+      "totals": {
+        "llm_calls": 5,
+        "input_tokens": 7143,
+        "cached_input_tokens": 4293,
+        "output_tokens": 678,
+        "cost_usd": 0.001053,
+        "latency_s": 15.909
+      }
+    },
+    {
+      "conv_id": "C23",
+      "category": "invalid_id_too_many_digits",
+      "passed": true,
+      "error": null,
+      "turns": [
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 1,
+          "user": "Has HLH-0211 been paid?",
+          "reply": "Claim IDs use three digits after “HLH-”. Could you check the ID and send it in that format?"
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "get_claim_status({'claim_id': 'HLH-021'})": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 2,
+          "user": "Sorry, I meant HLH-021.",
+          "reply": "No. Claim HLH-021 was declined, and €0 was paid; you can appeal through the member portal."
+        }
+      ],
+      "totals": {
+        "llm_calls": 3,
+        "input_tokens": 3475,
+        "cached_input_tokens": 1162,
+        "output_tokens": 267,
+        "cost_usd": 0.000481,
+        "latency_s": 7.354
+      }
+    }
+  ]
+}

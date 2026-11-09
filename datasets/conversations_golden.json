@@ -1,6 +1,8 @@
 {
-  "version": "1.5",
+  "version": "1.7",
   "changes": [
+    "1.7 (2026-11-09): oracle fix after the first C22 run. Turn 2 ('the consultant one') expected a direct lookup of HLH-012; the bot listed her claims and asked which, which R5 allows. C22 now has three turns: list (turn 2), then lookup once she names HLH-012 (turn 3; an earlier lookup counts).",
+    "1.6 (2026-11-09): after the three baseline runs 20261109T155138Z, T162148Z, T163346Z. Oracle fix where the bot was valid: C07 t3 and C10 t2 key fact 'assessor' also accepts 'no decision', 'under review' or 'being reviewed' (a correct refusal need not name the assessor). Added C22 (HLH-01A, a letter in the number) and C23 (HLH-0211, four digits): IDs that can't be tidied, so the bot must not guess or change digits (R6c); previously untested.",
     "1.5 (2026-11-06): judge rubric review. New judge check treats_member_facts_as_unverified (spec R25) on W01 t1-t2, W02 t1-t2, C05 t2-t3, C16 t1-t2; no_invented_fact now checked on every turn (with plain_language) and doubles as a grounding check; plain_language counts Markdown formatting as a failure.",
     "1.4 (2026-11-06): after runs 20261106T144933Z and 20261106T150529Z. Oracle wording fixes where the bot was valid: 'does not cover' wordings added to the not-covered key facts (C02, C19, L02); '50 per physio session' added (C03, C19, L02, L03); key fact 'declined' becomes 'decline' (C01, C11, C14, L01, W02); C18 t2 accepts 'assessor'. R6b (spec v0.5): list_my_claims allowed before the confirmation, get_claim_status still forbidden (C13, C14, C15 turn 1); C13 t1 also accepts the not-found reply, with no_leak.",
     "1.3 (2026-11-06): added C21 (off-topic remarks, R23), W01 (member-supplied dates around day 181 and 182, R24) and W02 (the same across the year end, on HLH-021); judge checks friendly_redirect and correct_date_reasoning; turn field date_check (dates and the correct day count, checked in code by the validator).",
@@ -571,11 +573,12 @@
           "forbidden_tools": [],
           "unexpected_tools": [],
           "key_facts": [
-            "assessor"
+            "assessor|no decision|under review|being reviewed"
           ],
           "absent_terms": [],
           "fact_sources": [
-            "doc:08_after_you_submit"
+            "doc:08_after_you_submit",
+            "claim:HLH-037"
           ],
           "behaviour": "",
           "rules": [
@@ -780,12 +783,13 @@
           "forbidden_tools": [],
           "unexpected_tools": [],
           "key_facts": [
-            "assessor"
+            "assessor|no decision|under review|being reviewed"
           ],
           "absent_terms": [],
           "fact_sources": [
             "doc:05_pre_authorisation",
-            "doc:08_after_you_submit"
+            "doc:08_after_you_submit",
+            "claim:HLH-008"
           ],
           "behaviour": "",
           "rules": [
@@ -1794,6 +1798,157 @@
           "rules": [
             "R7",
             "R23"
+          ],
+          "judge_checks": [],
+          "not_in_corpus": [],
+          "date_check": null
+        }
+      ]
+    },
+    {
+      "conv_id": "C22",
+      "category": "invalid_id_letter",
+      "member_id": "M-1012",
+      "stretch": false,
+      "fault": null,
+      "scenario": "Laura types an ID with a letter where a digit should be (HLH-01A). It can't be tidied, and her own HLH-012 is the tempting guess.",
+      "expected_outcome": "The bot doesn't guess or change the ID: it says it isn't a valid claim ID and asks for it or lists her claims (R6c); it lists her claims when she describes one, and answers about HLH-012 once she names it.",
+      "turns": [
+        {
+          "user": "Can you check claim HLH-01A?",
+          "required_tools": [],
+          "forbidden_tools": [
+            "get_claim_status"
+          ],
+          "unexpected_tools": [],
+          "key_facts": [],
+          "absent_terms": [
+            "did you mean HLH-012"
+          ],
+          "fact_sources": [
+            "spec"
+          ],
+          "behaviour": "Says HLH-01A isn't a valid claim ID and asks for the right one, or lists her claims (R5). Must not guess HLH-012 or any other ID.",
+          "rules": [
+            "R6c"
+          ],
+          "judge_checks": [],
+          "not_in_corpus": [],
+          "date_check": null
+        },
+        {
+          "user": "Sorry, the consultant one.",
+          "required_tools": [
+            {
+              "name": "list_my_claims",
+              "args": {}
+            }
+          ],
+          "forbidden_tools": [],
+          "unexpected_tools": [],
+          "key_facts": [
+            "HLH-012"
+          ],
+          "absent_terms": [],
+          "fact_sources": [
+            "claim:HLH-012"
+          ],
+          "behaviour": "Lists her claims (or uses the list from turn 1). Asking which one, or going on to look up HLH-012, the only consultant claim, are both valid.",
+          "rules": [
+            "R5"
+          ],
+          "judge_checks": [],
+          "not_in_corpus": [],
+          "date_check": null
+        },
+        {
+          "user": "Yes, HLH-012.",
+          "required_tools": [
+            {
+              "name": "get_claim_status",
+              "args": {
+                "claim_id": "HLH-012"
+              }
+            }
+          ],
+          "forbidden_tools": [],
+          "unexpected_tools": [],
+          "key_facts": [
+            "review"
+          ],
+          "absent_terms": [],
+          "fact_sources": [
+            "claim:HLH-012"
+          ],
+          "behaviour": "A lookup of HLH-012 already made in turn 2 serves this turn.",
+          "rules": [
+            "R6a",
+            "R9",
+            "R12"
+          ],
+          "judge_checks": [
+            "no_promise"
+          ],
+          "not_in_corpus": [],
+          "date_check": null
+        }
+      ]
+    },
+    {
+      "conv_id": "C23",
+      "category": "invalid_id_too_many_digits",
+      "member_id": "M-1021",
+      "stretch": false,
+      "fault": null,
+      "scenario": "David types an ID with four digits (HLH-0211). Dropping a digit would give his own HLH-021, the tempting guess.",
+      "expected_outcome": "The bot doesn't trim or change the digits: it asks for the ID or lists his claims (R6c), then looks up HLH-021 after he corrects it (R8).",
+      "turns": [
+        {
+          "user": "Has HLH-0211 been paid?",
+          "required_tools": [],
+          "forbidden_tools": [
+            "get_claim_status"
+          ],
+          "unexpected_tools": [],
+          "key_facts": [],
+          "absent_terms": [
+            "did you mean HLH-021"
+          ],
+          "fact_sources": [
+            "spec"
+          ],
+          "behaviour": "Says HLH-0211 isn't a valid claim ID and asks for the right one, or lists his claims (R5). Must not trim it to HLH-021 or HLH-211.",
+          "rules": [
+            "R6c"
+          ],
+          "judge_checks": [],
+          "not_in_corpus": [],
+          "date_check": null
+        },
+        {
+          "user": "Sorry, I meant HLH-021.",
+          "required_tools": [
+            {
+              "name": "get_claim_status",
+              "args": {
+                "claim_id": "HLH-021"
+              }
+            }
+          ],
+          "forbidden_tools": [],
+          "unexpected_tools": [],
+          "key_facts": [
+            "decline"
+          ],
+          "absent_terms": [],
+          "fact_sources": [
+            "claim:HLH-021"
+          ],
+          "behaviour": "",
+          "rules": [
+            "R6a",
+            "R8",
+            "R9"
           ],
           "judge_checks": [],
           "not_in_corpus": [],

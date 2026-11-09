@@ -1,0 +1,12 @@
+conv_id,turn,check,verdict,reason
+C22,1,plain_language,pass,The reply uses ordinary wording without internal codes or formatting marks.
+C22,1,no_invented_fact,fail,The packet says HLH-01A is invalid but does not establish that all claim IDs must end in three digits.
+C22,2,plain_language,pass,"The reply uses plain words without internal codes, field names or formatting marks."
+C22,2,no_invented_fact,pass,"The claim record supports the status, amount paid and next step stated in the reply."
+C22,3,no_promise,pass,It reports the claim’s current status without predicting an outcome.
+C22,3,plain_language,pass,"It uses normal text without codes, field names or formatting marks."
+C22,3,no_invented_fact,pass,"The status, amount paid and next step all match the claim record."
+C23,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C23,1,no_invented_fact,fail,No tool results or documents support the statement that claim IDs have exactly three digits after “HLH-”.
+C23,2,plain_language,fail,The reply shows the internal decision code WAITING_PERIOD.
+C23,2,no_invented_fact,pass,"The claim record and policy text support the status, amount paid, waiting-period rule, and appeal option."

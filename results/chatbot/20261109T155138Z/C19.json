@@ -1,0 +1,165 @@
+{
+  "conv_id": "C19",
+  "member_id": "M-1002",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261109T155138Z",
+  "thread_id": "20261109T155138Z-C19-bdf067",
+  "model": "gpt-6-luna",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "How much does the plan pay for physio?",
+      "reply": "The plan pays up to €50 per physiotherapy session, for up to 10 sessions per policy year. You’ll need a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy benefit limit amount per session annual limit"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy benefit limit amount per session annual limit",
+            "chunk_ids": [
+              "02_cover_and_limits#3",
+              "02_cover_and_limits#5",
+              "02_cover_and_limits#2.3"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2492,
+              0.1981,
+              0.1944
+            ]
+          },
+          "result": "[02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#5]\nCover and annual limits. Above the limit. If a receipt is for more than the limit, the claim is reviewed by a claims assessor. Any claim for more than 1,000 is also reviewed by an assessor.\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant"
+        }
+      ],
+      "search_queries": [
+        "physiotherapy benefit limit amount per session annual limit"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2146,
+      "output_tokens": 64,
+      "cached_input_tokens": 0,
+      "cost_usd": 0.000247,
+      "latency_s": 3.731,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How many sessions do I get a year?",
+      "reply": "You get up to 10 physiotherapy sessions per policy year.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1217,
+      "output_tokens": 17,
+      "cached_input_tokens": 1162,
+      "cost_usd": 0.00013,
+      "latency_s": 2.016,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Do I need a referral?",
+      "reply": "Yes. Physiotherapy needs a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy referral GP consultant requirement"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy referral GP consultant requirement",
+            "chunk_ids": [
+              "02_cover_and_limits#2.3",
+              "06_how_to_claim#2",
+              "05_pre_authorisation#6"
+            ],
+            "doc_ids": [
+              "02_cover_and_limits",
+              "06_how_to_claim",
+              "05_pre_authorisation"
+            ],
+            "scores": [
+              0.347,
+              0.3308,
+              0.2681
+            ]
+          },
+          "result": "[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay.\n\n[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\"."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy referral GP consultant requirement"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 2741,
+      "output_tokens": 41,
+      "cached_input_tokens": 2457,
+      "cost_usd": 0.000295,
+      "latency_s": 3.679,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "What about pilates for my back?",
+      "reply": "Pilates classes aren’t covered, even if they’re described as therapeutic or held at a clinic.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "Pilates treatment cover back exercise class"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "Pilates treatment cover back exercise class",
+            "chunk_ids": [
+              "03_exclusions#2.5",
+              "01_plan_overview#6",
+              "04_waiting_periods#2"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "01_plan_overview",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.2449,
+              0.0733,
+              0.0697
+            ]
+          },
+          "result": "[03_exclusions#2.5]\nWhat is not covered. Fitness and wellness classes, for example yoga, pilates and gym membership. This applies even if a class is described as therapeutic or is run at a clinic.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered."
+        }
+      ],
+      "search_queries": [
+        "Pilates treatment cover back exercise class"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3311,
+      "output_tokens": 87,
+      "cached_input_tokens": 3015,
+      "cost_usd": 0.000375,
+      "latency_s": 5.688,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 7,
+    "input_tokens": 9415,
+    "cached_input_tokens": 6634,
+    "output_tokens": 209,
+    "cost_usd": 0.001047,
+    "latency_s": 15.114
+  }
+}
