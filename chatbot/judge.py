@@ -58,6 +58,9 @@ This module calls the API (only judge_turn does). Cost is printed.
 
 Change history:
   2026-11-06  v1  first version (M5 step 4).
+  2026-11-09  v1.1  the packet gains a SESSION line (signed-in member and plan): the
+                    first full run showed the judge calling "Essential Plus" an invented
+                    fact because it could not see what the bot is told by the portal.
 """
 from __future__ import annotations
 
@@ -82,6 +85,7 @@ RUBRIC_PATH = ROOT / "datasets" / "judge_rubric.md"
 SPEC_PATH = ROOT / "datasets" / "chatbot_spec.md"
 SEEDED_PATH = ROOT / "datasets" / "judge_seeded_turns.json"
 GOLDEN_PATH = ROOT / "datasets" / "conversations_golden.json"
+PLAN_NAME = "Essential Plus"    # the plan the bot is told about in chatbot/prompt.py (a test keeps them in step)
 
 
 def fingerprint(text: str) -> str:
@@ -151,23 +155,33 @@ def evidence(record_turns: list[dict], upto: int) -> list[str]:
 
 
 def build_packet(golden_turn: dict, history: list[dict], reply: str, tool_lines: list[str],
-                 checks: list[str], rubric_checks: dict[str, str], rules: dict[str, str]) -> dict:
+                 checks: list[str], rubric_checks: dict[str, str], rules: dict[str, str],
+                 member_id: str | None = None) -> dict:
     """Everything the judge needs for one turn, as a dict (see render_packet for the text).
 
     history     earlier turns: [{"member": ..., "assistant": ...}]
     reply       the reply being judged
     tool_lines  evidence() for this and earlier turns
+    member_id   the signed-in member (from the portal session), shown with the plan name
+                so the judge knows what the bot knows without a tool call
     """
     ids = sorted({r for c in checks for r in rule_ids(rubric_checks[c])},
                  key=lambda r: (int(re.sub(r"\D", "", r)), r))
-    return {"history": history, "member": golden_turn["user"], "reply": reply, "evidence": tool_lines,
+    session = {"member_id": member_id, "plan": PLAN_NAME} if member_id else None
+    return {"session": session, "history": history, "member": golden_turn["user"], "reply": reply,
+            "evidence": tool_lines,
             "rules": {r: rules[r] for r in ids if r in rules}, "date_check": golden_turn.get("date_check"),
             "note": golden_turn.get("behaviour") or "", "checks": checks}
 
 
 def render_packet(p: dict) -> str:
     """The packet as the text the judge reads."""
-    out = ["CONVERSATION SO FAR"]
+    out = []
+    if p.get("session"):
+        s = p["session"]
+        out += ["SESSION (known to the assistant from the member portal, not from the member)",
+                f"Signed-in member: {s['member_id']}; plan: {s['plan']}", ""]
+    out += ["CONVERSATION SO FAR"]
     if not p["history"]:
         out.append("(this is the first turn)")
     for i, h in enumerate(p["history"], start=1):
@@ -288,7 +302,7 @@ def judge_run(run_dir: Path, llm=None, limit: int | None = None) -> dict:
             checks = checks_for_turn(golden, gt)
             history = [{"member": t["user"], "assistant": t["reply"]} for t in rec["turns"][:i]]
             p = build_packet(gt, history, rec["turns"][i]["reply"], evidence(rec["turns"], i + 1),
-                             checks, rubric_checks, rules)
+                             checks, rubric_checks, rules, member_id=conv["member_id"])
             system = system_prompt(instructions, rubric_checks, checks)
             r = judge_turn(llm, system, render_packet(p), checks)
             results.append({"conv_id": rec["conv_id"], "turn": i + 1, "checks": checks, **r,
@@ -372,7 +386,8 @@ def judge_seeded(path: Path = SEEDED_PATH, llm=None) -> dict:
     for s in seeds:
         gt = convs[s["conv_id"]]["turns"][s["turn"] - 1]
         checks = list(dict.fromkeys(checks_for_turn(golden, gt) + [s["check"]]))
-        p = build_packet(gt, s["history"], s["reply"], s["evidence"], checks, rubric_checks, rules)
+        p = build_packet(gt, s["history"], s["reply"], s["evidence"], checks, rubric_checks, rules,
+                         member_id=convs[s["conv_id"]]["member_id"])
         r = judge_turn(llm, system_prompt(instructions, rubric_checks, checks), render_packet(p), checks)
         got = r["verdicts"][s["check"]]
         out.append({"seed_id": s["seed_id"], "check": s["check"], "expected": s["expected"],

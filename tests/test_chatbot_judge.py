@@ -15,6 +15,8 @@ the judge where one is needed.
 
 Change history:
   2026-11-06  v1  first version (M5 step 4).
+  2026-11-09  v1.1  the SESSION line: shown when a member is given, and the plan name
+                    kept in step with the bot's prompt.
 """
 from __future__ import annotations
 
@@ -26,8 +28,10 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
-from chatbot.judge import (GOLDEN_PATH, SEEDED_PATH, JudgeAnswerError, build_packet, checks_for_turn, evidence,
-                           judge_run, judge_turn, load_rubric, parse_verdicts, render_packet, rule_ids, spec_rules)
+from chatbot.judge import (GOLDEN_PATH, PLAN_NAME, SEEDED_PATH, JudgeAnswerError, build_packet, checks_for_turn,
+                           evidence, judge_run, judge_turn, load_rubric, parse_verdicts, render_packet, rule_ids,
+                           spec_rules)
+from chatbot.prompt import SYSTEM_PROMPT
 
 
 # ============================================================================
@@ -138,6 +142,25 @@ def test_packet_gives_the_date_answer_from_code(golden, rubric):
     gt = turn(golden, "W01", 1)
     text = render_packet(build_packet(gt, [], "reply", [], checks_for_turn(golden, gt), checks, spec_rules()))
     assert "2026-11-17 is day 181, inside the waiting period" in text and "Covered from: 2026-11-18" in text
+
+
+def test_packet_shows_the_session(golden, rubric):
+    """The packet shows who is signed in and their plan, because the bot is told this by
+    the portal rather than by a tool. Without it the judge called "Essential Plus" an
+    invented fact (decision D7). With no member given, there is no SESSION line."""
+    _, checks, _ = rubric
+    gt = turn(golden, "C02", 1)
+    with_session = render_packet(build_packet(gt, [], "reply", [], checks_for_turn(golden, gt), checks,
+                                              spec_rules(), member_id="M-1002"))
+    without = render_packet(build_packet(gt, [], "reply", [], checks_for_turn(golden, gt), checks, spec_rules()))
+    assert "SESSION" in with_session and "M-1002" in with_session and PLAN_NAME in with_session
+    assert "SESSION" not in without
+
+
+def test_plan_name_matches_the_bot_prompt():
+    """The plan name shown to the judge is the one the bot's prompt gives it, so the two
+    cannot drift apart without this test failing."""
+    assert PLAN_NAME in SYSTEM_PROMPT
 
 
 # ============================================================================

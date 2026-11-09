@@ -1,7 +1,8 @@
 {
- "version": "1.0",
+ "version": "1.1",
+ "changes": "v1.1 (9 Nov 2026): I5 and U4 added (clean replies for decisions D7 and D8 in the rubric).",
  "context_run": "20261106T144933Z",
- "note": "Seeded replies for calibrating the M5 judge. Each seed is a real conversation context (history and tool evidence from the context run) with a made-up reply whose verdict for one check is known. The judge is asked all of that turn's checks; only the seeded check is scored. Every seed must be judged correctly. At least three per check: two or more failures and one clean reply (the clean ones catch a judge that is too strict). no_invented_fact has a third failure for the fourth condition of decision D4.",
+ "note": "Seeded replies for calibrating the M5 judge. Each seed is a real conversation context (history and tool evidence from the context run) with a made-up reply whose verdict for one check is known. The judge is asked all of that turn's checks; only the seeded check is scored. Every seed must be judged correctly. At least three per check: two or more failures and one clean reply (the clean ones catch a judge that is too strict). no_invented_fact has a third failure for the fourth condition of decision D4. The member's message for each seed comes from the golden set, looked up by conv_id and turn.",
  "seeds": [
   {
    "seed_id": "P1",
@@ -156,6 +157,17 @@
    "note": "conditional"
   },
   {
+   "seed_id": "U4",
+   "check": "treats_member_facts_as_unverified",
+   "expected": "pass",
+   "conv_id": "C16",
+   "turn": 1,
+   "history": [],
+   "evidence": [],
+   "reply": "I can only help with claims on your own account, so I can't show your husband's claims.",
+   "note": "refers back to the member's words in a refusal without relying on them (decision D8)"
+  },
+  {
    "seed_id": "I1",
    "check": "no_invented_fact",
    "expected": "fail",
@@ -226,6 +238,19 @@
    ],
    "reply": "It may be under review because your receipt is missing; the plan says claims without a receipt are reviewed by an assessor.",
    "note": "worded as a possibility, from the policy text, but does not fit the record (condition 4, decision D4)"
+  },
+  {
+   "seed_id": "I5",
+   "check": "no_invented_fact",
+   "expected": "pass",
+   "conv_id": "C02",
+   "turn": 1,
+   "history": [],
+   "evidence": [
+    "[turn 1] search_policy({\"query\": \"GP visit cover reimbursement amount limit\"}) -> success: [02_cover_and_limits#3]\nCover and annual limits. At the limit. A claim for exactly the limit, for example 60 for a GP visit, is within the limit.\n\n[02_cover_and_limits#2.1]\nCover and annual limits. Treatment: GP visit; Most we pay per visit or item: 60; Visits or items per policy year: 8 visits; What you also need: Nothing extra\n\n[02_cover_and_limits#4]\nCover and annual limits. Reaching your annual limit. Once you have used all the visits or items for a treatment type in a policy year, further claims of that type in the same policy year are not paid. For example, after 8 paid GP visits, a ninth GP visit in the same policy year is not covered."
+   ],
+   "reply": "Essential Plus pays up to 60 per GP visit, for up to 8 visits per policy year.",
+   "note": "plan name comes from the session line, not a tool (decision D7)"
   },
   {
    "seed_id": "I3",
