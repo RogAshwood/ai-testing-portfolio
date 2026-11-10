@@ -1,0 +1,289 @@
+{
+  "summary": {
+    "run": "20261110T101031Z",
+    "conversations": 4,
+    "conversations_passed": 4,
+    "turns": 11,
+    "turns_passed": 11,
+    "required_tools": {
+      "pass": 5,
+      "pass_earlier": 1,
+      "met_earlier": 0,
+      "wrong_args": 0,
+      "missing": 0
+    },
+    "forbidden_tool_calls": 0,
+    "unexpected_tool_calls": 0,
+    "key_facts_missing": 0,
+    "absent_terms_found": 0,
+    "retrieval_hit_rate": null,
+    "retrieval_turns": 0,
+    "judge_checks_pending": 3,
+    "cost_usd": 0.0038,
+    "input_tokens": 29192,
+    "cached_input_tokens": 26797,
+    "latency_s": 42.9
+  },
+  "conversations": [
+    {
+      "conv_id": "C13",
+      "category": "typo_hits_other_member",
+      "passed": true,
+      "error": null,
+      "turns": [
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [
+            "no_leak"
+          ],
+          "turn": 1,
+          "user": "Can you check HLH-21?",
+          "reply": "Did you mean HLH-021? I’ll check it once you confirm."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [
+            "no_leak"
+          ],
+          "turn": 2,
+          "user": "Yes",
+          "reply": "I can't find that claim on your account."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "list_my_claims": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 3,
+          "user": "Oh. Which ones have I got?",
+          "reply": "I found three claims: HLH-012 for consultant orthopaedic review - knee pain (17 September 2026), under review; HLH-036 for a GP visit (11 June 2026), paid; and HLH-037 for a physiotherapy session - knee (8 October 2026), received."
+        }
+      ],
+      "totals": {
+        "llm_calls": 5,
+        "input_tokens": 6748,
+        "cached_input_tokens": 6361,
+        "output_tokens": 387,
+        "cost_usd": 0.000869,
+        "latency_s": 9.803
+      }
+    },
+    {
+      "conv_id": "C14",
+      "category": "typo_missing_hyphen",
+      "passed": true,
+      "error": null,
+      "turns": [
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 1,
+          "user": "What's the status of HLH021?",
+          "reply": "Did you mean HLH-021? Please confirm and I’ll check its status."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "get_claim_status({'claim_id': 'HLH-021'})": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 2,
+          "user": "Yes, that's it.",
+          "reply": "HLH-021 was declined, and €0 was paid. The decision was due to the plan’s 182-day waiting period from when cover begins; treatment during that period isn’t covered. You can appeal through the member portal if you disagree with the decision."
+        }
+      ],
+      "totals": {
+        "llm_calls": 5,
+        "input_tokens": 7446,
+        "cached_input_tokens": 6730,
+        "output_tokens": 481,
+        "cost_usd": 0.000985,
+        "latency_s": 11.36
+      }
+    },
+    {
+      "conv_id": "C15",
+      "category": "typo_missing_letter_declined",
+      "passed": true,
+      "error": null,
+      "turns": [
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 1,
+          "user": "Is HL021 paid yet?",
+          "reply": "Did you mean HLH-021? I’ll check whether it’s been paid once you confirm."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "list_my_claims": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 2,
+          "user": "No, I'm not sure of the number.",
+          "reply": "I found two claims: HLH-021 for a consultant rheumatology outpatient review on 4 January 2026, which was declined, and HLH-038 for a GP visit on 14 August 2026, which was paid. Which one would you like me to check?"
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "get_claim_status({'claim_id': 'HLH-038'})": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 3,
+          "user": "The GP visit in August.",
+          "reply": "Your GP visit claim, HLH-038, has been paid: €50. The record lists no further step."
+        }
+      ],
+      "totals": {
+        "llm_calls": 5,
+        "input_tokens": 7259,
+        "cached_input_tokens": 6677,
+        "output_tokens": 380,
+        "cost_usd": 0.000916,
+        "latency_s": 10.487
+      }
+    },
+    {
+      "conv_id": "C22",
+      "category": "invalid_id_letter",
+      "passed": true,
+      "error": null,
+      "turns": [
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {},
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 1,
+          "user": "Can you check claim HLH-01A?",
+          "reply": "Could you check the claim ID? It should be HLH- followed by three digits."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [],
+          "required": {
+            "list_my_claims": "pass"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [],
+          "turn": 2,
+          "user": "Sorry, the consultant one.",
+          "reply": "Your consultant orthopaedic review claim is under review, and €0 has been paid so far. An assessor may contact you; they’ll decide the outcome."
+        },
+        {
+          "passed": true,
+          "failures": [],
+          "notes": [
+            "get_claim_status({'claim_id': 'HLH-012'}) not called this turn; an earlier call in the conversation serves it"
+          ],
+          "required": {
+            "get_claim_status({'claim_id': 'HLH-012'})": "pass_earlier"
+          },
+          "forbidden_called": [],
+          "unexpected_called": [],
+          "missing_facts": [],
+          "absent_found": [],
+          "tool_errors": [],
+          "retrieval_hit": null,
+          "judge_checks": [
+            "no_promise"
+          ],
+          "turn": 3,
+          "user": "Yes, HLH-012.",
+          "reply": "Yes, that’s the claim I checked: it’s under review, with €0 paid so far. An assessor may contact you."
+        }
+      ],
+      "totals": {
+        "llm_calls": 5,
+        "input_tokens": 7739,
+        "cached_input_tokens": 7029,
+        "output_tokens": 470,
+        "cost_usd": 0.001009,
+        "latency_s": 11.289
+      }
+    }
+  ]
+}

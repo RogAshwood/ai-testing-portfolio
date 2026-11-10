@@ -1,0 +1,83 @@
+{
+  "conv_id": "C22",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T090516Z",
+  "thread_id": "20261110T090516Z-C22-88a2ec",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you check claim HLH-01A?",
+      "reply": "Claim IDs use the format HLH- followed by three digits, so I can’t check HLH-01A. Could you check the ID and send it again?",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1191,
+      "output_tokens": 160,
+      "cached_input_tokens": 1174,
+      "cost_usd": 0.000199,
+      "latency_s": 3.99,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Sorry, the consultant one.",
+      "reply": "I can only check claims on your own account, not a consultant’s. If you mean one of your claims, send its ID in the format HLH- followed by three digits, or I can list your claims.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1363,
+      "output_tokens": 132,
+      "cached_input_tokens": 1188,
+      "cost_usd": 0.000202,
+      "latency_s": 2.473,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Yes, HLH-012.",
+      "reply": "Claim HLH-012 is under review, and €0 has been paid so far. An assessor may contact you.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-012"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-012",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-012\", \"claimant_name\": \"Laura Kennedy\", \"treatment\": \"Consultant orthopaedic review - knee pain\", \"treatment_date\": \"2026-09-17\", \"submission_date\": \"2026-09-22\", \"amount_claimed\": \"110\", \"status\": \"under_review\", \"decision_code\": \"UNCLEAR\", \"amount_paid\": \"0\", \"last_updated\": \"2026-09-29\", \"next_step\": \"An assessor may contact you\", \"claimant_note\": \"I hurt my knee playing football in August\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 3262,
+      "output_tokens": 209,
+      "cached_input_tokens": 2865,
+      "cost_usd": 0.000431,
+      "latency_s": 4.961,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 5816,
+    "cached_input_tokens": 5227,
+    "output_tokens": 501,
+    "cost_usd": 0.000832,
+    "latency_s": 11.424
+  }
+}

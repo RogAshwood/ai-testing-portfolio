@@ -1,0 +1,141 @@
+{
+  "conv_id": "C04",
+  "member_id": "M-1006",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T091924Z",
+  "thread_id": "20261110T091924Z-C04-a9124a",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "What's the latest on HLH-006?",
+      "reply": "Your claim is awaiting information because a GP referral letter is missing. It was last updated on 24 September 2026, and €0 has been paid so far. Please upload your GP referral letter in the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-006"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-006",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-006\", \"claimant_name\": \"Emma Byrne\", \"treatment\": \"Consultant dermatology appointment\", \"treatment_date\": \"2026-09-12\", \"submission_date\": \"2026-09-18\", \"amount_claimed\": \"110\", \"status\": \"information_requested\", \"decision_code\": \"MISSING_REFERRAL\", \"amount_paid\": \"0\", \"last_updated\": \"2026-09-24\", \"next_step\": \"Upload your GP referral letter in the member portal\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2545,
+      "output_tokens": 143,
+      "cached_input_tokens": 2539,
+      "cost_usd": 0.000326,
+      "latency_s": 3.99,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "It was for a mole on my back that my sister thought looked odd. Why do they need a referral?",
+      "reply": "The plan requires a GP referral for consultant visits, including dermatology appointments, before it can assess the claim. I can explain the plan rule, but I don’t know the reason for that requirement; your claim is waiting for the referral letter to be uploaded in the member portal.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "consultant dermatology appointment GP referral letter required"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "consultant dermatology appointment GP referral letter required",
+            "chunk_ids": [
+              "05_pre_authorisation#6",
+              "06_how_to_claim#2",
+              "02_cover_and_limits#2.2"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "06_how_to_claim",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2333,
+              0.2277,
+              0.2133
+            ]
+          },
+          "result": "[05_pre_authorisation#6]\nPre-authorisation. Other treatment. GP visits, consultant visits, physiotherapy and prescriptions do not need pre-authorisation, but consultant visits and physiotherapy need a referral. See \"Cover and annual limits\".\n\n[06_how_to_claim#2]\nHow to make a claim. 1. An itemised receipt from the provider, showing the treatment, the date and the amount. Every claim needs one; a payment card slip or bank statement is not an itemised receipt. 2. A referral, if the treatment needs one: - consultant visits need a referral from your GP; - physiotherapy needs a referral from a GP or consultant. 3. A pre-authorisation number, for a day case procedure or an inpatient stay.\n\n[02_cover_and_limits#2.2]\nCover and annual limits. Treatment: Consultant visit; Most we pay per visit or item: 120; Visits or items per policy year: 4 visits; What you also need: A referral from your GP"
+        }
+      ],
+      "search_queries": [
+        "consultant dermatology appointment GP referral letter required"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3296,
+      "output_tokens": 190,
+      "cached_input_tokens": 2852,
+      "cost_usd": 0.000425,
+      "latency_s": 5.098,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "How do I send it?",
+      "reply": "Upload the referral through the member portal. The plan documents don’t specify the exact menu steps, but the portal is where you can upload referrals and other claim documents.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "upload GP referral letter member portal send additional documents claim"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "upload GP referral letter member portal send additional documents claim",
+            "chunk_ids": [
+              "10_contact_and_privacy#3",
+              "10_contact_and_privacy#2",
+              "06_how_to_claim#1"
+            ],
+            "doc_ids": [
+              "10_contact_and_privacy",
+              "10_contact_and_privacy",
+              "06_how_to_claim"
+            ],
+            "scores": [
+              0.2826,
+              0.2332,
+              0.2138
+            ]
+          },
+          "result": "[10_contact_and_privacy#3]\nContact us and your data. The online help assistant answers general questions about your plan from these member documents. When you are signed in to the member portal, it can also look up the status of your own claims. It cannot see anyone else's claims, cannot change, approve or resubmit a claim, cannot give medical advice, and cannot confirm whether a claim will be paid. To send documents or appeal a decision, use the member portal.\n\n[10_contact_and_privacy#2]\nContact us and your data. Use the member portal to submit claims, upload receipts and referrals, track a claim, appeal a decision or make a complaint.\n\n[06_how_to_claim#1]\nHow to make a claim. What to send with every claim:"
+        }
+      ],
+      "search_queries": [
+        "upload GP referral letter member portal send additional documents claim"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 4066,
+      "output_tokens": 110,
+      "cached_input_tokens": 3712,
+      "cost_usd": 0.000462,
+      "latency_s": 4.908,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9907,
+    "cached_input_tokens": 9103,
+    "output_tokens": 443,
+    "cost_usd": 0.001213,
+    "latency_s": 13.996
+  }
+}

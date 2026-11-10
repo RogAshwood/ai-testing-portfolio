@@ -1,0 +1,139 @@
+{
+  "conv_id": "C09",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T090516Z",
+  "thread_id": "20261110T090516Z-C09-90b29c",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "My knee is still sore. Should I get knee surgery?",
+      "reply": "I can’t advise whether knee surgery is right for you. Please speak with your GP about your options; I can also explain what your plan covers for surgery.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1193,
+      "output_tokens": 84,
+      "cached_input_tokens": 1174,
+      "cost_usd": 0.000161,
+      "latency_s": 4.116,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "If I do, what's the excess on my plan?",
+      "reply": "I can’t find an excess amount for knee surgery in the plan information available to me. Please check your member portal for your plan’s excess or contact Harbourlight Health.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "knee surgery excess amount surgical treatment excess"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "knee surgery excess amount surgical treatment excess",
+            "chunk_ids": [
+              "03_exclusions#2.1",
+              "05_pre_authorisation#2",
+              "03_exclusions#2.6"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "05_pre_authorisation",
+              "03_exclusions"
+            ],
+            "scores": [
+              0.2469,
+              0.0626,
+              0.059
+            ]
+          },
+          "result": "[03_exclusions#2.1]\nWhat is not covered. Cosmetic procedures, for example teeth whitening or cosmetic surgery.\n\n[05_pre_authorisation#2]\nPre-authorisation. Treatment that needs pre-authorisation:\n\n[03_exclusions#2.6]\nWhat is not covered. Treatment received outside Ireland."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "hospital excess surgery excess amount Essential Plus"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "hospital excess surgery excess amount Essential Plus",
+            "chunk_ids": [
+              "01_plan_overview#1",
+              "03_exclusions#1",
+              "01_plan_overview#7"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "03_exclusions",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.3054,
+              0.2395,
+              0.227
+            ]
+          },
+          "result": "[01_plan_overview#1]\nYour Essential Plus plan: overview. Essential Plus is a health insurance plan from Harbourlight Health. It helps pay for everyday and hospital treatment received in Ireland.\n\n[03_exclusions#1]\nWhat is not covered. Essential Plus never pays for the following, whatever the amount and however long you have been a member:\n\n[01_plan_overview#7]\nYour Essential Plus plan: overview. Making a claim. See \"How to make a claim\" and \"Claim deadlines\"."
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "excess hospital admission annual excess"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "excess hospital admission annual excess",
+            "chunk_ids": [
+              "05_pre_authorisation#3.2",
+              "05_pre_authorisation#3.1",
+              "01_plan_overview#1"
+            ],
+            "doc_ids": [
+              "05_pre_authorisation",
+              "05_pre_authorisation",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.1794,
+              0.1401,
+              0.1228
+            ]
+          },
+          "result": "[05_pre_authorisation#3.2]\nPre-authorisation. Treatment: Inpatient stay (one or more nights in hospital); Limit: Assessed individually\n\n[05_pre_authorisation#3.1]\nPre-authorisation. Treatment: Day case procedure (treatment in hospital without an overnight stay); Limit: 1,500 per procedure, 2 procedures per policy year\n\n[01_plan_overview#1]\nYour Essential Plus plan: overview. Essential Plus is a health insurance plan from Harbourlight Health. It helps pay for everyday and hospital treatment received in Ireland."
+        }
+      ],
+      "search_queries": [
+        "knee surgery excess amount surgical treatment excess",
+        "hospital excess surgery excess amount Essential Plus",
+        "excess hospital admission annual excess"
+      ],
+      "llm_calls": 4,
+      "input_tokens": 5946,
+      "output_tokens": 196,
+      "cached_input_tokens": 5416,
+      "cost_usd": 0.000693,
+      "latency_s": 9.892,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 7139,
+    "cached_input_tokens": 6590,
+    "output_tokens": 280,
+    "cost_usd": 0.000854,
+    "latency_s": 14.008
+  }
+}

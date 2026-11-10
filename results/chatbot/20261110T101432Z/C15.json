@@ -1,0 +1,97 @@
+{
+  "conv_id": "C15",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T101432Z",
+  "thread_id": "20261110T101432Z-C15-55fb28",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic",
+    "confirm_id"
+  ],
+  "system_prompt_fp": "2bd46caf7930",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Is HL021 paid yet?",
+      "reply": "Did you mean HLH-021? I’ll check once you confirm.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1241,
+      "output_tokens": 65,
+      "cached_input_tokens": 1238,
+      "cost_usd": 0.000157,
+      "latency_s": 1.86,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "No, I'm not sure of the number.",
+      "reply": "I found two claims: HLH-021 for a consultant rheumatology outpatient review on 4 January 2026, which was declined, and HLH-038 for a GP visit on 14 August 2026, which was paid. Which claim did you mean?",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-021",
+              "HLH-038"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-021\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"status\": \"declined\"}, {\"claim_id\": \"HLH-038\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-08-14\", \"status\": \"paid\"}]}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2773,
+      "output_tokens": 168,
+      "cached_input_tokens": 2556,
+      "cost_usd": 0.000361,
+      "latency_s": 4.593,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "The GP visit in August.",
+      "reply": "Your GP visit claim HLH-038 has been paid: EUR 50. No next step is listed.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-038"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-038",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-038\", \"claimant_name\": \"David Whelan\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-08-14\", \"submission_date\": \"2026-08-18\", \"amount_claimed\": \"50\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"50\", \"last_updated\": \"2026-08-22\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 3378,
+      "output_tokens": 146,
+      "cached_input_tokens": 3044,
+      "cost_usd": 0.000411,
+      "latency_s": 4.661,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 7392,
+    "cached_input_tokens": 6838,
+    "output_tokens": 379,
+    "cost_usd": 0.000929,
+    "latency_s": 11.114
+  }
+}

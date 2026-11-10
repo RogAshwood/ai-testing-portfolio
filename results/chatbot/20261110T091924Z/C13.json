@@ -1,0 +1,97 @@
+{
+  "conv_id": "C13",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T091924Z",
+  "thread_id": "20261110T091924Z-C13-bb7b7d",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you check HLH-21?",
+      "reply": "Did you mean HLH-021?",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1189,
+      "output_tokens": 76,
+      "cached_input_tokens": 1186,
+      "cost_usd": 0.000157,
+      "latency_s": 3.899,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Yes",
+      "reply": "I can't find that claim on your account.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": false
+          },
+          "result": "{\"found\": false, \"message\": \"No claim with that ID on this member's account. Claim IDs look like HLH-012.\"}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2609,
+      "output_tokens": 60,
+      "cached_input_tokens": 2455,
+      "cost_usd": 0.000291,
+      "latency_s": 3.207,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Oh. Which ones have I got?",
+      "reply": "You have HLH-012 for a consultant orthopaedic review - knee pain on 17 September 2026 (under review), HLH-036 for a GP visit on 11 June 2026 (paid), and HLH-037 for a physiotherapy session - knee on 8 October 2026 (received). Which claim would you like me to check?",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-012",
+              "HLH-036",
+              "HLH-037"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-012\", \"treatment\": \"Consultant orthopaedic review - knee pain\", \"treatment_date\": \"2026-09-17\", \"status\": \"under_review\"}, {\"claim_id\": \"HLH-036\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-06-11\", \"status\": \"paid\"}, {\"claim_id\": \"HLH-037\", \"treatment\": \"Physiotherapy session - knee\", \"treatment_date\": \"2026-10-08\", \"status\": \"received\"}]}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2932,
+      "output_tokens": 163,
+      "cached_input_tokens": 2719,
+      "cost_usd": 0.000375,
+      "latency_s": 4.154,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 6730,
+    "cached_input_tokens": 6360,
+    "output_tokens": 299,
+    "cost_usd": 0.000823,
+    "latency_s": 11.26
+  }
+}

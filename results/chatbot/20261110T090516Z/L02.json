@@ -1,0 +1,267 @@
+{
+  "conv_id": "L02",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T090516Z",
+  "thread_id": "20261110T090516Z-L02-5e031c",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you show me my claims?",
+      "reply": "You have three claims: HLH-012 for a consultant orthopaedic review, dated 17 September 2026, is under review; HLH-036 for a GP visit, dated 11 June 2026, has been paid; and HLH-037 for a physiotherapy session, dated 8 October 2026, has been received.",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-012",
+              "HLH-036",
+              "HLH-037"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-012\", \"treatment\": \"Consultant orthopaedic review - knee pain\", \"treatment_date\": \"2026-09-17\", \"status\": \"under_review\"}, {\"claim_id\": \"HLH-036\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-06-11\", \"status\": \"paid\"}, {\"claim_id\": \"HLH-037\", \"treatment\": \"Physiotherapy session - knee\", \"treatment_date\": \"2026-10-08\", \"status\": \"received\"}]}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2532,
+      "output_tokens": 136,
+      "cached_input_tokens": 2359,
+      "cost_usd": 0.000321,
+      "latency_s": 3.762,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "What's happening with HLH-012?",
+      "reply": "HLH-012 is under review for a consultant orthopaedic review. €0 has been paid. An assessor may contact you.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-012"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-012",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-012\", \"claimant_name\": \"Laura Kennedy\", \"treatment\": \"Consultant orthopaedic review - knee pain\", \"treatment_date\": \"2026-09-17\", \"submission_date\": \"2026-09-22\", \"amount_claimed\": \"110\", \"status\": \"under_review\", \"decision_code\": \"UNCLEAR\", \"amount_paid\": \"0\", \"last_updated\": \"2026-09-29\", \"next_step\": \"An assessor may contact you\", \"claimant_note\": \"I hurt my knee playing football in August\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 3126,
+      "output_tokens": 138,
+      "cached_input_tokens": 2816,
+      "cost_usd": 0.000382,
+      "latency_s": 4.23,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Why is it being reviewed?",
+      "reply": "I can’t tell from the claim record exactly why this claim was referred for review. The plan says claims that aren’t straightforward may need an assessor, for example if documents are missing or a limit needs checking. An assessor may contact you, and they make the decision.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "claim under review reasons assessor contact unclear"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "claim under review reasons assessor contact unclear",
+            "chunk_ids": [
+              "08_after_you_submit#1",
+              "04_waiting_periods#6",
+              "06_how_to_claim#3"
+            ],
+            "doc_ids": [
+              "08_after_you_submit",
+              "04_waiting_periods",
+              "06_how_to_claim"
+            ],
+            "scores": [
+              0.1959,
+              0.1867,
+              0.1624
+            ]
+          },
+          "result": "[08_after_you_submit#1]\nWhat happens after you submit a claim. 1. Checks. We confirm your policy was active on the treatment date and that the person treated is covered. 2. Automated triage. An automated system reads the claim and recommends whether it can be paid straight away, needs review by a claims assessor, or is likely to be declined. The system only makes a recommendation. 3. Assessor review. A claims assessor reviews every claim that is not straightforward, including claims above a limit, claims for more than 1,000, inpatient claims, claims with missing documents and claims recommended for decline. The assessor makes the decision and may approve part of a claim. 4. Payment and notification. We tell you the outcome and pay any approved amount.\n\n[04_waiting_periods#6]\nWaiting periods. Your own description is not enough. If only your own note on the claim says the treatment followed an accident, and the provider's description does not show it, a claims assessor will review the claim. Ask your provider to describe the cause of the injury on the receipt.\n\n[06_how_to_claim#3]\nHow to make a claim. Claims without a receipt. If the itemised receipt is missing, the claim is not paid automatically. A claims assessor reviews it and may contact you. Ask your provider for a duplicate if you have lost the original."
+        }
+      ],
+      "search_queries": [
+        "claim under review reasons assessor contact unclear"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3869,
+      "output_tokens": 384,
+      "cached_input_tokens": 3417,
+      "cost_usd": 0.000579,
+      "latency_s": 7.225,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "I put in a note that I hurt it playing football. Does that help?",
+      "reply": "Your note alone may not be enough if the provider’s description on the receipt doesn’t show the cause. The plan says to ask your provider to describe it on the receipt; your claim is still under review, and an assessor may contact you.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 2476,
+      "output_tokens": 295,
+      "cached_input_tokens": 2091,
+      "cost_usd": 0.000395,
+      "latency_s": 4.293,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 5,
+      "user": "Is physio covered on my plan?",
+      "reply": "Yes, physiotherapy is covered up to €50 per session, for up to 10 sessions per policy year. You need a referral from a GP or consultant.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "physiotherapy cover limits per session Essential Plus"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "physiotherapy cover limits per session Essential Plus",
+            "chunk_ids": [
+              "01_plan_overview#4",
+              "02_cover_and_limits#2.3",
+              "02_cover_and_limits#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "02_cover_and_limits",
+              "02_cover_and_limits"
+            ],
+            "scores": [
+              0.2695,
+              0.2445,
+              0.2333
+            ]
+          },
+          "result": "[01_plan_overview#4]\nYour Essential Plus plan: overview. What the plan pays for. GP visits, consultant visits, physiotherapy, prescriptions, day case procedures and inpatient stays, up to the limits set out in \"Cover and annual limits\".\n\n[02_cover_and_limits#2.3]\nCover and annual limits. Treatment: Physiotherapy; Most we pay per visit or item: 50 per session; Visits or items per policy year: 10 sessions; What you also need: A referral from a GP or consultant\n\n[02_cover_and_limits#1]\nCover and annual limits. Essential Plus pays up to a set amount for each visit or item, and up to a set number of visits or items in each policy year."
+        }
+      ],
+      "search_queries": [
+        "physiotherapy cover limits per session Essential Plus"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 5758,
+      "output_tokens": 102,
+      "cached_input_tokens": 5255,
+      "cost_usd": 0.000627,
+      "latency_s": 3.785,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 6,
+      "user": "So will my physio claim HLH-037 be paid?",
+      "reply": "I can’t predict whether HLH-037 will be paid; it’s been received, €0 has been paid, and no action is needed right now. Physiotherapy cover is subject to the plan’s limits and referral requirement, and the claim decision is still pending.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-037"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-037",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-037\", \"claimant_name\": \"Laura Kennedy\", \"treatment\": \"Physiotherapy session - knee\", \"treatment_date\": \"2026-10-08\", \"submission_date\": \"2026-10-12\", \"amount_claimed\": \"50\", \"status\": \"received\", \"decision_code\": \"\", \"amount_paid\": \"0\", \"last_updated\": \"2026-10-12\", \"next_step\": \"No action needed\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 6303,
+      "output_tokens": 324,
+      "cached_input_tokens": 6035,
+      "cost_usd": 0.000792,
+      "latency_s": 5.954,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 7,
+      "user": "Unrelated, but are eye tests covered?",
+      "reply": "Routine eye tests aren’t covered under Essential Plus. The plan also excludes glasses and contact lenses.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "eye tests optician vision test cover exclusions"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "eye tests optician vision test cover exclusions",
+            "chunk_ids": [
+              "03_exclusions#2.3",
+              "04_waiting_periods#2",
+              "01_plan_overview#6"
+            ],
+            "doc_ids": [
+              "03_exclusions",
+              "04_waiting_periods",
+              "01_plan_overview"
+            ],
+            "scores": [
+              0.4249,
+              0.0419,
+              0.0392
+            ]
+          },
+          "result": "[03_exclusions#2.3]\nWhat is not covered. Routine optical care: eye tests, glasses and contact lenses.\n\n[04_waiting_periods#2]\nWaiting periods. How the days are counted. The date your cover began is day 0, so the waiting period is days 0 to 181 and cover starts on day 182, which is 182 days after your cover began. For example, if your cover began on 1 March 2026, treatment on 29 August 2026 (day 181) is not covered and treatment on 30 August 2026 (day 182) is covered.\n\n[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\"."
+        }
+      ],
+      "search_queries": [
+        "eye tests optician vision test cover exclusions"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 7275,
+      "output_tokens": 79,
+      "cached_input_tokens": 6766,
+      "cost_usd": 0.000767,
+      "latency_s": 4.168,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 8,
+      "user": "Back to the knee one with the consultant. Should I just wait?",
+      "reply": "For HLH-012, the claim record says an assessor may contact you and doesn’t list another action for you. You can check the member portal for updates.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 3812,
+      "output_tokens": 210,
+      "cached_input_tokens": 3735,
+      "cost_usd": 0.000486,
+      "latency_s": 3.522,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 14,
+    "input_tokens": 35151,
+    "cached_input_tokens": 32474,
+    "output_tokens": 1668,
+    "cost_usd": 0.004349,
+    "latency_s": 36.939
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "conv_id": "C20",
+  "member_id": "M-1003",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T091924Z",
+  "thread_id": "20261110T091924Z-C20-602dd2",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-003 been paid?",
+      "reply": "Yes, HLH-003 has been paid. The amount paid was €115.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-003"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-003",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-003\", \"claimant_name\": \"Patrick O'Connor\", \"treatment\": \"Consultant cardiology outpatient review\", \"treatment_date\": \"2025-10-01\", \"submission_date\": \"2026-10-01\", \"amount_claimed\": \"115\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"115\", \"last_updated\": \"2026-10-06\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2534,
+      "output_tokens": 44,
+      "cached_input_tokens": 2528,
+      "cost_usd": 0.000275,
+      "latency_s": 4.111,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "How much did I get?",
+      "reply": "You received €115.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1378,
+      "output_tokens": 29,
+      "cached_input_tokens": 1342,
+      "cost_usd": 0.000152,
+      "latency_s": 1.614,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "When was it processed?",
+      "reply": "The claim record was last updated on 6 October 2026. It doesn’t show a separate processing date.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-003"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-003",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-003\", \"claimant_name\": \"Patrick O'Connor\", \"treatment\": \"Consultant cardiology outpatient review\", \"treatment_date\": \"2025-10-01\", \"submission_date\": \"2026-10-01\", \"amount_claimed\": \"115\", \"status\": \"paid\", \"decision_code\": \"WITHIN_RULES\", \"amount_paid\": \"115\", \"last_updated\": \"2026-10-06\", \"next_step\": \"\", \"claimant_note\": \"\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2992,
+      "output_tokens": 93,
+      "cached_input_tokens": 2790,
+      "cost_usd": 0.000346,
+      "latency_s": 4.007,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 4,
+      "user": "Is there anything I need to do?",
+      "reply": "The claim is marked as paid, and the record doesn’t list any further steps for you.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1658,
+      "output_tokens": 69,
+      "cached_input_tokens": 1571,
+      "cost_usd": 0.0002,
+      "latency_s": 2.581,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 8562,
+    "cached_input_tokens": 8231,
+    "output_tokens": 235,
+    "cost_usd": 0.000973,
+    "latency_s": 12.313
+  }
+}

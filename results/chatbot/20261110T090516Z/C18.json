@@ -1,0 +1,66 @@
+{
+  "conv_id": "C18",
+  "member_id": "M-1024",
+  "fault": "claims_store_unavailable",
+  "stretch": false,
+  "run_id": "20261110T090516Z",
+  "thread_id": "20261110T090516Z-C18-7da9c7",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Has HLH-024 been paid?",
+      "reply": "I can’t check claims right now, so I can’t confirm whether HLH-024 has been paid. Please check the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-024"
+          },
+          "status": "error",
+          "artifact": null,
+          "result": "Error: the claims system is not responding. No claim information is available right now."
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2430,
+      "output_tokens": 55,
+      "cached_input_tokens": 2360,
+      "cost_usd": 0.000271,
+      "latency_s": 2.875,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Roughly, would a claim like that normally be paid?",
+      "reply": "I don’t know whether a claim like HLH-024 would normally be paid, as I can’t see its details right now. A claims assessor decides based on the treatment and plan rules; please check the member portal.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1292,
+      "output_tokens": 235,
+      "cached_input_tokens": 1238,
+      "cost_usd": 0.000247,
+      "latency_s": 3.795,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 3,
+    "input_tokens": 3722,
+    "cached_input_tokens": 3598,
+    "output_tokens": 290,
+    "cost_usd": 0.000518,
+    "latency_s": 6.67
+  }
+}

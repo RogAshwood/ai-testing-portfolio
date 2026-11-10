@@ -1,0 +1,81 @@
+{
+  "conv_id": "C06",
+  "member_id": "M-1003",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T091924Z",
+  "thread_id": "20261110T091924Z-C06-f6f433",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Where is claim HLH-099?",
+      "reply": "I can't find that claim on your account. You can check your claims in the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-099"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-099",
+            "found": false
+          },
+          "result": "{\"found\": false, \"message\": \"No claim with that ID on this member's account. Claim IDs look like HLH-012.\"}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2443,
+      "output_tokens": 46,
+      "cached_input_tokens": 2437,
+      "cost_usd": 0.000267,
+      "latency_s": 5.298,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Which claims do I have then?",
+      "reply": "You have one claim: HLH-003 for a consultant cardiology outpatient review on 1 October 2025. It’s paid.",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-003"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-003\", \"treatment\": \"Consultant cardiology outpatient review\", \"treatment_date\": \"2025-10-01\", \"status\": \"paid\"}]}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 2,
+      "input_tokens": 2654,
+      "output_tokens": 108,
+      "cached_input_tokens": 2538,
+      "cost_usd": 0.000319,
+      "latency_s": 3.867,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 5097,
+    "cached_input_tokens": 4975,
+    "output_tokens": 154,
+    "cost_usd": 0.000586,
+    "latency_s": 9.165
+  }
+}

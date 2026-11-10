@@ -1,0 +1,183 @@
+{
+  "groups": {
+    "baseline": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language, member_facts",
+        "turns_text": 96,
+        "turns_judge": 86,
+        "turns_both": 86,
+        "convs_text": 28,
+        "convs_both": 21,
+        "judge_fails": {
+          "treats_member_facts_as_unverified": 2,
+          "no_invented_fact": 8,
+          "friendly_redirect": 2
+        },
+        "retrieval": 0.9579999999999999,
+        "cost": 0.5498,
+        "name": "results\\chatbot\\20261109T232249Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language, member_facts",
+        "turns_text": 94,
+        "turns_judge": 91,
+        "turns_both": 90,
+        "convs_text": 26,
+        "convs_both": 23,
+        "judge_fails": {
+          "no_invented_fact": 4,
+          "treats_member_facts_as_unverified": 1,
+          "friendly_redirect": 1
+        },
+        "retrieval": 0.923,
+        "cost": 0.5597,
+        "name": "results\\chatbot\\20261109T233318Z"
+      }
+    ],
+    "experiment": [
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language, member_facts, off_topic",
+        "turns_text": 94,
+        "turns_judge": 91,
+        "turns_both": 90,
+        "convs_text": 26,
+        "convs_both": 23,
+        "judge_fails": {
+          "treats_member_facts_as_unverified": 1,
+          "no_invented_fact": 4
+        },
+        "retrieval": 0.9170000000000001,
+        "cost": 0.547,
+        "name": "results\\chatbot\\20261110T090516Z"
+      },
+      {
+        "turns": 96,
+        "conversations": 28,
+        "prompt": "baseline + plain_language, member_facts, off_topic",
+        "turns_text": 94,
+        "turns_judge": 90,
+        "turns_both": 89,
+        "convs_text": 26,
+        "convs_both": 21,
+        "judge_fails": {
+          "no_invented_fact": 6,
+          "treats_member_facts_as_unverified": 1
+        },
+        "retrieval": 0.9130000000000001,
+        "cost": 0.5476000000000001,
+        "name": "results\\chatbot\\20261110T091924Z"
+      }
+    ]
+  },
+  "summary": {
+    "baseline": {
+      "turns_text": {
+        "mean": 95,
+        "min": 94,
+        "max": 96
+      },
+      "turns_judge": {
+        "mean": 88.5,
+        "min": 86,
+        "max": 91
+      },
+      "turns_both": {
+        "mean": 88,
+        "min": 86,
+        "max": 90
+      },
+      "convs_text": {
+        "mean": 27,
+        "min": 26,
+        "max": 28
+      },
+      "convs_both": {
+        "mean": 22,
+        "min": 21,
+        "max": 23
+      },
+      "retrieval": {
+        "mean": 0.94,
+        "min": 0.923,
+        "max": 0.9579999999999999
+      },
+      "cost": {
+        "mean": 0.555,
+        "min": 0.5498,
+        "max": 0.5597
+      },
+      "judge_fails": {
+        "friendly_redirect": {
+          "mean": 1.5,
+          "min": 1,
+          "max": 2
+        },
+        "no_invented_fact": {
+          "mean": 6,
+          "min": 4,
+          "max": 8
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 1.5,
+          "min": 1,
+          "max": 2
+        }
+      }
+    },
+    "experiment": {
+      "turns_text": {
+        "mean": 94,
+        "min": 94,
+        "max": 94
+      },
+      "turns_judge": {
+        "mean": 90.5,
+        "min": 90,
+        "max": 91
+      },
+      "turns_both": {
+        "mean": 89.5,
+        "min": 89,
+        "max": 90
+      },
+      "convs_text": {
+        "mean": 26,
+        "min": 26,
+        "max": 26
+      },
+      "convs_both": {
+        "mean": 22,
+        "min": 21,
+        "max": 23
+      },
+      "retrieval": {
+        "mean": 0.915,
+        "min": 0.9130000000000001,
+        "max": 0.9170000000000001
+      },
+      "cost": {
+        "mean": 0.547,
+        "min": 0.547,
+        "max": 0.5476000000000001
+      },
+      "judge_fails": {
+        "no_invented_fact": {
+          "mean": 5,
+          "min": 4,
+          "max": 6
+        },
+        "treats_member_facts_as_unverified": {
+          "mean": 1,
+          "min": 1,
+          "max": 1
+        }
+      }
+    }
+  }
+}

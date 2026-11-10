@@ -1,0 +1,96 @@
+{
+  "conv_id": "C22",
+  "member_id": "M-1012",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T091924Z",
+  "thread_id": "20261110T091924Z-C22-28f314",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Can you check claim HLH-01A?",
+      "reply": "I can’t look up HLH-01A because it isn’t in the standard claim ID format. Could you check the ID and send it in the form HLH-012?",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1191,
+      "output_tokens": 125,
+      "cached_input_tokens": 1188,
+      "cost_usd": 0.000182,
+      "latency_s": 3.112,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Sorry, the consultant one.",
+      "reply": "Your consultant claim, HLH-012, is under review, and €0 has been paid so far. An assessor may contact you.",
+      "tool_calls": [
+        {
+          "name": "list_my_claims",
+          "args": {},
+          "status": "success",
+          "artifact": {
+            "claim_ids": [
+              "HLH-012",
+              "HLH-036",
+              "HLH-037"
+            ]
+          },
+          "result": "{\"claims\": [{\"claim_id\": \"HLH-012\", \"treatment\": \"Consultant orthopaedic review - knee pain\", \"treatment_date\": \"2026-09-17\", \"status\": \"under_review\"}, {\"claim_id\": \"HLH-036\", \"treatment\": \"GP visit\", \"treatment_date\": \"2026-06-11\", \"status\": \"paid\"}, {\"claim_id\": \"HLH-037\", \"treatment\": \"Physiotherapy session - knee\", \"treatment_date\": \"2026-10-08\", \"status\": \"received\"}]}"
+        },
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-012"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-012",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-012\", \"claimant_name\": \"Laura Kennedy\", \"treatment\": \"Consultant orthopaedic review - knee pain\", \"treatment_date\": \"2026-09-17\", \"submission_date\": \"2026-09-22\", \"amount_claimed\": \"110\", \"status\": \"under_review\", \"decision_code\": \"UNCLEAR\", \"amount_paid\": \"0\", \"last_updated\": \"2026-09-29\", \"next_step\": \"An assessor may contact you\", \"claimant_note\": \"I hurt my knee playing football in August\"}}"
+        }
+      ],
+      "search_queries": [],
+      "llm_calls": 3,
+      "input_tokens": 4797,
+      "output_tokens": 309,
+      "cached_input_tokens": 4149,
+      "cost_usd": 0.000634,
+      "latency_s": 8.765,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "Yes, HLH-012.",
+      "reply": "Yes, HLH-012 is the consultant claim. It’s under review, with €0 paid so far; an assessor may contact you.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1937,
+      "output_tokens": 106,
+      "cached_input_tokens": 1827,
+      "cost_usd": 0.000247,
+      "latency_s": 3.234,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 5,
+    "input_tokens": 7925,
+    "cached_input_tokens": 7164,
+    "output_tokens": 540,
+    "cost_usd": 0.001063,
+    "latency_s": 15.111
+  }
+}

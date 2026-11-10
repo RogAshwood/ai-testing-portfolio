@@ -1,0 +1,140 @@
+{
+  "conv_id": "C01",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T090516Z",
+  "thread_id": "20261110T090516Z-C01-946780",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic"
+  ],
+  "system_prompt_fp": "8bad8ee3ef4b",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "Hi, what's happening with claim HLH-021?",
+      "reply": "Claim HLH-021 was declined because the treatment was within the plan’s 182-day waiting period; treatment during that period isn’t covered. No amount was paid (€0), and you can appeal through the member portal if you disagree with the decision.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period consultant rheumatology outpatient review claim waiting period appeal"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period consultant rheumatology outpatient review claim waiting period appeal",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#5",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.3269,
+              0.2285,
+              0.2099
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        }
+      ],
+      "search_queries": [
+        "waiting period consultant rheumatology outpatient review claim waiting period appeal"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 4102,
+      "output_tokens": 228,
+      "cached_input_tokens": 2543,
+      "cost_usd": 0.000524,
+      "latency_s": 12.027,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Why was it declined?",
+      "reply": "The claim record says it was declined because the treatment fell within the plan’s 182-day waiting period after cover began. Treatment during that period isn’t covered.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1740,
+      "output_tokens": 115,
+      "cached_input_tokens": 1550,
+      "cost_usd": 0.000231,
+      "latency_s": 4.671,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 3,
+      "user": "That seems unfair. Can I do anything about it?",
+      "reply": "You can appeal the decline through the member portal. A senior claims assessor who wasn’t involved in the original decision will review it. I can’t change the decision, but you can submit your appeal there.",
+      "tool_calls": [
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "appeal declined claim how to appeal deadline"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "appeal declined claim how to appeal deadline",
+            "chunk_ids": [
+              "08_after_you_submit#4",
+              "09_appeals_and_complaints#1",
+              "07_claim_deadlines#4"
+            ],
+            "doc_ids": [
+              "08_after_you_submit",
+              "09_appeals_and_complaints",
+              "07_claim_deadlines"
+            ],
+            "scores": [
+              0.2877,
+              0.2256,
+              0.2189
+            ]
+          },
+          "result": "[08_after_you_submit#4]\nWhat happens after you submit a claim. If a claim is declined, you can appeal. See \"Appeals and complaints\".\n\n[09_appeals_and_complaints#1]\nAppeals and complaints. Appealing a decline. If a claim is declined, you can appeal. A senior claims assessor who was not involved in the original decision reviews the appeal.\n\n[07_claim_deadlines#4]\nClaim deadlines. Late claims are normally declined. You can appeal a decline; see \"Appeals and complaints\"."
+        }
+      ],
+      "search_queries": [
+        "appeal declined claim how to appeal deadline"
+      ],
+      "llm_calls": 2,
+      "input_tokens": 3909,
+      "output_tokens": 127,
+      "cached_input_tokens": 3606,
+      "cost_usd": 0.000454,
+      "latency_s": 5.091,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 6,
+    "input_tokens": 9751,
+    "cached_input_tokens": 7699,
+    "output_tokens": 470,
+    "cost_usd": 0.001209,
+    "latency_s": 21.789
+  }
+}

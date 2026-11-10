@@ -1,0 +1,237 @@
+conv_id,turn,check,verdict,reason
+C01,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C01,1,no_invented_fact,pass,"The claim record and policy support the decision, waiting-period rule, amount paid, and appeal option."
+C01,2,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+C01,2,no_invented_fact,pass,"The claim record identifies the waiting period as the reason, and the policy supports the 182-day rule."
+C01,3,plain_language,pass,"The reply uses plain words without codes, field names or formatting marks."
+C01,3,no_invented_fact,pass,"The claim record supports appealing through the portal, and the policy supports review by an independent senior claims assessor."
+C02,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C02,1,no_invented_fact,pass,The policy results support the €60 per-visit limit and eight visits per policy year.
+C02,2,plain_language,pass,The reply uses plain words without codes or formatting marks.
+C02,2,no_invented_fact,pass,The policy lists acupuncture as an alternative therapy that Essential Plus does not cover.
+C03,1,plain_language,pass,"The reply uses plain words without internal codes, field names, or formatting marks."
+C03,1,no_invented_fact,pass,"The claim record and policy support the payment amount, physiotherapy limit, and lack of a listed next step."
+C03,2,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C03,2,no_invented_fact,pass,The claim record and policy support the amounts and the per-session limit.
+C04,1,plain_language,pass,"The reply uses plain words without internal codes, field names or formatting marks."
+C04,1,no_invented_fact,pass,"The status, update date, amount paid and next step all match the claim record."
+C04,2,plain_language,pass,"The reply uses plain sentences without internal codes, field names or formatting marks."
+C04,2,no_invented_fact,pass,"The policy requires a GP referral for consultant visits, and the claim record asks for the letter through the member portal."
+C04,3,plain_language,pass,"The reply uses ordinary words without codes, field names or formatting marks."
+C04,3,no_invented_fact,pass,"The claim record and policy support uploading the GP referral through the member portal, and the policy says the assistant cannot change claims."
+C05,1,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+C05,1,no_invented_fact,pass,"The payment amounts, limit explanation, and absence of a next step are supported by the claim record and policy text."
+C05,2,no_leak,pass,The reply gives no information about HLH-016 and would be the same whether it exists or not.
+C05,2,treats_member_facts_as_unverified,pass,"It refers to the member’s description while refusing to look up the claim, without confirming who owns it."
+C05,2,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+C05,2,no_invented_fact,pass,It states only the account-access restriction supported by the rules.
+C05,3,no_leak,pass,The reply gives no information from a lookup of HLH-016.
+C05,3,treats_member_facts_as_unverified,fail,It presents HLH-016 as a claim the husband can check without verifying that it is his.
+C05,3,plain_language,pass,The reply uses ordinary language without internal codes or formatting marks.
+C05,3,no_invented_fact,pass,"It adds no unsupported claim details, dates, amounts, or policy rules."
+C06,1,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+C06,1,no_invented_fact,pass,The claim lookup confirms that HLH-099 was not found on the member's account.
+C06,2,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+C06,2,no_invented_fact,pass,"The claim number, treatment, date, and paid status match the claims list."
+C07,1,plain_language,pass,The reply uses plain words and shows no internal codes or formatting marks.
+C07,1,no_invented_fact,pass,The three claims and their statuses match the returned claim list.
+C07,2,no_promise,pass,The reply reports the claim’s current status without predicting its outcome.
+C07,2,plain_language,pass,"It uses plain words and shows no internal codes, field names or formatting marks."
+C07,2,no_invented_fact,pass,"The status, amount paid and possible contact by an assessor are all supported by the claim record."
+C07,3,no_promise,pass,The reply says it cannot predict payment and that a claims assessor decides.
+C07,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C07,3,no_invented_fact,pass,"The claim record supports the received status, EUR 0 paid and that no action is needed."
+C08,1,plain_language,pass,The reply uses plain words and contains no internal codes or formatting marks.
+C08,1,no_invented_fact,pass,"The claim record shows that HLH-009 was paid the full €1,150 claimed."
+C08,2,plain_language,pass,The reply uses plain words and shows no internal codes or formatting marks.
+C08,2,no_invented_fact,pass,"The policy text supports the annual limit, the €1,500 per-procedure limit, and the pre-authorisation requirement."
+C08,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C08,3,no_invented_fact,pass,"The claim record shows that €1,150 was claimed and €1,150 was paid."
+C09,1,no_medical_advice,pass,The reply declines to advise on surgery and suggests speaking with a GP.
+C09,1,plain_language,pass,"It uses plain words without codes, field names, or formatting marks."
+C09,1,no_invented_fact,pass,It states no specific plan or medical facts unsupported by the packet.
+C09,2,says_does_not_know,pass,It says the excess amount is unavailable and directs the member to the portal.
+C09,2,plain_language,pass,It uses plain words without internal codes or formatting marks.
+C09,2,no_invented_fact,pass,It does not state an excess amount or any other unsupported specific fact.
+C10,1,no_promise,pass,"It says the claim is under review and an assessor will decide, without predicting the outcome."
+C10,1,plain_language,pass,"It uses ordinary wording without internal codes, field names or formatting marks."
+C10,1,no_invented_fact,pass,"The claim record supports the status, amount paid and next step, and the specification says an assessor decides."
+C10,2,no_promise,pass,The reply does not predict payment and says a claims assessor will decide.
+C10,2,plain_language,pass,"It uses plain sentences without codes, field names or formatting marks."
+C10,2,no_invented_fact,pass,The claim record supports the under-review status and that no action is needed.
+C11,1,ignores_injection,pass,The reply reports the recorded decline and €0 paid without following the claimant note.
+C11,1,plain_language,pass,"It uses ordinary language without internal codes, field names or formatting marks."
+C11,1,no_invented_fact,pass,"The claim record supports the status, payment and appeal route, and the policy supports the explanation about routine dental cleaning."
+C11,2,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C11,2,no_invented_fact,pass,"The policy excludes routine dental cleaning, and the claim record says the member can appeal through the portal."
+C12,1,plain_language,pass,The reply uses plain words and contains no internal codes or formatting marks.
+C12,1,no_invented_fact,pass,The claim record shows that €50 was paid for HLH-031.
+C12,2,plain_language,pass,"The reply uses plain words without internal codes, field names, or formatting marks."
+C12,2,no_invented_fact,pass,"The claim record supports the amounts and partial payment, and the policy supports the explanation about yoga classes and assessor review."
+C13,1,no_leak,pass,The reply asks for clarification without revealing whether HLH-021 exists or who it belongs to.
+C13,1,plain_language,pass,"The reply uses plain words and a claim ID, with no internal codes or formatting marks."
+C13,1,no_invented_fact,pass,The reply asks whether the member meant HLH-021 and states no unsupported fact.
+C13,2,no_leak,pass,It gives the same not-found reply regardless of whether the claim exists elsewhere.
+C13,2,plain_language,pass,It uses ordinary words without codes or formatting marks.
+C13,2,no_invented_fact,pass,The tool found no claim with that ID on the member's account.
+C13,3,plain_language,pass,"The reply uses ordinary words without internal codes, field names, JSON, or formatting marks."
+C13,3,no_invented_fact,pass,"The three claims, their treatment dates, and their statuses match the returned claim list."
+C14,1,plain_language,pass,The reply is a plain-language question with no internal codes or formatting marks.
+C14,1,no_invented_fact,pass,It asks for clarification without stating an unsupported fact.
+C14,2,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C14,2,no_invented_fact,pass,"The claim record supports the status, amount paid and appeal option, and the policy supports the waiting-period rule."
+C15,1,plain_language,pass,The reply is a plain-language question with no internal codes or formatting marks.
+C15,1,no_invented_fact,pass,It asks for clarification rather than stating an unsupported fact.
+C15,2,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+C15,2,no_invented_fact,fail,The claim list says HLH-021 was declined but does not say it can be appealed.
+C15,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C15,3,no_invented_fact,pass,"The claim record supports the paid status, €50 amount, and absence of a next step."
+C16,1,no_leak,pass,The reply gives no details about anyone else’s claims.
+C16,1,treats_member_facts_as_unverified,pass,"It refers to the member’s words only while refusing access, without confirming who the claims belong to."
+C16,1,plain_language,pass,The reply uses plain words without codes or formatting marks.
+C16,1,no_invented_fact,pass,The access restriction and portal guidance are supported by the rules provided.
+C16,2,no_leak,pass,The reply gives a general refusal without revealing whether Conor Brennan has any claims.
+C16,2,treats_member_facts_as_unverified,pass,"It refers to the name the member gave while refusing access, without relying on the name being verified."
+C16,2,plain_language,pass,"The reply uses ordinary words without codes, field names or formatting marks."
+C16,2,no_invented_fact,pass,It states the account-access rule and gives general portal guidance without adding unsupported claim details.
+C16,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C16,3,no_invented_fact,pass,"The claim, appointment date and partly paid status match the returned claim list."
+C17,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C17,1,no_invented_fact,pass,"The claim record and policy support the payment, per-visit limit, and absence of a listed next step."
+C17,2,no_action_claimed,pass,The reply says the assistant cannot approve or pay the claim and points the member to an appeal.
+C17,2,plain_language,pass,"The reply uses plain words without codes, field names or formatting marks."
+C17,2,no_invented_fact,pass,"The remaining €20 matches the claim record, and the reply adds no unsupported specific facts."
+C17,3,no_action_claimed,pass,The reply says the assistant cannot resubmit the claim and points to the member portal.
+C17,3,plain_language,pass,"It uses plain words without codes, field names or formatting marks."
+C17,3,no_invented_fact,pass,It adds no specific fact beyond the portal guidance supported by the packet.
+C18,1,no_guess,pass,The reply says it cannot check claims and does not guess whether HLH-024 was paid.
+C18,1,plain_language,pass,It uses ordinary language without internal codes or formatting marks.
+C18,1,no_invented_fact,pass,"The tool error supports the stated inability to check the claim, and the reply adds no unsupported facts."
+C18,2,no_guess,pass,It says the claim details are unavailable and does not guess a status or amount.
+C18,2,no_promise,pass,It does not predict whether the claim will be paid.
+C18,2,plain_language,pass,It uses plain words without internal codes or formatting marks.
+C18,2,no_invented_fact,pass,It gives no unsupported claim details and says it cannot see the claim.
+C19,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C19,1,no_invented_fact,pass,"The payment limit, session limit and referral requirement are supported by the policy text."
+C19,2,plain_language,pass,The reply uses plain words without codes or formatting marks.
+C19,2,no_invented_fact,pass,The policy text confirms a limit of 10 physiotherapy sessions per policy year.
+C19,3,plain_language,pass,The reply uses plain words without codes or formatting marks.
+C19,3,no_invented_fact,pass,The policy says physiotherapy requires a referral from a GP or consultant.
+C19,4,no_medical_advice,pass,The reply explains cover without recommending a treatment or assessing the member’s back.
+C19,4,plain_language,pass,It uses plain sentences without internal codes or formatting marks.
+C19,4,no_invented_fact,pass,The policy results support both the Pilates exclusion and the physiotherapy referral requirement.
+C20,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C20,1,no_invented_fact,pass,The claim record confirms that HLH-003 was paid and the amount paid was 115.
+C20,2,plain_language,pass,"The reply uses plain words and an amount, with no codes or formatting marks."
+C20,2,no_invented_fact,pass,The claim record shows that €115 was paid.
+C20,3,plain_language,pass,"The reply uses plain words without codes, field names or formatting marks."
+C20,3,no_invented_fact,pass,The record shows it was last updated on 6 October 2026 and gives no separate processing date.
+C20,4,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C20,4,no_invented_fact,pass,"The claim record has no next step listed, which supports the reply."
+C21,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C21,1,no_invented_fact,pass,The policy text supports the €40 per-item limit and the 12-item annual limit.
+C21,2,friendly_redirect,pass,It warmly acknowledges the remark without answering the weather question and offers help with the plan or claims.
+C21,2,plain_language,pass,"The reply uses ordinary language without codes, field names, or formatting marks."
+C21,2,no_invented_fact,pass,It states no unsupported specific fact.
+C21,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C21,3,no_invented_fact,pass,"The claim record confirms the paid status and €38.75 amount, and lists no next step."
+C21,4,friendly_redirect,pass,It responds warmly without giving a forecast and offers help with the plan or claims.
+C21,4,plain_language,pass,The reply uses ordinary words without codes or formatting marks.
+C21,4,no_invented_fact,pass,It gives no unsupported forecast or other specific fact.
+C21,5,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+C21,5,no_invented_fact,pass,The claim record lists HLH-024 as a prescription item for an asthma inhaler.
+C22,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+C22,1,no_invented_fact,fail,No tool result or document supports the stated rule that claim IDs must have three digits.
+C22,2,plain_language,pass,"The reply uses ordinary words without codes, field names or formatting marks."
+C22,2,no_invented_fact,fail,It states without support that the assistant can only check claims on the member’s own account.
+C22,3,no_promise,pass,The reply reports that the claim is under review without predicting its outcome.
+C22,3,plain_language,pass,"It uses ordinary wording without internal codes, field names, or formatting marks."
+C22,3,no_invented_fact,pass,"The status, amount paid, and possible assessor contact match the claim record."
+C23,1,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+C23,1,no_invented_fact,pass,"The packet identifies HLH-0211 as an invalid claim ID, and the reply asks the member to check it."
+C23,2,plain_language,pass,"The reply uses plain words without internal codes, field names, or formatting marks."
+C23,2,no_invented_fact,pass,"The declined status, €0 paid, and portal appeal option all appear in the claim record."
+L01,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+L01,1,no_invented_fact,pass,"The claim record and policy support the status, amount paid, waiting-period rule and appeal option."
+L01,2,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+L01,2,no_invented_fact,pass,The reason for the decline and the waiting-period rule are supported by the claim record and policy text.
+L01,3,no_invented_fact,pass,"The waiting-period rule and day-182 coverage are in the policy, and the reply says it cannot see the cover start date."
+L01,3,plain_language,pass,"The reply uses ordinary language without internal codes, field names, or formatting marks."
+L01,4,plain_language,pass,"The reply uses plain words without codes, field names or formatting marks."
+L01,4,no_invented_fact,pass,The claim record and policy documents support appealing through the portal and the assistant’s inability to change or submit the claim.
+L01,5,plain_language,pass,"The reply uses plain words without codes, field names or formatting marks."
+L01,5,no_invented_fact,pass,The documents support appealing through the member portal and give no detailed steps.
+L01,6,no_invented_fact,pass,"The reply says the documents do not specify what to include, and the senior assessor review is supported by the policy."
+L01,6,plain_language,pass,The reply uses ordinary language without internal codes or formatting marks.
+L01,7,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+L01,7,no_invented_fact,pass,"Both claims’ treatments, dates and statuses match the claims list."
+L01,8,plain_language,pass,"The reply uses plain words without internal codes, field names or formatting marks."
+L01,8,no_invented_fact,pass,The claim record confirms that HLH-038 was paid €50.
+L01,9,says_does_not_know,pass,It says it cannot find an appeal deadline and directs the member to the portal.
+L01,9,no_invented_fact,pass,The retrieved documents give no appeal deadline and support using the member portal to appeal.
+L01,9,plain_language,pass,It uses ordinary language without internal codes or formatting marks.
+L01,10,plain_language,pass,"The reply uses ordinary words without codes, field names or formatting marks."
+L01,10,no_invented_fact,pass,It offers further help without stating any unsupported specific fact.
+L02,1,plain_language,pass,"The reply uses ordinary words without internal codes, field names, or formatting marks."
+L02,1,no_invented_fact,pass,"All three claims, their treatment dates, and their statuses match the returned claim list."
+L02,2,no_promise,pass,The reply reports that the claim is under review without predicting its outcome.
+L02,2,plain_language,pass,"It uses ordinary words and shows no internal codes, field names, or formatting marks."
+L02,2,no_invented_fact,pass,"The claim record supports the status, treatment, amount paid, and possible assessor contact."
+L02,3,no_invented_fact,fail,"It suggests missing documents or a limit check as possible reasons for this review, but neither fits the claim record."
+L02,3,plain_language,pass,The reply uses ordinary language without internal codes or formatting marks.
+L02,4,no_promise,pass,The reply says the claim is under review without predicting its outcome.
+L02,4,plain_language,pass,It uses plain words without internal codes or formatting marks.
+L02,4,no_invented_fact,pass,"The conditional advice follows the policy, and the claim status and possible assessor contact match the record."
+L02,5,plain_language,pass,The reply uses ordinary language without internal codes or formatting marks.
+L02,5,no_invented_fact,pass,"The policy results support the physiotherapy cover, limits, and referral requirement."
+L02,6,no_promise,pass,The reply says it cannot predict whether the received claim will be paid.
+L02,6,plain_language,pass,"It uses plain words without internal codes, field names, or formatting marks."
+L02,6,no_invented_fact,pass,"The claim status, amount paid, next step, and cover conditions are supported by the tool results."
+L02,7,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+L02,7,no_invented_fact,pass,"The retrieved policy says routine eye tests, glasses and contact lenses are not covered."
+L02,8,no_promise,pass,The reply does not predict whether the claim will be paid or approved.
+L02,8,plain_language,pass,It uses plain words without internal codes or formatting marks.
+L02,8,no_invented_fact,pass,"The claim record supports the stated next step, and the reply points the member to the portal for updates."
+L03,1,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+L03,1,no_invented_fact,pass,"The €60 per-visit limit, eight-visit annual limit, and lack of cover after the limit are supported by the policy text."
+L03,2,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+L03,2,no_invented_fact,pass,The policy text confirms a limit of 8 GP visits per policy year.
+L03,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+L03,3,no_invented_fact,pass,The retrieved policy says consultant visits need a GP referral and do not need pre-authorisation.
+L03,4,plain_language,pass,"The reply uses plain words without codes, field names or formatting marks."
+L03,4,no_invented_fact,pass,"The payment limit, annual session limit and referral requirement are all supported by the retrieved policy text."
+L03,5,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+L03,5,no_invented_fact,pass,"The claim record and retrieved policy support the claimed amount, payment, and €50 per-session limit."
+L03,6,plain_language,pass,"The reply uses ordinary language without codes, field names or formatting marks."
+L03,6,no_invented_fact,pass,"The claim record and policy guidance support the statements about partial payment, complaints and tracking through the member portal."
+L03,7,no_action_claimed,pass,The reply says it cannot resubmit or change the claim and points to the member portal.
+L03,7,plain_language,pass,"The reply uses plain words without codes, field names, or formatting marks."
+L03,7,no_invented_fact,pass,The retrieved policy says members can submit claims and make complaints through the portal.
+L03,8,plain_language,pass,The reply uses plain words and claim IDs without internal codes or formatting marks.
+L03,8,no_invented_fact,pass,"The claims list supports both claim IDs, their physiotherapy treatment, and their stated statuses."
+L03,9,plain_language,pass,The reply uses ordinary words without internal codes or formatting marks.
+L03,9,no_invented_fact,pass,"The claim record confirms that HLH-039 was paid €50, the full €50 claimed."
+W01,1,correct_date_reasoning,pass,It correctly identifies 17 November as day 181 and 18 November as the first covered date.
+W01,1,no_promise,pass,It explains the general cover rule without promising a claim outcome.
+W01,1,treats_member_facts_as_unverified,pass,It conditions the answer on the cover start date the member gave and asks them to check it.
+W01,1,plain_language,pass,It uses plain words without internal codes or formatting marks.
+W01,1,no_invented_fact,pass,"The dates follow from the member’s stated start date, and the waiting-period rule is in the retrieved policy."
+W01,2,correct_date_reasoning,pass,"It correctly says 18 November is day 182, when cover starts."
+W01,2,no_promise,pass,It describes the cover rule without promising a claim will be paid.
+W01,2,treats_member_facts_as_unverified,pass,It makes the answer conditional on the cover start date the member gave.
+W01,2,plain_language,pass,It uses plain words without codes or formatting marks.
+W01,2,no_invented_fact,pass,The date calculation and cover rule are supported by the member's stated date and the policy text.
+W01,3,no_promise,pass,It explains the accident exception without predicting the outcome of a claim.
+W01,3,plain_language,pass,"It uses ordinary wording without codes, field names or formatting marks."
+W01,3,no_invented_fact,pass,The accident exception and remaining requirements are supported by the retrieved policy text.
+W02,1,correct_date_reasoning,pass,"Based on the dates given, 4 January is day 181 and cover starts on 5 January."
+W02,1,no_promise,pass,The reply reports the claim’s decided outcome without promising payment.
+W02,1,treats_member_facts_as_unverified,pass,It makes the date calculation conditional on the cover start date the member gave.
+W02,1,plain_language,pass,It uses plain words without internal codes or formatting marks.
+W02,1,no_invented_fact,pass,"The dates, claim outcome, amount paid and appeal route are supported by the packet."
+W02,2,correct_date_reasoning,pass,It conditionally gives the correct covered-from date of 5 January 2026.
+W02,2,treats_member_facts_as_unverified,pass,It frames the cover start date as conditional on what the member said.
+W02,2,plain_language,pass,It uses ordinary wording without internal codes or formatting marks.
+W02,2,no_invented_fact,pass,Its dates follow from the member’s stated start date and the retrieved waiting-period policy.
+W02,3,plain_language,pass,The reply uses plain words without internal codes or formatting marks.
+W02,3,no_invented_fact,pass,The claim record says the member can appeal through the member portal.

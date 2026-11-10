@@ -1,0 +1,98 @@
+{
+  "conv_id": "C14",
+  "member_id": "M-1021",
+  "fault": null,
+  "stretch": false,
+  "run_id": "20261110T101244Z",
+  "thread_id": "20261110T101244Z-C14-96487f",
+  "model": "gpt-6-luna",
+  "experiments": [
+    "plain_language",
+    "member_facts",
+    "off_topic",
+    "confirm_id"
+  ],
+  "system_prompt_fp": "2bd46caf7930",
+  "model_served": "gpt-6-luna",
+  "langfuse": false,
+  "error": null,
+  "turns": [
+    {
+      "turn": 1,
+      "user": "What's the status of HLH021?",
+      "reply": "Did you mean HLH-021? I’ll check it once you confirm.",
+      "tool_calls": [],
+      "search_queries": [],
+      "llm_calls": 1,
+      "input_tokens": 1243,
+      "output_tokens": 47,
+      "cached_input_tokens": 1240,
+      "cost_usd": 0.000148,
+      "latency_s": 1.891,
+      "model_served": "gpt-6-luna"
+    },
+    {
+      "turn": 2,
+      "user": "Yes, that's it.",
+      "reply": "Your claim for a consultant rheumatology outpatient review was declined because the waiting period applies. The plan’s waiting period is 182 days from when cover begins, and treatment during that period isn’t covered; €0 was paid. You can appeal through the member portal.",
+      "tool_calls": [
+        {
+          "name": "get_claim_status",
+          "args": {
+            "claim_id": "HLH-021"
+          },
+          "status": "success",
+          "artifact": {
+            "claim_id": "HLH-021",
+            "found": true
+          },
+          "result": "{\"found\": true, \"claim\": {\"claim_id\": \"HLH-021\", \"claimant_name\": \"David Whelan\", \"treatment\": \"Consultant rheumatology outpatient review\", \"treatment_date\": \"2026-01-04\", \"submission_date\": \"2026-01-09\", \"amount_claimed\": \"110\", \"status\": \"declined\", \"decision_code\": \"WAITING_PERIOD\", \"amount_paid\": \"0\", \"last_updated\": \"2026-01-16\", \"next_step\": \"You can appeal through the member portal\", \"claimant_note\": \"\"}}"
+        },
+        {
+          "name": "search_policy",
+          "args": {
+            "query": "waiting period consultant rheumatology outpatient review"
+          },
+          "status": "success",
+          "artifact": {
+            "query": "waiting period consultant rheumatology outpatient review",
+            "chunk_ids": [
+              "01_plan_overview#6",
+              "04_waiting_periods#5",
+              "04_waiting_periods#1"
+            ],
+            "doc_ids": [
+              "01_plan_overview",
+              "04_waiting_periods",
+              "04_waiting_periods"
+            ],
+            "scores": [
+              0.3086,
+              0.2157,
+              0.1982
+            ]
+          },
+          "result": "[01_plan_overview#6]\nYour Essential Plus plan: overview. When cover starts. Most treatment has a waiting period after you join. See \"Waiting periods\".\n\n[04_waiting_periods#5]\nWaiting periods. What the accident exception does and does not do. It removes the waiting period only. Every other requirement still applies: you still need an itemised receipt, any referral or pre-authorisation the treatment needs, and the amount must be within the limit.\n\n[04_waiting_periods#1]\nWaiting periods. When you first join, there is a waiting period of 182 days from the date your cover began. Treatment in the first 182 days is not covered. Treatment on day 182 or later is covered, subject to the usual limits."
+        }
+      ],
+      "search_queries": [
+        "waiting period consultant rheumatology outpatient review"
+      ],
+      "llm_calls": 3,
+      "input_tokens": 4462,
+      "output_tokens": 246,
+      "cached_input_tokens": 4001,
+      "cost_usd": 0.000569,
+      "latency_s": 7.17,
+      "model_served": "gpt-6-luna"
+    }
+  ],
+  "totals": {
+    "llm_calls": 4,
+    "input_tokens": 5705,
+    "cached_input_tokens": 5241,
+    "output_tokens": 293,
+    "cost_usd": 0.000717,
+    "latency_s": 9.061
+  }
+}
