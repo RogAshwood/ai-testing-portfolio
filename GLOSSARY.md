@@ -1,7 +1,7 @@
 # Glossary: testing AI, in QA terms
 
 Each term with its plain meaning, the nearest conventional QA concept, and where it appears in this portfolio
-(01 claim triage, 02 member-help chatbot, 03 AI test generation, CI continuous evaluation).
+(01 claim triage, 02 member-help chatbot, 03 AI test generation, 04 multi-turn chatbot agent, CI continuous evaluation).
 For each metric in detail, with a project example and when it misleads, see the [metric cards](METRICS.md).
 
 ## Core concepts
@@ -30,8 +30,10 @@ For each metric in detail, with a project example and when it misleads, see the 
 | G-Eval | DeepEval's method for custom judged criteria written in plain language | Custom acceptance criterion | 02 |
 | Judge calibration | Comparing the judge's verdicts with human labels to see how far it can be trusted | Validating a test oracle | 01, 02, 03 |
 | Blind labelling | A human labels outputs without seeing the judge's verdict first | Independent review | 01, 02, 03 |
-| Held-out set | Cases kept out of tuning the judge, used only to measure it | Independent test set | 03 |
-| Seeded defect | A deliberately wrong output the judge must fail | Defect seeding, mutation testing | 01, 02, 03 |
+| Held-out set | Cases kept out of tuning the judge, used only to measure it. In 04 the split into tuning and held-out halves was fixed before labelling | Independent test set | 03, 04 |
+| Seeded defect | A deliberately wrong output the judge must fail. In 04, a seeded reply: a made-up reply in a real conversation, with a known verdict | Defect seeding, mutation testing | 01, 02, 03, 04 |
+| Frozen judge | A judge whose instructions and model are fixed (and fingerprinted) before the comparisons it marks | Locked test oracle for a test cycle | 03, 04 |
+| Known judge limitation | A recorded, understood false alarm of the judge, left in place because the judge is frozen | Known issue in the test tool | 04 |
 | False pass / false fail | The judge passes a bad output / fails a good one | False negative / false positive in testing | 01, 02, 03 |
 | Cohen's kappa | Agreement between two raters, adjusted for chance | Inter-rater reliability | 01 |
 | Semantic similarity | Comparing meaning, usually with embeddings (numeric representations of text). Not used in this portfolio | Fuzzy matching on meaning | (README notes) |
@@ -90,6 +92,13 @@ For each metric in detail, with a project example and when it misleads, see the 
 
 | Term | Meaning | Nearest QA concept | Where |
 | --- | --- | --- | --- |
-| Agent | An LLM that plans and calls tools across several steps. Notebook 03 tests a single prompt, not an agent | Workflow orchestrator | (not used) |
-| Tool call | An agent invoking a function or API | Integration call | (not used) |
-| Trace / span | The recorded steps of one request through an AI system | Log and distributed trace | (stretch goal) |
+| Agent | An LLM that plans and calls tools across several steps. Notebook 03 tests a single prompt; 04 tests an agent | Workflow orchestrator | 04 |
+| Tool call | An agent invoking a function or API | Integration call | 04 |
+| Tool-call correctness | The agent calls the tools it should, with the right arguments, and not the ones it must not | Interaction testing with mocks (verify called / not called) | 04 |
+| Agentic RAG | The agent decides when to search and writes the search query itself | A component whose input is chosen by another component | 04 |
+| Memory (conversation state) | The earlier turns the agent is given on each new turn | Session state | 04 |
+| Scripted conversation | A fixed sequence of member messages played to the bot, so runs are repeatable | Scripted test scenario | 04 |
+| Two-layer pass rate | A turn passes only if the code checks and every judge check pass; reported per turn and per conversation | Pass rate with automated assertions and a reviewer sign-off | 04 |
+| Prompt experiment (on top) | One instruction added to the prompt at a time, each kept and built on, measured against the previous step | Incremental change with regression testing | 04 |
+| Oracle defect | A test failure caused by a wrong or too-narrow expected result, not by the system | Defect in the test, not the product | 02, 03, 04 |
+| Trace / span | The recorded steps of one request through an AI system. In 04 each conversation is saved as a trace record and can be drawn as a sequence diagram | Log and distributed trace | 04 |

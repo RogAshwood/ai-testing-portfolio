@@ -578,6 +578,8 @@ Costs: a full run about $0.03 for the bot and $0.49 for the judge; seeded check 
 
 **Open items (M5 backlog)**
 
+- [ ] A pattern check for internal codes and Markdown in layer 1 (`checks.py`): most baseline judge failures were
+      these, and plain code can catch them for free and with certainty; keep the judge for the rules that need meaning.
 - [ ] C05 ownership wording (R25): a line or a rule for "who a claim belongs to".
 - [ ] L01 t6 retrieval: the search-query line ("search by treatment and topic, not the decision code") or semantic
       retrieval; measure with the retrieval hit rate.

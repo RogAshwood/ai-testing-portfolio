@@ -12,19 +12,21 @@ New to the terms? The [glossary](GLOSSARY.md) explains each one alongside the ne
 The [metric cards](METRICS.md) go deeper: one card per metric, with a project example, a diagram, when it misleads
 and how far to trust it.
 
-## Three Systems - At a glance
+## The systems at a glance
 
 ![Overview of the three AI systems tested and how each was tested](images/overview_three_systems.png)
 
 Each lane shows the business process with the AI step in it, how it was tested, and the tools used.
-The sections below cover each system in turn.
+The sections below cover each system in turn. Round 2 added a fourth, the member-help chatbot rebuilt as a
+multi-turn agent ([04](#04-multi-turn-chatbot-agent-with-langgraph)).
 
 | # | Notebook | What is tested | Tools | Status |
 | --- | --- | --- | --- | --- |
 | 01 | [`01_promptfoo_claim_triage.ipynb`](01_promptfoo_claim_triage.ipynb) | An LLM claim-triage step: prompt regression, model comparison, judge validation, red teaming | Promptfoo, pandas | Done |
 | 02 | [`02_deepeval_rag_component_vs_e2e.ipynb`](02_deepeval_rag_component_vs_e2e.ipynb) | Member-help chatbot (RAG): retriever and generator tested separately and end to end, fault injection, judge calibration, fix and retest, CI tests | DeepEval, scikit-learn, pytest | Done |
 | 03 | [`03_testgen_benchmark.ipynb`](03_testgen_benchmark.ipynb) | AI test generation: two prompts benchmarked against an expert golden set, an LLM judge tested with seeded defects and blind labels (including a held-out round) | OpenAI API, Python (`bench/`), pandas, matplotlib | Done |
-| CI | [Continuous evaluation](#continuous-evaluation) | The suites from all three notebooks re-run on a schedule, with quality gates | GitHub Actions | Running |
+| 04 | [`04_conversational_chatbot.ipynb`](04_conversational_chatbot.ipynb) | Multi-turn chatbot agent (Round 2): tool calls, memory, two check layers per turn (code and a calibrated LLM judge), prompt experiments, general metrics against targeted checks | LangGraph, Python (`chatbot/`), DeepEval, pandas | Done |
+| CI | [Continuous evaluation](#continuous-evaluation) | The suites from all four notebooks re-run on a schedule, with quality gates | GitHub Actions | Running |
 
 ## Testing AI: Starting point
 
@@ -402,16 +404,101 @@ counts the ideas chosen for the golden set, not completeness. The generator saw 
 interactions across stories were not measured, and nobody checked whether the steps could be executed. Judge
 cost uses `gpt-6.1-sol` prices, unconfirmed for `gpt-6-sol`. The full list is in section 11 of the notebook.
 
+## 04: Multi-turn chatbot agent with LangGraph
+
+### The system under test
+
+The member-help chatbot from 02, rebuilt as an **agent** that holds a conversation. It remembers earlier turns and
+decides for itself which tools to call:
+
+- `search_policy`: the 02 search over the plan documents (the only part that is RAG; the agent writes the query).
+- `get_claim_status` and `list_my_claims`: exact lookups in a claims table, bound to the signed-in member, so they
+  can only ever return that member's own claims.
+
+Built with LangGraph (an agent step and a tool step, with memory per conversation) on `gpt-6-luna`. The **test
+basis** is a 25-rule specification ([`datasets/chatbot_spec.md`](datasets/chatbot_spec.md)), 39 synthetic claims
+and the plan documents. The **oracle** is 28 scripted conversations, 96 member turns
+([`datasets/conversations_golden.json`](datasets/conversations_golden.json)), checked by
+[`datasets/validate_conversations.py`](datasets/validate_conversations.py) before any run.
+
+### What was tested
+
+![How the multi-turn chatbot was tested](images/m5_qa_view.png)
+
+- **Conversations, not questions:** follow-ups that rely on memory ("why?"), mistyped and invalid claim IDs,
+  another member's claim, a claims system outage, an instruction hidden in a claim note, small talk, dates the
+  member gives, and three long conversations of 8 to 10 turns.
+- **Two check layers on every turn.** Layer 1, plain code: the right tools with the right arguments, no forbidden
+  tool, required facts present. Layer 2, an LLM judge (`gpt-6-sol`): pass or fail on 12 behaviour rules, such as
+  no promise of payment, no other member's data, plain language, and treating the member's own facts as
+  unconfirmed. A turn passes only if both layers pass.
+- **The judge tested before use, then frozen:** 40 seeded replies with known verdicts, and 51 blind human labels
+  split before labelling into a tuning half and a held-out half.
+- **Repeat runs:** every result is the mean [lowest-highest] of at least two runs.
+- **Prompt experiments:** one instruction at a time, each on top of the last, against the frozen judge.
+- **General metrics against targeted checks:** four DeepEval conversation metrics on the same conversations.
+
+### What was measured
+
+| Measure | How it is measured | Industry term | Why it matters |
+| --- | --- | --- | --- |
+| Tool-call correctness | Required tools (and arguments) called, forbidden tools not called, per turn | **Tool correctness** | An agent's actions, not just its words, must follow the rules |
+| Text checks | Required facts present, banned words absent | Deterministic assertions | Free and certain, but only for what can be matched |
+| Judge checks | Pass or fail per behaviour rule, with a reason | **LLM-as-a-judge** (binary, per criterion) | The rules that need meaning: promises, leaks, tone, invented facts |
+| Two-layer pass rate | Turns, and whole conversations, passing both layers | Task / conversation success rate | The headline: one number that needs both |
+| Retrieval hit rate | The facts a reply needs appear in what the agent's own search returned | Retrieval **recall** (key-fact recall) | The agent now chooses the query |
+| Judge agreement | Seeded replies; blind labels, held-out half reported | Judge calibration; seeded defects | How far the judge's verdicts can be trusted |
+| Run-to-run spread | Mean [lowest-highest] over repeat runs | Consistency under non-determinism | Separates real changes from noise |
+| General metrics | DeepEval knowledge retention, completeness, turn faithfulness, a general G-Eval | Standard conversational metrics | Would off-the-shelf metrics have found the same problems? |
+
+### Headline findings
+
+1. **Three prompt lines took turns passing both layers from 73.3 [70-76] to 89.5 [89-90] of 96**, and
+   conversations from 13.7 to 22.0 of 28, at the same cost. Plain language (no internal codes, no Markdown) did
+   most of it; treating the member's own dates as unconfirmed and a friendly reply to small talk did the rest.
+2. **Text checks alone flatter the system.** They passed 91 to 95 of 96 baseline turns while only 70 to 76 passed
+   the judge too. Most of the gap was internal codes and Markdown, which a pattern check could also catch; the
+   rest, such as stating a member's own date as confirmed, needs a judge.
+3. **The oracle needed as much testing as the bot.** 8 of the 10 changes to the expected results fixed a test
+   that was too literal or too narrow, where the bot's reply was right.
+
+   ![Every change to the oracle](images/m5_oracle_timeline.png)
+
+4. **General metrics missed every rule failure.** DeepEval's conversation metrics passed all 14 conversations that
+   broke the specification, and failed 4 where the bot correctly refused (medical advice, another member's claim,
+   approving a payment, guessing during an outage), at about four times the cost of the targeted judge.
+5. **One run is not a result, and rare failures need many repeats.** Identical runs ranged from 70 to 76 turns. A
+   mistyped ID looked up too early appeared in 2 of 9 baseline attempts and then 0 of 20, so a fourth prompt line
+   aimed at it could not be measured and was left out.
+
+### Testing the judge
+
+![How the judge works and how it was checked](images/m5_judge_setup.png)
+
+All 40 seeded replies were judged correctly, yet the first real run exposed a gap no seed covered: the judge called
+the member's plan name an invented fact, because it had not been shown the session details. On blind labels it
+agreed 22 of 23 times on the held-out half, unchanged after the one rubric fix made from the tuning half. It was
+then frozen for every result above. Known limitation: it is not shown the bot's own instructions, so true
+statements that come from them ("I can't change the claim") are flagged as invented on 1 to 3 turns a run, equally
+in every run.
+
+### Limitations
+
+28 scripted conversations, two or three runs per prompt version, one agent model, one judge model from the same
+provider, and 51 labels from one person; only two judge checks have five or more held-out labels. Open defects:
+the bot still confirms whose claim another member's ID is ("he can check HLH-016"), and the search often misses
+the "How to appeal" passage. The full detail is in the M5 section of [`NOTES.md`](NOTES.md).
+
 ---
 
 ## Continuous evaluation
 
-The suites from all three notebooks run on GitHub Actions. Each run checks a set of **quality gates**,
+The suites from all four notebooks run on GitHub Actions. Each run checks a set of **quality gates**,
 and the badges at the top show whether the latest run passed them.
 
 | Workflow | When it runs | What it checks | Cost per run |
 | --- | --- | --- | --- |
-| [`evals.yml`](.github/workflows/evals.yml) | Every Monday, and by hand | Claim triage with Promptfoo (prompt v3, both models, 35 claims) and the 5 DeepEval chatbot tests | About $0.21 |
+| [`evals.yml`](.github/workflows/evals.yml) | Every Monday, and by hand | Claim triage with Promptfoo (prompt v3, both models, 35 claims), the 5 DeepEval chatbot tests, and the chatbot agent: its free tests, then 9 conversations with the final prompt, marked by the text checks | About $0.22 |
 | [`benchmark.yml`](.github/workflows/benchmark.yml) | 1st of each month, on any change to the benchmark's files, and by hand | One run of the test-generation benchmark (prompt v2, 10 stories) | About $0.35 |
 
 **Hard gates fail the run (red badge). Warnings are reported in the run summary but do not fail it.**
@@ -421,11 +508,18 @@ and the badges at the top show whether the latest run passed them.
 | Valid JSON, schema and claim ID on every claim, both models | Anything an LLM judge scores: summary quality, benchmark recall and precision |
 | Zero false auto-approvals, and at least 34 of 35 routings correct, on the stronger model | The cheaper model's routing and false auto-approvals (a known, intermittent defect on claim HLH-009) |
 | All 5 DeepEval tests pass | Generated test cases linked to no acceptance criterion |
+| Chatbot agent: the oracle check and free tests pass; no forbidden tool call and no banned term in any reply, with the final prompt (checked by fingerprint) | Chatbot agent: a required tool or fact missed (a correct reply can word a fact differently) |
 | Benchmark: golden set, prompt and judge unchanged (checked by fingerprint), and every story returns valid output | A model's served version differs from the last run (both workflows record it in `results/model_versions.csv`) |
 
 Why the split: deterministic checks are reliable enough to block a release; the judges disagreed with my own
 labels often enough (notebooks 01 to 03) that their scores start as warnings. Every threshold, and the baseline
 it was set from, is in [`bench/ci_thresholds.py`](bench/ci_thresholds.py).
+
+**What the chatbot agent run checks.** Nine of the 28 conversations, chosen for the rules that matter most if
+they break: another member's claim, a promise of payment, an instruction hidden in a claim note, mistyped claim
+IDs, an action the bot cannot take, a claims system outage, and memory across turns. Only the text checks mark
+them; the LLM judge is not run, so tone, plain language and invented facts are checked in the notebook, not
+weekly. It is a smoke test of what the agent does with its tools and what it must never say.
 
 **What the benchmark run checks.** Test cases are generated once and reviewed, so CI does not re-run the
 benchmark to get new tests. It checks the generator itself: with the golden set, prompt and judge frozen, any
@@ -445,7 +539,7 @@ cases as a warning. Details are in [`NOTES.md`](NOTES.md), Day 5.
 
 1. **The oracle is most of the work, and it needs testing too.** Review rounds corrected 14 of my 78 expected test
    ideas; a judge failed half of the good summaries it was given; CI found a contradiction in my own output
-   contract. Every one would have produced wrong results about the system under test. Budget for testing the
+   contract; 8 of 10 changes to the chatbot agent's expected results fixed the test, not the bot. Every one would have produced wrong results about the system under test. Budget for testing the
    tests.
 2. **Gate on what is deterministic, monitor what is judged, and weigh errors by what they cost.** A false
    auto-approval pays out money nobody checked; an unnecessary manual review costs an assessor a few minutes. Rules
@@ -461,6 +555,7 @@ ai-testing-portfolio/
 ├── 01_promptfoo_claim_triage.ipynb   Notebook 01: results, charts and interpretation
 ├── 02_deepeval_rag_component_vs_e2e.ipynb  Notebook 02: RAG chatbot tested by component and end to end
 ├── 03_testgen_benchmark.ipynb        Notebook 03: AI test generation, prompt v1 against v2
+├── 04_conversational_chatbot.ipynb   Notebook 04: multi-turn chatbot agent, two check layers, prompt experiments
 ├── routing_stability.py              Finds claims whose routing changes across repeat runs
 ├── build_judge_cases.py              Builds the judge-validation cases from stored outputs and labels
 ├── rag_pipeline.py                   Day 3 system under test: chunker, TF-IDF retriever, generator
@@ -473,6 +568,17 @@ ai-testing-portfolio/
 ├── .github/workflows/
 │   ├── evals.yml                     Weekly CI: Promptfoo claim triage and DeepEval tests, with quality gates
 │   └── benchmark.yml                 Monthly and on-change CI: the test-generation benchmark
+├── chatbot/                          M5 agent and its tests, imported by notebook 04
+│   ├── bot.py, tools.py, claims.py   The LangGraph agent, its three tools and the claims store (access check)
+│   ├── policy.py, prompt.py          The policy search over the M5 documents; the prompt and the experiment lines
+│   ├── run.py                        Plays the scripted conversations and saves one trace record each
+│   ├── checks.py                     Layer 1: tools, arguments, facts (plain code)
+│   ├── judge.py                      Layer 2: the LLM judge, and its seeded-reply check
+│   ├── labels.py                     Blind label sheets, tuning and held-out halves, agreement
+│   ├── compare.py                    Groups of runs as mean [lowest-highest]
+│   ├── deepeval_compare.py           General DeepEval metrics against our verdicts
+│   ├── diagram.py                    Sequence diagram of one saved conversation
+│   └── ci_gate.py                    The weekly CI check: 9 conversations, text checks only
 ├── bench/                            Day 4 benchmark code, imported by notebook 03 and by CI
 │   ├── golden.py                     Loads the golden set; story cards and fingerprints
 │   ├── generate.py                   Runs a prompt over the stories and saves the test cases
@@ -498,18 +604,26 @@ ai-testing-portfolio/
 │   ├── testgen_golden.json           Day 4 oracle: golden set v1.0, 10 stories, 78 expected ideas
 │   ├── testgen_golden.schema.json    Its JSON schema
 │   ├── validate_testgen_golden.py    Checks the Day 4 golden set
-│   └── testgen_seeded_defects.json   Seeded defects for testing the Day 4 judge
+│   ├── testgen_seeded_defects.json   Seeded defects for testing the Day 4 judge
+│   ├── chatbot_spec.md               M5 test basis: 25 rules for the chatbot agent
+│   ├── claim_status.csv              M5 claims data: 39 synthetic claims
+│   ├── chatbot_docs/                 M5 versions of two plan documents (04 and 10)
+│   ├── conversations_golden.json     M5 oracle: 28 scripted conversations, with its change history
+│   ├── validate_conversations.py     Checks the M5 oracle against the test basis
+│   ├── judge_rubric.md               The M5 judge's instructions and 12 checks (frozen)
+│   └── judge_seeded_turns.json       Seeded replies for testing the M5 judge
 ├── tests/
 │   ├── test_rag.py                   5 automated tests for CI (deepeval test run)
+│   ├── test_chatbot_*.py             113 free tests of the M5 code and tooling (no API calls)
 │   └── conftest.py                   Test set-up: import path and .env
-├── images/                           Diagrams used in notebooks 02 and 03
+├── images/                           Diagrams used in the notebooks; make_m5_*.py redraw the M5 ones
 │   └── metrics/                      Metric-card diagrams and the script that draws them
 ├── promptfoo/
 │   ├── promptfooconfig.yaml          Main regression suite (3 prompts × 2 models × 35 claims)
 │   ├── redteamconfig.yaml            Red-team configuration
 │   ├── judge_validation.yaml         Judge regression suite (rubric v1 vs v2 on frozen outputs)
 │   └── prompts/                      triage_v1.txt, triage_v2.txt, triage_v3.txt
-└── results/                          Saved runs, labels and charts for all three notebooks; CI gate tables in ci_gates/
+└── results/                          Saved runs, labels and charts for all four notebooks; CI gate tables in ci_gates/
 ```
 
 ## How to run
@@ -588,6 +702,27 @@ Open the notebook and run all cells: `RUN_GENERATE`, `RUN_SCORE` and `RUN_SEEDED
 the saved results and a full re-run is free. Generating and scoring all six runs costs about $1.60, almost all of
 it judge calls.
 
+**Notebook 04 (multi-turn chatbot agent)**
+
+```bash
+# 1. Check the oracle against the specification (free), then the free tests
+python datasets/validate_conversations.py
+python -m pytest tests/test_chatbot_tools.py tests/test_chatbot_checks.py tests/test_chatbot_judge.py tests/test_chatbot_labels.py tests/test_chatbot_compare.py tests/test_chatbot_diagram.py -q
+
+# 2. Play all 28 conversations with the final prompt, then mark them (layer 1 free, layer 2 judge calls)
+python -m chatbot.run --all --no-tracing --experiment plain_language --experiment member_facts --experiment off_topic
+python -m chatbot.checks --latest
+python -m chatbot.judge --latest
+
+# 3. Compare groups of runs, and test the judge on its seeded replies
+python -m chatbot.compare --baseline <run> <run> --experiment <run> <run>
+python -m chatbot.judge --seeded
+```
+
+Open the notebook and run all cells: it reads the saved runs (re-marking them against the current oracle, free),
+and the paid steps are behind `RUN_... = False` switches. One run of the bot costs about $0.04 and judging it about
+$0.50.
+
 **CI checks, run locally (free)**
 
 ```bash
@@ -595,7 +730,7 @@ python -m bench.run_benchmark --check-only                 # fingerprint gates o
 python -m bench.promptfoo_gate results/promptfoo_v3.json   # apply the CI gates to a saved Promptfoo run
 ```
 
-Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, Node.js 22.23 and Python 3.11.
+Tested with Promptfoo 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1, LangGraph 1.2.20, Node.js 22.23 and Python 3.11.
 
 ## About
 

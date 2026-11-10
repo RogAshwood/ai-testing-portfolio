@@ -1,10 +1,13 @@
-# Weekly AI evals: Promptfoo claim triage and DeepEval RAG tests.
+# Weekly AI evals: Promptfoo claim triage, DeepEval RAG tests and the chatbot agent's text checks.
 # (The test-generation benchmark has its own workflow, benchmark.yml: monthly and on change.)
 #
 # Scope and gates agreed 2026-10-29 (see bench/ci_thresholds.py for every threshold and its baseline):
 #   Promptfoo   prompt v3, both models, 35 claims    HARD on sol-strong, luna-cheap reported only
 #   DeepEval    tests/test_rag.py, 5 tests           HARD: 5/5 pass
-# Estimated cost per run: about $0.21 (OpenAI). The red team is not run here (manual, see README).
+#   Chatbot     oracle check and free tests          HARD: all pass (no API calls)
+#   agent (04)  9 conversations, final prompt,       HARD: no forbidden tool call, no banned term,
+#               text checks only (no judge)                final prompt, all played; WARN: tools, facts
+# Estimated cost per run: about $0.22 (OpenAI). The red team is not run here (manual, see README).
 #
 # Both suites run even if the first fails (if: always()), so one red suite does not hide the other.
 # The job fails if any HARD gate fails; warnings appear in the run summary only.
@@ -24,6 +27,7 @@
 #   2026-10-29  v4  actions moved to their Node 24 versions (checkout v7, upload-artifact v7,
 #                   setup-miniconda v4); runner pinned to ubuntu-24.04.
 #   2026-11-03  v5  M1: first step records the model versions the API served (WARN on change).
+#   2026-11-10  v6  M5: chatbot agent steps (oracle check, free tests, 9 conversations with text checks).
 
 name: AI evals
 
@@ -102,6 +106,25 @@ jobs:
         if: always()
         run: deepeval test run tests/test_rag.py
 
+      # 3. Chatbot agent (notebook 04). The free steps first: the oracle is checked against the
+      #    specification, then the free tests of the chatbot code. Then nine conversations are played
+      #    with the final prompt (about $0.01) and marked with the text checks only; the LLM judge is
+      #    not run here. Thresholds and the chosen conversations are in bench/ci_thresholds.py.
+      - name: "Chatbot agent: oracle check and free tests"
+        if: always()
+        run: |
+          python datasets/validate_conversations.py
+          python -m pytest tests/test_chatbot_*.py -q -p no:cacheprovider
+
+      - name: "Chatbot agent: play the CI conversations (final prompt)"
+        id: chatbot
+        if: always()
+        run: python -m chatbot.ci_gate play
+
+      - name: "Chatbot agent: quality gates (text checks)"
+        if: always() && steps.chatbot.outcome == 'success'
+        run: python -m chatbot.ci_gate check "$CHATBOT_RUN_DIR"
+
       - name: Upload results as a run artifact
         if: always()
         uses: actions/upload-artifact@v7
@@ -111,6 +134,7 @@ jobs:
             results/ci/
             results/ci_gates/*evals-${{ github.run_number }}_*
             results/model_versions.csv
+            ${{ env.CHATBOT_RUN_DIR }}
           retention-days: 90
           if-no-files-found: warn
 
