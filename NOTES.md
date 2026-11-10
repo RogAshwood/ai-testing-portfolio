@@ -423,3 +423,165 @@ warning line. One run is not a trend; the monthly history will show whether it i
 | --- | --- | --- |
 | Monitoring | A warning when the list of dated versions changes | Notice automatically if pinning becomes possible |
 | Models | Pin a dated version for the release model once one is offered | Reproducible release gates; the cheaper model can stay on its alias as a canary |
+
+### M5: multi-step chatbot (2026-11-04 to 2026-11-10)
+
+The Day 3 member-help bot extended into a LangGraph agent with memory and three read-only tools, tested over
+28 scripted multi-turn conversations with two check layers: deterministic checks and a calibrated LLM judge.
+Code in `chatbot/`; test basis `datasets/chatbot_spec.md`; oracle `datasets/conversations_golden.json`.
+
+**Decisions**
+
+| Decision | Reason |
+| --- | --- |
+| LangGraph agent (agent node + tool node), gpt-6-luna, memory per conversation (one checkpointer thread each) | Multi-turn behaviour (memory, follow-ups, corrections) is what Day 3 could not test |
+| Three read-only tools: `search_policy` (the Day 3 retriever), `get_claim_status`, `list_my_claims`; the member comes from the session, never from the chat | Only `search_policy` is RAG; claim status is an exact lookup with the access check in code, not in the prompt |
+| Scripted member turns, not a simulated user | Repeatable conversations, so differences between runs come from the bot |
+| Two layers: deterministic checks (`chatbot/checks.py`, plain Python) and a yes/no LLM judge (`chatbot/judge.py`, gpt-6-sol, 12 checks) | Text checks cover tools, arguments and facts; the judge covers meaning (promises, leaks, tone). A turn passes only if both layers pass |
+| The judge never sees key facts or absent terms; dates are worked out in code and given to it | It judges the reply against the evidence the bot had, not against our expected answer; no arithmetic left to a model |
+| Judge calibrated before use: seeded replies, then blind labels with a held-out half, then frozen | Day 4 lesson: agreement tuned to 20/20 fell to 10/20 on held-out labels; and changing the judge mid-experiment moves results as much as the change being tested |
+| Results reported as mean [min–max] over repeat runs, never one run | The same scripted conversations varied from 70 to 76 of 96 turns passing |
+| Prompt experiments one line at a time, switched on by flag, cumulative ("on top"), 2 runs each | The baseline prompt stays untouched; each line's effect is measured against the step before |
+| DeepEval conversational metrics as a comparison only, on one run | To answer "would general metrics have found what targeted checks found?" without paying for three runs |
+| Langfuse (Cloud EU) built in but not used | Agreed to do later; the trace records in `results/chatbot/` hold everything the checks need |
+
+**Changes to the system under test**
+
+These change the bot, not the tests. Each was agreed before it was made.
+
+| # | Change | Why | Effect |
+| --- | --- | --- | --- |
+| 1 | `RagResult.model_served` added (M1 fix, `rag_pipeline.py`) | `ask()` raised a TypeError; 3 of 5 Day 3 tests failed | 5/5 pass |
+| 2 | M5 version of document 10 (`datasets/chatbot_docs/`): the assistant can look up your own claims | The Day 3 version said it couldn't, which the M5 bot now can. Day 3's document 10 is unchanged; no Day 3 question cites it | — |
+| 3 | M5 version of document 04: the day-0 rule (cover start = day 0; waiting period days 0–181; cover from day 182) with a worked example | The original wording allowed two readings of the boundary day, which the date tests (W01, W02) rely on | — |
+| 4 | **Retrieval of tables and the exclusions list improved** (`chatbot/policy.py` v2): the tables in documents 02 and 05 split into one chunk per row with the column headings repeated; the exclusions list in document 03 split into one chunk per item. Numbered lists unchanged | Long table and list chunks were missed by the agent's short queries (C02, C03, C19) | Retrieval hit rate 0.88 → 0.96; C19 turn 1 needed 1 search instead of 4 |
+| 5 | Prompt experiment lines (`chatbot/prompt.py` v2, `--experiment`); the baseline prompt is unchanged | Step 5, below | See results |
+
+**Final bot** = baseline prompt + `plain_language` + `member_facts` + `off_topic`. `confirm_id` was tested and left out.
+
+**Results**
+
+Baseline and every experiment judged with the frozen rubric (fingerprint `4aa123f7f26c`), golden set v1.10, 28
+conversations, 96 turns. Comparisons from `python -m chatbot.compare` (saved in `results/chatbot_compare/`).
+
+| Step (each on top of the one before) | Runs | Turns passing both layers | Conversations passing both layers | What it targeted |
+| --- | --- | --- | --- | --- |
+| Baseline | 3 | 73.3 [70–76] | 13.7 [13–14] | — |
+| + `plain_language` (no codes, no Markdown) | 2 | 85.0 [83–87] | 20.0 [18–22] | `plain_language` fails 14.3 [12–17] → 0 |
+| + `member_facts` (treat the member's own dates as unconfirmed) | 2 | 88.0 [86–90] | 22.0 [21–23] | `treats_member_facts_as_unverified` 4.5 → 1.5; W01, W02 now conditional |
+| + `off_topic` (warm acknowledgement, then offer help) | 2 | 89.5 [89–90] | 22.0 [21–23] | `friendly_redirect` 1.5 → 0; C21 passes |
+| `confirm_id` (confirm a tidied ID before lookup) | 5 + 5, ID conversations only | — | — | R6b failures 0/20 without and 0/20 with: no measurable effect, left out |
+
+Overall (`final_vs_baseline`): turns passing both layers 73.3 [70–76] → 89.5 [89–90] (+16.2); conversations 13.7 [13–14]
+→ 22.0 [21–23] (+8.3); cost per run unchanged ($0.55). Only the first step's ranges don't overlap the step before; the
+later gains are real on their target check but small overall. Two measures to watch: `no_invented_fact` fails 3.7 →
+5.0 (mostly the known judge limitation below) and retrieval hit rate 0.937 → 0.915 (L01 t6, open).
+
+**Calibrating the judge**
+
+| Stage | Result |
+| --- | --- |
+| Seeded replies: real conversation contexts with a made-up reply whose verdict is known (2 fail + 1 pass per check) | 37/37 (v1.0), 39/39 (v1.1), 40/40 (v1.2) |
+| First judging of real replies | 23 failures: 15 genuine, 3 caused by the packet (D7), 4 by a rule wider than intended (D8), 1 judge too strict |
+| Blind labels: 51 turn-checks over 39 turns, split before labelling into tune (28) and held-out (23); rubric example turns left out | Tune 26/28 → 28/28 after D9; **held-out 22/23 (95.7%)**, unchanged by the tuning |
+| Per check, held-out | `plain_language` 7/7, `no_invented_fact` 4/5; the other checks have fewer than 5 held-out labels and are indicative only (their evidence is the seeds) |
+| Frozen | Rubric v1.2, fingerprint `4aa123f7f26c`, for every result in this section |
+
+Judge decisions (in `datasets/judge_rubric.md`): D1 member facts as their own check; D2 Markdown fails plain
+language; D3 "he can check HLH-016" passes `no_leak`; D4 four conditions for offering a possible reason; D5
+`no_invented_fact` on every turn; D6 targets 85% overall / 80% per check; D7 a SESSION line (member and plan) in the
+packet; D8 the member-facts check fails only when the reply relies on or confirms the member's statement; D9 a
+friendly redirect needs a warm phrase and the assistant's own offer of help.
+
+**General metrics against targeted checks (DeepEval 4.2.8)**
+
+Four DeepEval conversational metrics, same judge model, same transcripts and tool results, on baseline run A
+(28 conversations; $2.21). Detail in the M5 notebook.
+
+| Metric | Passed | Agreed with our verdict | Our 14 failures it missed |
+| --- | --- | --- | --- |
+| TurnFaithfulness | 28/28 | 14/28 | all 14 |
+| Overall quality (ConversationalGEval, one general criterion) | 28/28 | 14/28 | all 14 |
+| KnowledgeRetention | 25/28 | 13/28 | 13 |
+| ConversationCompleteness | 24/28 | 10/28 | 14 |
+
+They missed every rule failure (codes and Markdown, member dates stated as fact, an ID looked up before confirming,
+an unfriendly redirect). Where they failed a conversation, the bot was right: completeness scored the required
+refusals (no medical advice, no other member's claims, "I can't approve", "the system is down, I won't guess") as
+failures, and knowledge retention scored "Did you mean HLH-021?" and refusing HLH-01A as forgetting the ID. General
+metrics measure helpfulness, not this bot's rules, at about four times the cost of our judge.
+
+**Problems found in the test setup**
+
+As on every day so far, the oracle and the tooling needed as much testing as the bot.
+
+| # | Symptom | Cause | Fix |
+| --- | --- | --- | --- |
+| 1 | 13/20 conversations passed on the first full run | Most failures were the oracle: key facts and absent terms too literal (a correct refusal containing "will be paid"; "sister" banned though the rule is about medical details) | Golden v1.1; absent terms kept only for words wrong in every reasonable reply; behaviour moved to named judge checks |
+| 2 | L01–L03 never scored | `checks.py` read only `C*.json` | Reads every conversation file; test added |
+| 3 | Most early failures were wording, not behaviour | Oracle too narrow (v1.1–v1.10) | Alternatives (`a\|b`) for each key fact; every fix recorded with its reason in the golden file; all runs re-scored each time so comparisons stay fair |
+| 4 | Plainer wording after experiment 1 "failed" key facts ("isn't covered", "no decision has been made", "up to €50") | The oracle expected the old wording | v1.8 to v1.10; the text checks returned to the baseline's range |
+| 5 | Untidyable IDs (HLH-01A, HLH-0211) went unchecked | The validator's ID pattern didn't match them at all | Validator v2.2 (rule R6c); C22 and C23 added |
+| 6 | The judge called "Essential Plus" an invented fact | The packet showed tool results but not what the portal tells the bot | SESSION line (D7); a seed added. 37/37 seeds hadn't found it: no seed used session context |
+| 7 | "Overall quality" errored on every conversation | DeepEval 4.2.8's ConversationalGEval doesn't accept `chatbot_role` | Role moved into the criteria; a test checks only supported fields are used |
+| 8 | A long command failed with "expected at least one argument" | It was split across lines when pasted | Single-line commands, `set R=results\chatbot` shortcut |
+| 9 | One labelled check (H08) disagreed with the judge | I judged the reply as a whole, not the one check | Relabelled to match D8; no rubric change |
+
+Pattern: problems 1, 3 and 4 were Day 2's lesson again, **the oracle is a test asset that needs its own QA**. Most
+failures in the early runs were the oracle's, not the bot's; the change history in the golden file shows each one.
+
+**Known judge limitations (judge frozen, so recorded rather than fixed)**
+
+- `no_invented_fact` flags what the bot knows from its system prompt rather than its tools: "I can't change or approve
+  the claim", the claim-ID format, "a claims assessor decides", the name "Harbourlight Health". It affects every run
+  equally, so comparisons are fair; absolute numbers are slightly low. A fuller session line would fix it (judge v1.3).
+- It does no arithmetic by design, so "the remaining €20" (140 − 120) can be flagged.
+- Borderline verdicts flip between judgings (L02 t4, C05 t2); the repeat runs absorb this.
+
+**Problems found in the chatbot**
+
+| Problem | Seen | Status |
+| --- | --- | --- |
+| Internal codes (WAITING_PERIOD, OVER_LIMIT) and Markdown bold shown to members | 12–17 turns a run | Fixed by `plain_language` |
+| The bot accepted what the member said about themselves as true. In W01 the member says "my cover started on 20 May"; the bot can't see the cover start date, but replied "17 November is day 181 of **your** waiting period", as if the date were confirmed. It should work from it conditionally: "**if** your cover began on 20 May, 17 November would be day 181…", and suggest checking the date in the member portal (rules R24, R25). The day count itself was right | Every run (W01, W02) | Fixed by `member_facts` |
+| Off-topic remark without warmth or an offer of help (C21) | Every run | Fixed by `off_topic` |
+| A tidied ID looked up before the member confirmed it (C13, C14; R6b) | 2 of 9 baseline attempts | Gone after the first three lines (0/20); `confirm_id` added nothing measurable |
+| "He can check HLH-016 in his portal": confirms whose claim it is (C05; R25) | Every run | **Open**: the member-facts line covers dates only |
+| "What should I include with an appeal?" answered "the documents don't say"; the "How to appeal" chunk wasn't retrieved (L01 t6) | Most runs | **Open**: needs the search-query line or better retrieval |
+| The last-updated date given as the decision date ("declined on 16 January") | Occasional | Open |
+| "The consultant one" read as a consultant's claims (C22) | 1 run | Open |
+| Accepting the member's false "more than six calendar months" (W02) | 1 run | Not seen again after `member_facts` |
+
+**Observations**
+
+- The bot copies prompt examples word for word ("It does sound like a lovely day! I'm happy to help with your plan or
+  claims."). The prompt's example ID, HLH-012, happened to be the tempting wrong guess in C22, and the bot used it as
+  its format example: worth checking prompt examples against the test data.
+- Rare failures need many repeats: R6b appeared in 2 of 9 baseline attempts, and 0 of 20 later; two full runs could
+  never have shown whether `confirm_id` helped.
+- The provider started caching prompts between 6 and 9 November (about 75–80% of input tokens cached). Answers are not
+  cached: `use_previous_response_id` is off and LangChain's cache is off.
+
+**Run log**
+
+| Date | Run | Output |
+| --- | --- | --- |
+| 2026-11-05 to 06 | First runs, golden v1.0 to v1.4; chunking change | `results/chatbot/20261105T*`, `20261106T*` |
+| 2026-11-09 | Judge: seeded 37/37, then v1.1 39/39 and v1.2 40/40; real-run judgings | `results/chatbot_judge_seeded/` |
+| 2026-11-09 | Blind labels, rekey, agreement (held-out 22/23) | `results/chatbot_labels/` |
+| 2026-11-09 | Baseline: 3 runs + C22/C23 ×3 | `results/chatbot/20261109T155138Z` … `T171808Z`; `results/chatbot_compare/baseline.json` |
+| 2026-11-09 | DeepEval comparison, run A | `results/chatbot_deepeval/deepeval_baseline_A.*` |
+| 2026-11-09 to 10 | Experiments 1 to 3, 2 runs each | `results/chatbot/20261109T204050Z` … `20261110T091924Z`; `results/chatbot_compare/exp*.json`, `final_vs_baseline.json` |
+| 2026-11-10 | `confirm_id`: ID conversations ×5 without, ×5 with | `results/chatbot/20261110T100656Z` … `T101525Z` |
+
+Costs: a full run about $0.03 for the bot and $0.49 for the judge; seeded check about $0.22; DeepEval on one run $2.21.
+
+**Open items (M5 backlog)**
+
+- [ ] C05 ownership wording (R25): a line or a rule for "who a claim belongs to".
+- [ ] L01 t6 retrieval: the search-query line ("search by treatment and topic, not the decision code") or semantic
+      retrieval; measure with the retrieval hit rate.
+- [ ] Judge v1.3 with a fuller session line, then re-calibrate (seeds and held-out labels).
+- [ ] More labels for the rare checks (only 2 checks have 5+ held-out labels).
+- [ ] Callback tool with a confirmation step (S01, S02), and Langfuse viewing.
+- [ ] Conversation tests in CI (step 6).

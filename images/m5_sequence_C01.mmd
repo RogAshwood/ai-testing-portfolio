@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    actor M as MEMBER
+    participant S as PORTAL SESSION
+    participant A as AGENT (GPT-6-LUNA)
+    participant Mem as MEMORY
+    participant T as TOOL NODE
+    participant C as CLAIMS STORE
+    participant R as POLICY RETRIEVER
+    participant Q as CHECKS (AFTER THE RUN)
+    S->>A: signed-in member M-1021,<br/>tools bound to them
+    Note over M,Q: TURN 1
+    M->>A: Hi, what's happening with claim HLH-021?
+    loop until the model replies without asking for a tool
+        A->>T: get_claim_status(HLH-021)
+        T->>C: lookup for M-1021 only<br/>(access check)
+        C-->>T: HLH-021: declined, paid<br/>0, WAITING_PERIOD
+        T-->>A: tool result
+        A->>T: search_policy(waiting period<br/>outpatient consultant<br/>rheumatology review)
+        T->>R: search the policy chunks
+        R-->>T: top chunks: 01 part 6, 04 part<br/>5, 04 part 1
+        T-->>A: tool result
+    end
+    A->>M: Claim HLH-021 was declined, and no payment was<br/>made. The recorded reason is the waiting<br/>period: treatment in the first 182 days after<br/>cover begins isn’t covered. You can appeal<br/>through the member portal if you ...
+    A->>Mem: save this turn
+    Note over R,Q: text checks pass<br/>judge: 2 of 2 checks pass
+    Note over M,Q: TURN 2
+    M->>A: Why was it declined?
+    Mem-->>A: turns 1 to 1, with<br/>their tool results
+    Note over A,Mem: no tool call: answers from memory
+    A->>M: The claim record gives the waiting period as<br/>the reason. Essential Plus doesn’t cover<br/>treatment in the first 182 days after cover<br/>begins, and I can’t verify your cover start<br/>date here. You can appeal through ...
+    A->>Mem: save this turn
+    Note over R,Q: text checks pass<br/>judge: 2 of 2 checks pass
+    Note over M,Q: TURN 3
+    M->>A: That seems unfair. Can I do anything about it?
+    Mem-->>A: turns 1 to 2, with<br/>their tool results
+    Note over A,Mem: no tool call: answers from memory
+    A->>M: I understand that feels unfair. You can appeal<br/>the decision through the member portal, and I<br/>can’t change or approve the claim myself.
+    A->>Mem: save this turn
+    Note over R,Q: text checks pass<br/>judge: 1 of 2 checks pass (fail: no_invented_fact)
