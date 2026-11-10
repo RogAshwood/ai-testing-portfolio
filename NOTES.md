@@ -526,6 +526,7 @@ As on every day so far, the oracle and the tooling needed as much testing as the
 | 7 | "Overall quality" errored on every conversation | DeepEval 4.2.8's ConversationalGEval doesn't accept `chatbot_role` | Role moved into the criteria; a test checks only supported fields are used |
 | 8 | A long command failed with "expected at least one argument" | It was split across lines when pasted | Single-line commands, `set R=results\chatbot` shortcut |
 | 9 | One labelled check (H08) disagreed with the judge | I judged the reply as a whole, not the one check | Relabelled to match D8; no rubric change |
+| 10 | evals-6 passed every gate but could not push its results | Started by hand while bench-6 was running: it waited its turn but started from the commit before bench-6's results, and both added a row to `results/model_versions.csv` | `.gitattributes` with `merge=union` for the two append-only CSV files, so both rows are kept; tested on a copy. evals-6's gate tables taken from its run artifact |
 
 Pattern: problems 1, 3 and 4 were Day 2's lesson again, **the oracle is a test asset that needs its own QA**. Most
 failures in the early runs were the oracle's, not the bot's; the change history in the golden file shows each one.
@@ -573,8 +574,14 @@ failures in the early runs were the oracle's, not the bot's; the change history 
 | 2026-11-09 | DeepEval comparison, run A | `results/chatbot_deepeval/deepeval_baseline_A.*` |
 | 2026-11-09 to 10 | Experiments 1 to 3, 2 runs each | `results/chatbot/20261109T204050Z` … `20261110T091924Z`; `results/chatbot_compare/exp*.json`, `final_vs_baseline.json` |
 | 2026-11-10 | `confirm_id`: ID conversations ×5 without, ×5 with | `results/chatbot/20261110T100656Z` … `T101525Z` |
+| 2026-11-10 | bench-6: started by the CI-step push (commit 644af32), because `bench/ci_thresholds.py` is on the benchmark's trigger list. Passed with a warning: precision 0.84 (threshold 0.85; 136 cases, 0 incorrect, 6 not in basis, 13 duplicates); recall 0.78; 10/10 schema-valid; about $0.34 | `results/ci_gates/gates_*_bench-6_*`, `results/testgen/*rbench-6_*` |
+| 2026-11-10 | evals-6: first CI run with the chatbot steps, started by hand. All gates passed. Chatbot: 9/9 conversations and 23/23 turns pass the text checks, 0 forbidden calls, 0 banned terms, final prompt, $0.0066. Promptfoo: both models 35/35, no false auto-approvals, summary judge 35/35 and 32/35. DeepEval 5/5. Results push failed (problem 10) | `results/ci_gates/gates_*_evals-6_*` (from the run artifact) |
 
 Costs: a full run about $0.03 for the bot and $0.49 for the judge; seeded check about $0.22; DeepEval on one run $2.21.
+CI: about $0.007 a week for the 9 conversations (text checks only), so `evals.yml` is about $0.22 a run.
+
+The bench-6 precision warning is one run just under the threshold, within the spread seen before (bench-1 0.81,
+bench-5 0.90); recall 0.78 is at the top of the baseline range. Watch the next monthly run before changing anything.
 
 **Open items (M5 backlog)**
 
@@ -586,4 +593,5 @@ Costs: a full run about $0.03 for the bot and $0.49 for the judge; seeded check 
 - [ ] Judge v1.3 with a fuller session line, then re-calibrate (seeds and held-out labels).
 - [ ] More labels for the rare checks (only 2 checks have 5+ held-out labels).
 - [ ] Callback tool with a confirmation step (S01, S02), and Langfuse viewing.
-- [ ] Conversation tests in CI (step 6).
+- [x] Conversation tests in CI (step 6): option (b), `chatbot/ci_gate.py`; 9 conversations, text checks only;
+      first run evals-6, all gates passed.

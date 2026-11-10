@@ -1,0 +1,8 @@
+# .gitattributes: how git treats particular files.
+#
+# Append-only logs written by both CI workflows (evals.yml and benchmark.yml).
+# merge=union keeps the rows from both sides when two runs add rows at the same time,
+# instead of stopping with a conflict. Added 2026-11-10 after evals-6 failed to push:
+# it was started while a benchmark run was going, so both added a row to model_versions.csv.
+results/model_versions.csv merge=union
+results/testgen_history.csv merge=union
