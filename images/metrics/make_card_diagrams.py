@@ -488,6 +488,44 @@ SPECS.update({
                 [B("CHECK", ["Expected document", "in the top 3", "FOUND"], "eval", "Code", "Tool: rag_metrics.py")],
             ]},
         ]},
+    "card_tool_call_correctness": {
+        "title": "Tool-Call Correctness: a turn where the agent waits for confirmation, and one where it doesn't",
+        "legend_badges": ["LLM", "Code"],
+        "lanes": [
+            {"title": "Passes (final bot)", "columns": [
+                [B("INPUT", ["Member: “What's the", "status of HLH021?”", "(no hyphen)"], "data")],
+                [B("PROCESSING", ["Agent decides which", "tools to call:", "none yet"], "sut", "LLM", "Tool: LangGraph + OpenAI API")],
+                [B("OUTPUT", ["No tool call", "Reply: “Did you", "mean HLH-021?”"], "data")],
+                [B("CHECK", ["get_claim_status is", "forbidden this turn", "not called   PASS"], "eval", "Code", "Tool: Python (checks.py)")],
+            ]},
+            {"title": "Fails (a baseline run)", "columns": [
+                [B("INPUT", ["Member: “What's the", "status of HLH021?”", "(no hyphen)"], "data")],
+                [B("PROCESSING", ["Agent tidies the ID", "and looks it up", "straight away"], "sut", "LLM", "Tool: LangGraph + OpenAI API")],
+                [B("OUTPUT", ["get_claim_status", "(HLH-021) before", "the member said yes"], "data")],
+                [B("CHECK", ["get_claim_status is", "forbidden this turn", "called   FAIL"], "eval", "Code", "Tool: Python (checks.py)")],
+            ]},
+        ]},
+    "card_two_layer_pass_rate": {
+        "title": "Two-Layer Pass Rate: a turn that passes both layers, and one that passes the text checks but fails the judge",
+        "legend_badges": ["LLM", "Code"],
+        "lanes": [
+            {"title": "Passes both layers (final bot)", "columns": [
+                [B("INPUT", ["Member gave a cover", "start date; asks", "“covered from when?”"], "data")],
+                [B("PROCESSING", ["Agent answers from", "memory of the", "earlier turn"], "sut", "LLM", "Tool: LangGraph + OpenAI API")],
+                [B("OUTPUT", ["“If your cover began", "on 7 July 2025 ...", "from 5 January 2026”"], "data")],
+                [B("CHECK: LAYER 1", ["Tools, facts and", "banned words", "PASS"], "eval", "Code", "Tool: Python (checks.py)"),
+                 B("CHECK: LAYER 2", ["Judge: 4 checks", "incl. member's facts", "4 of 4   PASS"], "eval", "LLM", "Tool: judge.py + gpt-6-sol")],
+                [B("CHECK: TURN", ["Both layers", "passed", "PASS"], "eval", "Code", "Tool: Python (compare.py)")],
+            ]},
+            {"title": "Fails (original prompt)", "columns": [
+                [B("INPUT", ["Member gave a cover", "start date; asks", "“covered from when?”"], "data")],
+                [B("PROCESSING", ["Agent answers from", "memory of the", "earlier turn"], "sut", "LLM", "Tool: LangGraph + OpenAI API")],
+                [B("OUTPUT", ["“Your 182nd day was", "5 January 2026, so", "you'd be covered”"], "data")],
+                [B("CHECK: LAYER 1", ["Tools, facts and", "banned words", "PASS"], "eval", "Code", "Tool: Python (checks.py)"),
+                 B("CHECK: LAYER 2", ["States the member's", "date as fact", "FAIL"], "eval", "LLM", "Tool: judge.py + gpt-6-sol")],
+                [B("CHECK: TURN", ["One layer", "failed", "FAIL"], "eval", "Code", "Tool: Python (compare.py)")],
+            ]},
+        ]},
     "card_drift": {
         "title": "Drift: a scheduled run that shows no drift, and how a drop would show",
         "legend_badges": ["LLM", "Code"],

@@ -7,7 +7,7 @@ small diagram showing one input that passes the check and one that fails it.
 The cards are the detailed reference. [GLOSSARY.md](GLOSSARY.md) gives short definitions, and the "What was
 measured" tables in the [README](README.md) summarise each notebook's measures.
 
-## The three set-ups the examples come from
+## The four set-ups the examples come from
 
 ![The three systems tested in this portfolio](images/overview_three_systems.png)
 
@@ -26,6 +26,15 @@ measured" tables in the [README](README.md) summarise each notebook's measures.
   not, technique, concrete data, one condition per case, duplicates, and whether it really tests the acceptance
   criteria (ACs) it claims. The second decides which expected ideas are covered. The judge never knows which
   prompt wrote the cases.
+- **Multi-Turn Chatbot set-up ([notebook 04](04_conversational_chatbot.ipynb), Round 2 module M5).** The
+  Member-Help Chatbot rebuilt as an agent (LangGraph, `gpt-6-luna`) that holds a conversation over several turns
+  and chooses its own tools: the search above (`search_policy`), and two exact claim lookups that only return the
+  signed-in member's own claims (`get_claim_status`, `list_my_claims`). It is tested on 28 scripted conversations
+  (96 member turns) with two check layers on every turn: plain-code checks against the expected results, and an
+  LLM judge (`gpt-6-sol`) with 12 behaviour checks. Its test set-up is shown in
+  [`images/m5_qa_view.png`](images/m5_qa_view.png).
+
+The diagram above shows the first three set-ups.
 
 ## Industry term labels
 
@@ -49,7 +58,8 @@ The diagrams are drawn by [`images/metrics/make_card_diagrams.py`](images/metric
 one, edit its entry in that script and run `python images/metrics/make_card_diagrams.py images/metrics` from the
 repo root.
 
-Figures were checked against the result files in [`results/`](results/) on 3 November 2026. Tested with Promptfoo
+Figures were checked against the result files in [`results/`](results/) on 3 November 2026, and the
+Multi-Turn Chatbot figures on 10 November 2026. Tested with Promptfoo
 0.124.1, DeepEval 4.2.8, scikit-learn 1.9.1 and Python 3.11.
 
 ## Contents
@@ -59,20 +69,22 @@ Figures were checked against the result files in [`results/`](results/) on 3 Nov
 | Output format and accuracy | [Schema Validity](#schema-validity) | Standard term | Claims Triage, Test-Case Generator |
 | Output format and accuracy | [Exact-Match Accuracy](#exact-match-accuracy) | Standard term | Claims Triage |
 | Output format and accuracy | [Critical Error Count (False Auto-Approvals)](#critical-error-count-false-auto-approvals) | Project term | Claims Triage |
-| Output format and accuracy | [Repeat-Run Stability](#repeat-run-stability) | Common practice | All three |
+| Output format and accuracy | [Repeat-Run Stability](#repeat-run-stability) | Common practice | All four |
 | Output format and accuracy | [Fairness (Counterfactual Pairs)](#fairness-counterfactual-pairs) | Common practice | Claims Triage |
-| Search and RAG | [Key-Fact Recall](#key-fact-recall) | Project term | Member-Help Chatbot |
+| Search and RAG | [Key-Fact Recall](#key-fact-recall) | Project term | Member-Help Chatbot, Multi-Turn Chatbot |
 | Search and RAG | [Source Document Rank](#source-document-rank) | Standard term | Member-Help Chatbot |
 | Search and RAG | [Contextual Precision, Recall and Relevancy](#contextual-precision-recall-and-relevancy) | Standard term | Member-Help Chatbot |
 | Search and RAG | [Faithfulness](#faithfulness) | Standard term | Member-Help Chatbot |
 | Search and RAG | [Answer Relevancy](#answer-relevancy) | Standard term | Member-Help Chatbot |
-| LLM-judge metrics | [Rubric or G-Eval Score with a Pass Mark](#rubric-or-g-eval-score-with-a-pass-mark) | Standard term | Member-Help Chatbot, Claims Triage |
+| LLM-judge metrics | [Rubric or G-Eval Score with a Pass Mark](#rubric-or-g-eval-score-with-a-pass-mark) | Standard term | Member-Help Chatbot, Claims Triage, Multi-Turn Chatbot |
 | LLM-judge metrics | [Recall Against Expected Ideas](#recall-against-expected-ideas) | Standard term | Test-Case Generator |
 | LLM-judge metrics | [Precision (Correct, Non-Duplicate Cases)](#precision-correct-non-duplicate-cases) | Project term | Test-Case Generator |
 | LLM-judge metrics | [Claimed against Verified Coverage](#claimed-against-verified-coverage) | Project term | Test-Case Generator |
 | LLM-judge metrics | [Per-Case Quality Checks (Duplicates, Concrete Data, Atomic, Technique)](#per-case-quality-checks-duplicates-concrete-data-atomic-technique) | Project term | Test-Case Generator |
-| Validating the judge | [Seeded Defect Detection](#seeded-defect-detection) | Common practice | All three |
-| Validating the judge | [Agreement with Human Labels (Judge Calibration)](#agreement-with-human-labels-judge-calibration) | Common practice | All three |
+| Agents and conversations | [Tool-Call Correctness](#tool-call-correctness) | Standard term | Multi-Turn Chatbot |
+| Agents and conversations | [Two-Layer Pass Rate (Turns and Conversations)](#two-layer-pass-rate-turns-and-conversations) | Project term | Multi-Turn Chatbot |
+| Validating the judge | [Seeded Defect Detection](#seeded-defect-detection) | Common practice | All four |
+| Validating the judge | [Agreement with Human Labels (Judge Calibration)](#agreement-with-human-labels-judge-calibration) | Common practice | All four |
 | Cost and change over time | [Cost, Tokens and Latency](#cost-tokens-and-latency) | Standard term | All three |
 | Cost and change over time | [Semantic Similarity (Not Used)](#semantic-similarity-not-used) | Standard term | (not used) |
 | Cost and change over time | [Drift](#drift) | Standard term | All three (CI) |
@@ -223,7 +235,8 @@ lists the unstable ones.
 
 The Member-Help Chatbot and Test-Case Generator set-ups were also run 3 times. Their results are scores between 0
 and 1 rather than one right answer, so there the spread is shown as the lowest and highest score across the 3
-runs.
+runs. The Multi-Turn Chatbot reports every result as mean [lowest-highest] over at least two runs
+(`python -m chatbot.compare`), and compares prompt versions only when their ranges are set side by side.
 
 The repeats are of the system under test, which uses an LLM. Comparing the runs is plain code.
 
@@ -239,8 +252,18 @@ model was stable on every claim. In the Test-Case Generator set-up, repeats are 
 believable: recall ranged from 0.60 to 0.64 with prompt v1 and from 0.70 to 0.78 with v2, and the ranges do not
 overlap.
 
+In the Multi-Turn Chatbot set-up, the same 28 scripted conversations, with the same prompt and model, passed both
+check layers on 74, 76 and 70 of 96 turns in three baseline runs. Adding the plain-language prompt line gave 83 and
+87: the worst run with the line beat the best run without it, which is what made the improvement believable. The
+smaller later changes moved the mean by 1 to 3 turns, inside the run-to-run range, and are reported as such.
+
 **When it misleads.** Three runs is a small number. A claim that fails one run in ten would usually look stable.
 "Stable" also does not mean "right": a claim that is wrong on every run is stable.
+
+Rare failures need far more repeats. In the Multi-Turn Chatbot, a mistyped claim ID looked up before the member
+confirmed it appeared in 2 of 9 baseline attempts, then in 0 of 20 after three prompt changes, and 0 of 20 again
+with a fourth line written to prevent it. Zero in 20 only shows the rate is probably below about 15%, so the fourth
+line's effect could not be measured at all.
 
 **How far to trust it.** A useful warning, not a measurement. It reliably shows that an answer *can* change; it
 cannot show that an answer never changes. Run more repeats on the claims that matter most, and keep running them in
@@ -249,7 +272,8 @@ CI: HLH-009 has passed all three weekly CI runs so far, which by itself proves l
 **Nearest QA concept.** Flaky-test analysis, except that here the flakiness is in the system under test, not in
 the test.
 
-**Tool and version.** Promptfoo 0.124.1 `--repeat 3`; Python, `routing_stability.py`.
+**Tool and version.** Promptfoo 0.124.1 `--repeat 3`; Python, `routing_stability.py`; Multi-Turn Chatbot:
+`chatbot/compare.py`.
 
 ## Fairness (Counterfactual Pairs)
 
@@ -319,11 +343,19 @@ Acupuncture is listed as an excluded alternative therapy."
 Across the 12 questions that have an answer, this free check was below 1.00 for exactly the questions that failed,
 so it predicted every end-to-end failure.
 
+In the Multi-Turn Chatbot set-up the same measure is reported as the **retrieval hit rate**, with one difference
+that matters: the agent writes its own search query, so the test no longer controls what is searched for. The
+first runs scored 0.88. Long table and list passages were missed by the agent's short queries, so the tables were
+split into one passage per row (with the column headings repeated) and the exclusions list into one passage per
+item: 0.96, and one question needed one search instead of four. The final bot scores 0.92, mostly because "What
+should I include with an appeal?" often misses the "How to appeal" passage.
+
 **When it misleads.** It checks words, not meaning. When the documents were cut every 200 characters, the
 acupuncture passage arrived with both key facts (recall 1.00) but without its heading, "What is not covered". The
 chatbot read it as a list of covered therapies, and the answer was wrong (correctness 0.10). Only the LLM judge
 caught that. The metric also depends on choosing good key facts: a fact worded differently in the documents is
-never found.
+never found. With an agent, a low score may come from the agent's query rather than the search index: look at the
+query before changing how the documents are cut.
 
 **How far to trust it.** High as an early warning: a score below 1.00 means the answer step cannot succeed. A
 score of 1.00 means the facts arrived, not that they arrived with the context that gives them meaning. Use it as
@@ -331,7 +363,8 @@ the cheap first check, and pair it with a correctness check on the answer.
 
 **Nearest QA concept.** Checking that a test's input data contains what the test needs; a precondition check.
 
-**Tool and version.** Python, `rag_metrics.py` v1; search by scikit-learn 1.9.1.
+**Tool and version.** Python, `rag_metrics.py` v1; search by scikit-learn 1.9.1. Multi-Turn Chatbot:
+`chatbot/checks.py` and `chatbot/policy.py` v2 (the passage splitting).
 
 ## Source Document Rank
 
@@ -556,6 +589,10 @@ conduct. The Claims Triage set-up uses a four-point rubric for the claim summary
 Two LLMs are involved where a system is being tested: the system's model writes the answer, and the judge scores
 it. The pass mark is applied by plain code.
 
+The Multi-Turn Chatbot's judge avoids the pass-mark question: it answers **pass or fail** for each of 12 narrow
+checks (for example "does the reply promise that a claim will be paid?"), with a one-sentence reason, so there is
+no score to set a threshold on. See [Two-Layer Pass Rate](#two-layer-pass-rate-turns-and-conversations).
+
 ![Rubric or G-Eval Score with a Pass Mark: one answer that passes and one that fails](images/metrics/card_rubric_geval_score.svg)
 
 **Example.** Two problems in the rubric set-up were found before any result was trusted.
@@ -575,6 +612,14 @@ DeepEval's default of 0.5. The project's pass mark was set at 0.75 so that answe
 summary judge, which failed 11 of 24 good summaries until it was told what the claim fields meant (see [Agreement with Human Labels](#agreement-with-human-labels-judge-calibration)). When the pass mark is left at a default nobody chose. And when the same judge is used to
 compare prompts while its instructions change: see [Recall Against Expected Ideas](#recall-against-expected-ideas).
 
+And when the criteria are general rather than written for the system. Four general DeepEval conversation metrics
+(including a `ConversationalGEval` with a general "helpful, accurate, safe" criterion) were run on 28 Multi-Turn
+Chatbot conversations. They passed all 14 that broke a rule in the bot's specification, such as showing internal
+codes or treating a member's own dates as confirmed, and failed 4 where the bot correctly refused: no medical
+advice, no access to another member's claims, no approving a payment, and no guessing while the claims system
+was down. General criteria reward a helpful-sounding
+answer; they do not know the system's rules.
+
 **How far to trust it.** Only as far as the judge has been tested. Every rubric here was checked against
 deliberately wrong answers that it must fail and against blind human labels. It reliably caught clear-cut failures,
 but agreed with human judgement of answer quality on only 6 of 10 chatbot answers. That is why judged scores are
@@ -583,7 +628,8 @@ warnings, not hard gates, in CI.
 **Nearest QA concept.** A reviewer working from a checklist, with a defined pass threshold.
 
 **Tool and version.** DeepEval 4.2.8 `GEval` (Member-Help Chatbot), Promptfoo 0.124.1 `llm-rubric` (Claims
-Triage); judge `gpt-6-sol`.
+Triage); judge `gpt-6-sol`. Multi-Turn Chatbot: own pass-or-fail judge (`chatbot/judge.py`); DeepEval 4.2.8
+conversation metrics for the comparison (`chatbot/deepeval_compare.py`).
 
 ## Recall Against Expected Ideas
 
@@ -755,6 +801,102 @@ how the project reports them. Agree the definitions before measuring, and write 
 
 ---
 
+# Agents and conversations
+
+## Tool-Call Correctness
+
+**What it measures.** Whether an agent calls the tools it should, with the right arguments, on the right turn,
+and does not call tools it must not use on that turn.
+
+**Industry term.** *Standard term*: **tool correctness** or tool-call accuracy. DeepEval offers it as
+`ToolCorrectnessMetric`, which compares the tools called with the tools expected; agent evaluation guides list it
+as a core agent measure. This project adds tools that are **forbidden** on a turn (calling one fails the turn)
+and tools that are **unexpected** (counted as unnecessary, not failed).
+
+**How it's computed.** For each turn, the golden set lists the required tools with their arguments (or "any
+arguments", for a free-text search query), the forbidden tools and the unexpected tools. `chatbot/checks.py`
+compares them with the tool calls saved in the run record. A required call made earlier in the same conversation
+counts ("served by an earlier call"), so the bot isn't failed for answering from memory. The order of calls is not
+enforced.
+
+The agent's choice of tools comes from an LLM; the comparison is plain code.
+
+![Tool-Call Correctness: a turn where the agent waits for confirmation, and one where it doesn't](images/metrics/card_tool_call_correctness.svg)
+
+**Example.** A member types "What's the status of HLH021?", with no hyphen. The specification says the bot must
+tidy it, ask "Did you mean HLH-021?" and look it up only after the member says yes, so `get_claim_status` is
+forbidden on that turn. In one baseline run the agent tidied the ID and looked it up straight away: a forbidden
+call, and the turn failed. The claims store would still have returned only the member's own claims, because the
+tools are bound to the signed-in member; the check measures the agent's decision, and the store's access check is
+the safety net underneath it, tested separately by unit tests.
+
+**When it misleads.** When more than one sequence of calls is valid. In one test the member said "Sorry, the
+consultant one"; the test expected an immediate lookup, but the bot listed her claims and asked which she meant,
+which the specification also allows. The oracle was changed to accept both. Requiring an exact sequence fails
+valid behaviour. It also says nothing about the quality of a free-text argument such as a search query: that is
+measured by the retrieval hit rate (see [Key-Fact Recall](#key-fact-recall)).
+
+**How far to trust it.** High for forbidden calls: they are clear-cut and checked by plain code. Required calls
+are as good as the oracle's list of acceptable paths. Rare failures need many repeats (see
+[Repeat-Run Stability](#repeat-run-stability)).
+
+**Nearest QA concept.** Interaction testing with mocks: verifying that a dependency was, or was not, called, and
+with what.
+
+**Tool and version.** Python, `chatbot/checks.py`; agent built with LangGraph 1.2.20; DeepEval's
+`ToolCorrectnessMetric` not used.
+
+## Two-Layer Pass Rate (Turns and Conversations)
+
+**What it measures.** The share of turns, and of whole conversations, that pass **both** the plain-code checks
+and every LLM-judge check asked on that turn.
+
+**Industry term.** *Project term*. The closest industry terms are **task success rate** or conversation success
+rate in agent and chatbot evaluation. Combining code-based checks with model-graded checks is standard advice in
+LLM evaluation guides; the all-or-nothing combination is this project's choice.
+
+**How it's computed.** Layer 1, `chatbot/checks.py` (plain code): tools and arguments (see
+[Tool-Call Correctness](#tool-call-correctness)), facts the reply must contain, words it must not contain. Layer 2,
+`chatbot/judge.py`: an LLM judge (`gpt-6-sol`) answers pass or fail for each check the golden set lists for that
+turn, plus two asked on every turn (plain language; no invented facts). The judge is shown the conversation, the
+tool results and the rule texts, never the expected answers, and was calibrated and frozen before use. A turn
+passes only if both layers pass; a conversation passes only if all its turns pass. Every result is the mean
+[lowest-highest] over at least two runs (`chatbot/compare.py`), with every run scored against the same golden-set
+version and judge.
+
+![Two-Layer Pass Rate: a turn that passes both layers, and one that passes the text checks but fails the judge](images/metrics/card_two_layer_pass_rate.svg)
+
+**Example.** A member says their cover started on 7 July 2025, then asks "So from what date would I have been
+covered?". The bot with the original prompt replied "Your 182nd day was 5 January 2026, so treatment on that date or later would be covered."
+The date is right, so the text checks passed; but the bot cannot see the member's start date and stated it as
+fact, so the judge failed it. With a prompt line telling it to work conditionally, the reply became "If your cover
+began on 7 July 2025, the waiting period ended on 4 January 2026, so you would have been covered for treatment
+from 5 January 2026", and both layers passed.
+
+Overall, turns passing both layers rose from 73.3 [70-76] of 96 to 89.5 [89-90], and conversations from 13.7
+[13-14] of 28 to 22.0 [21-23], at the same cost per run. The text checks alone scored 93.7 at the start: on their
+own they would have shown the bot as nearly perfect before any change was made.
+
+**When it misleads.** The all-or-nothing combination hides which layer, and which check, failed: report the
+failures per check alongside it. A judge false alarm fails a turn: here the judge flags statements the bot knows
+from its instructions rather than its tools (such as "I can't change the claim"), one to three turns a run. That
+affects every run equally, so comparisons stay fair, but the absolute figure is slightly low. The conversation
+rate is harsh: one bad turn in ten fails the conversation. And any change to the expected results moves it, which
+is why every run is re-scored with the same golden-set version before runs are compared.
+
+**How far to trust it.** As a comparison between versions of the bot, with the same frozen judge and golden set:
+good when the ranges don't overlap, as for the first prompt change; changes inside the run-to-run range are
+reported as small. As an absolute figure: approximate, bounded by the judge's agreement with human labels (22 of
+23 held out) and by the quality of the oracle.
+
+**Nearest QA concept.** A test-case pass rate where each test has both automated assertions and a reviewer's
+sign-off, and fails if either fails.
+
+**Tool and version.** Python, `chatbot/checks.py`, `chatbot/judge.py` (judge `gpt-6-sol`, rubric fingerprint
+`4aa123f7f26c`), `chatbot/compare.py`.
+
+---
+
 # Validating the judge
 
 ## Seeded Defect Detection
@@ -787,11 +929,16 @@ All three judges passed their seeded sets:
 | Claims Triage | 8 flawed claim summaries, e.g. a wrong amount, a promise of payment | 8 of 8 failed, as they should be |
 | Member-Help Chatbot | 8 deliberately bad answers, e.g. a guessed price, a promise of payment | 8 of 8 failed at the 0.75 pass mark |
 | Test-Case Generator | 28 seeded cases and ideas, including controls: 46 checks | Judge v1 33 of 33 checks; judge v2 46 of 46 |
+| Multi-Turn Chatbot | Real conversations with a made-up reply: 2 that must fail and 1 that must pass for each of 12 checks, plus 1 extra, then 3 added after real runs | 37 of 37, then 39 of 39 and 40 of 40 after each judge change |
 
 **When it misleads.** Seeded defects are usually clearer than real ones. The chatbot judge failed all 8 bad
 answers, yet agreed with human judgement on only 6 of 10 real ones. One of the 8 also passed at DeepEval's default
 pass mark of 0.5 and only failed at 0.75. A full score shows the judge can see obvious errors, not that it
 judges quality the way a person would.
+
+Seeds also only test what they contain. The Multi-Turn Chatbot's judge got all 37 seeds right, then on its first
+real run called the member's plan name an invented fact: it hadn't been shown what the portal tells the bot, and
+no seed depended on that. The gap was fixed and a seed added for it.
 
 **How far to trust it.** Necessary but not sufficient. A judge that misses a seeded defect should not be used. A
 judge that catches them all still needs checking against human labels (see [Agreement with Human Labels](#agreement-with-human-labels-judge-calibration)). Keep the
@@ -800,7 +947,8 @@ seeded set and rerun it whenever the judge's instructions or model change, as a 
 **Nearest QA concept.** Defect seeding and mutation testing: testing the tests.
 
 **Tool and version.** Promptfoo 0.124.1 `echo` provider replaying stored outputs (Claims Triage); DeepEval 4.2.8
-(Member-Help Chatbot); Python, `bench/score.py --seeded` (Test-Case Generator).
+(Member-Help Chatbot); Python, `bench/score.py --seeded` (Test-Case Generator); `python -m chatbot.judge --seeded`
+(Multi-Turn Chatbot).
 
 ## Agreement with Human Labels (Judge Calibration)
 
@@ -814,7 +962,9 @@ agreement (for example, 18 of 20), which is simpler but does not make that adjus
 
 **How it's computed.** A person labels a sample of outputs blind, the labels are compared with the judge's, and
 false passes and false fails are counted separately. In notebook 03 a further round is labelled after tuning, on
-cases the judge was never tuned on (the held-out set). Notebook 01 section 9b, and `bench/calibration.py`.
+cases the judge was never tuned on (the held-out set). Notebook 01 section 9b, and `bench/calibration.py`. The
+Multi-Turn Chatbot splits the labels into a tuning half and a held-out half **before** labelling, by a fixed rule,
+and shows only the tuning half's disagreements (`chatbot/labels.py`).
 
 ![Agreement with Human Labels: one verdict that agrees and one that does not](images/metrics/card_agreement_with_human_labels.svg)
 
@@ -822,6 +972,13 @@ cases the judge was never tuned on (the held-out set). Notebook 01 section 9b, a
 ones. On "is this test case correct?" it agreed 18 of 20 times, close to its result after tuning. On "which test
 technique is this?" it agreed only 10 of 20 times, against 20 of 20 on the set it had been tuned on. So recall
 and precision from this judge are trusted, and its technique labels are reported as indicative only.
+
+The Multi-Turn Chatbot's judge was labelled on 51 real verdicts (turn and check), 23 of them held out. Before
+tuning: 26 of 28 on the tuning half, 22 of 23 held out. One tuning disagreement led to a rubric fix (a flat "I
+don't know" is not a friendly reply); the other was a labelling slip, where the person judged the whole reply
+rather than the one check. After the fix, the held-out score was still 22 of 23: the fix helped where it was aimed
+and did not overfit. Only two checks had five or more held-out labels, so the others are reported as indicative
+only.
 
 In the Claims Triage set-up, the first version of the summary judge failed 11 of 24 summaries that a person
 judged good, because it had not been told what the claim fields meant. Kappa was calculated but could not be
@@ -838,7 +995,7 @@ and one labeller make every figure approximate. Report the sample size with ever
 **Nearest QA concept.** Validating a test oracle; inter-rater reliability in reviews.
 
 **Tool and version.** Computed in Python (pandas). Judges: Promptfoo 0.124.1 `llm-rubric` (01), DeepEval 4.2.8
-G-Eval (02), own judge prompts (03).
+G-Eval (02), own judge prompts (03, 04). Multi-Turn Chatbot: `chatbot/labels.py` (`build`, `agree`, `rekey`).
 
 ---
 
