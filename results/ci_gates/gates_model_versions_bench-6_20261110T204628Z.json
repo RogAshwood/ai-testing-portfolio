@@ -1,0 +1,42 @@
+{
+  "suite": "Model versions: benchmark",
+  "verdict": "passed",
+  "gates": [
+    {
+      "name": "gpt-6-luna: served version unchanged since the last run",
+      "level": "WARN",
+      "passed": true,
+      "actual": "gpt-6-luna",
+      "expected": "gpt-6-luna"
+    },
+    {
+      "name": "gpt-6-luna: backend fingerprint unchanged since the last run",
+      "level": "WARN",
+      "passed": true,
+      "actual": "not returned",
+      "expected": "(not available for this model)"
+    },
+    {
+      "name": "gpt-6-sol: served version unchanged since the last run",
+      "level": "WARN",
+      "passed": true,
+      "actual": "gpt-6-sol",
+      "expected": "gpt-6-sol"
+    },
+    {
+      "name": "gpt-6-sol: backend fingerprint unchanged since the last run",
+      "level": "WARN",
+      "passed": true,
+      "actual": "not returned",
+      "expected": "(not available for this model)"
+    }
+  ],
+  "notes": [
+    "gpt-6-luna: the API reports the alias itself as the served model, so a silent update cannot be seen from that field.",
+    "gpt-6-luna: no dated versions listed, so pinning is not possible for this name.",
+    "gpt-6-sol: the API reports the alias itself as the served model, so a silent update cannot be seen from that field.",
+    "gpt-6-sol: no dated versions listed, so pinning is not possible for this name.",
+    "The provider changes the backend fingerprint when it changes the serving configuration; it can also change for reasons that do not affect behaviour, so a change is a prompt to look at the scores, not proof of drift.",
+    "Recorded in results/model_versions.csv. Aliases are kept on purpose (M1 decision); a change is reported, not failed."
+  ]
+}
