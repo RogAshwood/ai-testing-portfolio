@@ -563,6 +563,19 @@ failures in the early runs were the oracle's, not the bot's; the change history 
 - The provider started caching prompts between 6 and 9 November (about 75–80% of input tokens cached). Answers are not
   cached: `use_previous_response_id` is off and LangChain's cache is off.
 
+**Change control: what to do when something changes** (worked out on the M5 runs; input for the M8 strategy)
+
+| What changed | What you do | Why |
+| --- | --- | --- |
+| Expected results for existing conversations (key facts, banned terms, required tools) | Re-score the saved runs (free) | The bot hasn't changed; only the marking has |
+| New conversations added to the golden set | Run the bot on just the new ones (C22 and C23 were added this way), then re-score everything | There are no saved replies to mark for the new conversations; the existing ones are still valid |
+| Specification or policy documents | Re-run `validate_conversations.py` first, impact-assess the golden set, then run the bot again on all conversations | The validator flags expected facts no longer in the documents but can't spot new facts that need tests; the bot may now retrieve different text |
+| Prompt, model or tools | Run the bot again on all conversations | The bot may retrieve or say something different anywhere |
+| The judge's rubric | Re-judge the saved replies (no bot run) | The replies haven't changed, but the marking for meaning has |
+| The judge model | Re-qualify the judge (seeded replies, held-out labels), then re-judge | A new model is a new test tool; its earlier calibration no longer applies |
+
+Compare runs only when they were marked with the same oracle version and the same frozen rubric.
+
 **Run log**
 
 | Date | Run | Output |

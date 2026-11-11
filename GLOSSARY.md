@@ -84,6 +84,7 @@ For each metric in detail, with a project example and when it misleads, see the 
 | Prompt drift | Unnoticed or unrecorded changes to a prompt | Configuration drift | 03, CI |
 | Fingerprint | A short hash of a file's content, recorded with every result so any change is visible | Version identifier, checksum | 03, CI |
 | Baseline | The measured results that later runs are compared against | Baseline | All |
+| Re-score | Mark the saved replies of earlier runs again against the latest expected results, without running the bot (free). Used when only the oracle changes; a change to the bot, its documents, prompt or model needs fresh runs instead | Re-executing the verification step on recorded results | 04 |
 | Quality gate | A threshold a CI run must meet; a hard gate fails the run, a warning is only reported | Release criteria, exit criteria | CI |
 | Error analysis | Reviewing real outputs to categorise failure modes before writing evals | Defect root-cause analysis | 03 |
 | Eval-driven development | Writing evals before changing prompts or models | Test-driven development | All |

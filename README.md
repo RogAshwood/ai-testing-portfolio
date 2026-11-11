@@ -425,16 +425,40 @@ and the plan documents. The **oracle** is 28 scripted conversations, 96 member t
 
 ![How the multi-turn chatbot was tested](images/m5_qa_view.png)
 
+**The test process, step by step:**
+
+1. **Test basis.** A specification of 25 rules ([`datasets/chatbot_spec.md`](datasets/chatbot_spec.md)), the policy
+   documents and a synthetic claims table. Everything the bot should do traces back to these.
+2. **Test oracle: the golden set.** 28 scripted conversations, 96 member turns. For each turn: the tools to call or
+   avoid, the facts the reply must contain, any banned terms, and which judge checks apply.
+3. **Static testing of the oracle.** [`validate_conversations.py`](datasets/validate_conversations.py) checks the
+   golden set before any model is run: every expected fact appears in a source document, every claim belongs to the
+   right member, nothing expected is also banned, and the date arithmetic is right. It also prints a fingerprint of
+   every input, so a changed file shows. Re-run it first whenever the documents or the specification change.
+4. **Test execution.** The scripted member turns are played to the bot, and each conversation is saved as a trace
+   record: every tool call with its arguments and result, and every reply.
+5. **Layer 1: deterministic checks.** Plain code checks the tools called and their arguments, the required facts and
+   the banned terms. Free, and the same answer every time.
+6. **Layer 2: LLM judge.** A second model (`gpt-6-sol`) marks each reply against the **judge rubric**
+   ([`datasets/judge_rubric.md`](datasets/judge_rubric.md)): 12 pass/fail checks for the rules that need an
+   understanding of meaning, each with a question, pass and fail conditions and examples, and each traced to rules in
+   the specification, such as no promise of payment, no other member's data, plain language, and treating the
+   member's own facts as unconfirmed. The judge is never shown the expected facts or banned terms.
+7. **Qualifying the judge.** 40 seeded replies (made-up replies in real conversation contexts, 26 that must fail and
+   14 that must pass, at least three per check), then 51 blind human labels, split before labelling into a tuning half
+   and a held-out half. The rubric was then frozen (v1.2) for every comparison.
+8. **Verdict and aggregation.** A turn passes only if both layers pass; a conversation only if every turn does.
+   Results are the mean [lowest-highest] over repeat runs.
+9. **Change control.** Expected results changed: re-score the saved runs (free). New conversations: run the bot on
+   those only. Bot, prompt or documents changed: run everything again. Rubric changed: re-judge the saved replies.
+10. **Regression in CI.** Every week, 9 of the conversations with the final prompt, marked by the text checks, with
+    hard gates on forbidden tool calls and banned terms ([Continuous evaluation](#continuous-evaluation)).
+
+**What the conversations and experiments cover:**
+
 - **Conversations, not questions:** follow-ups that rely on memory ("why?"), mistyped and invalid claim IDs,
   another member's claim, a claims system outage, an instruction hidden in a claim note, small talk, dates the
   member gives, and three long conversations of 8 to 10 turns.
-- **Two check layers on every turn.** Layer 1, plain code: the right tools with the right arguments, no forbidden
-  tool, required facts present. Layer 2, an LLM judge (`gpt-6-sol`): pass or fail on 12 behaviour rules, such as
-  no promise of payment, no other member's data, plain language, and treating the member's own facts as
-  unconfirmed. A turn passes only if both layers pass.
-- **The judge tested before use, then frozen:** 40 seeded replies with known verdicts, and 51 blind human labels
-  split before labelling into a tuning half and a held-out half.
-- **Repeat runs:** every result is the mean [lowest-highest] of at least two runs.
 - **Prompt experiments:** one instruction at a time, each on top of the last, against the frozen judge.
 - **General metrics against targeted checks:** four DeepEval conversation metrics on the same conversations.
 

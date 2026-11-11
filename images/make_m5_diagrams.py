@@ -16,6 +16,7 @@ No API calls.
 
 Change history:
   2026-11-10  v1  first version (M5 write-up, tasks T1 and T3).
+  2026-11-11  v1.1  QA view: unit test count 113 (diagram and CI gate tests added).
 """
 from __future__ import annotations
 
@@ -144,8 +145,8 @@ def qa_view() -> Path:
                     "up before confirming. The point: general", 11, 400, MUTED)
     s.text(24, 632, "metrics alone would have passed this bot, and the 4 conversations they did fail were the bot doing "
                     "the right thing (required refusals).", 11, 400, MUTED)
-    s.box(24, 652, 892, 84, "Unit tests of the code and tooling: pytest, 104 tests, free",
-          ["access check, chunking, prompt experiments, checks, judge plumbing, labels, compare.",
+    s.box(24, 652, 892, 84, "Unit tests of the code and tooling: pytest, 113 tests, free",
+          ["access check, chunking, prompt experiments, checks, judge plumbing, labels, compare, diagrams, CI gate.",
            "They test our code, not the bot's replies; the replies are tested by the two layers above."], "grey")
     return s.save("m5_qa_view.svg")
 
