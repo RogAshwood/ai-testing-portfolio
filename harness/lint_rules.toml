@@ -1,0 +1,133 @@
+# lint_rules.toml: settings for the harness lints (harness/lints.py).
+#
+# Lints are style warnings, like a spell-checker for test cases: cheap and
+# repeatable, but blunt. They never fail a case. Switch a lint off with
+# enabled = false, or choose lints for one run on the command line:
+#     python -m harness.check ... --lints vague_steps,placeholders
+# Word lists are matched as whole words or phrases, ignoring capitals.
+# Edit them to match your team's own house style.
+#
+# Change history:
+#   2026-11-12  v1  first version (M7 step 1). Values are first guesses, to be
+#                   tuned with harness/measure_lints.py on the Day 4 cases.
+#   2026-11-12  v2  missing_test_data off by default after the Day 4 measurement;
+#                   repeated_expected added; SBERT dropped (Roger's review).
+#   2026-11-12  v3  boundary_hint units (count, day, duration, amount) from Roger's review sheet.
+#   2026-11-13  v4  bva two-value default; case_detail level and the step_detail lint.
+
+[generic_title]
+enabled = true
+# A title with fewer words than this is flagged (Day 4 titles such as
+# "Claim exactly 1,000" have 3 words and are fine).
+min_words = 3
+# Regular expressions for whole titles that say nothing about the test.
+patterns = [
+  '^(test|tc|case|test case)\s*\d*$',
+  '^(positive|negative|boundary|edge|happy path|sad path|smoke|regression)( test| case| scenario)?\s*\d*$',
+  '^(verify|test|check)\s+ac\s*\d+$',
+  '^(verify|test|check)( that)? (it|the system|the feature|functionality) works$',
+]
+
+[vague_steps]
+enabled = true
+# Phrases in preconditions or steps that leave the tester guessing.
+phrases = [
+  "access site", "access the site", "access the system", "access the application",
+  "navigate to", "go to the relevant", "log in as appropriate",
+  "as appropriate", "as needed", "if required", "where applicable",
+  "relevant details", "required details", "valid data", "valid details", "valid input",
+  "some data", "test data", "appropriate data", "correct details",
+  "etc", "and so on",
+  "verify it works", "check it works", "check everything",
+]
+
+[vague_expected]
+enabled = true
+# Phrases in the expected result that cannot be checked as pass or fail.
+phrases = [
+  "as expected", "works as expected", "works correctly", "behaves correctly",
+  "handled correctly", "handled appropriately", "processed correctly",
+  "no errors", "without errors", "is correct", "is successful",
+  "appropriate message", "appropriate error", "relevant message",
+  "should work", "system responds", "observe and record",
+]
+
+[repeated_expected]
+enabled = true
+# Within a case: the same expected wording on this many steps or more.
+min_steps = 2
+# Across a story: the identical case-level expected result on min_cases or more cases.
+# Off by default: on the Day 4 runs it flagged 19 groups and nearly all were cases that rightly
+# share one outcome (for example 17 exclusion cases in S08 all routed with reason code EXCLUDED).
+across_cases = false
+min_cases = 3
+
+[missing_test_data]
+# Off by default (decision 12 Nov): on the Day 4 cases it was wrong about 3 times in 4
+# against Roger's "concrete" labels (17 of 23 flags), because people count a named
+# item ("a bank statement") as concrete and this lint only sees numbers, dates and quotes.
+enabled = false
+# Flags a case whose preconditions and steps contain no concrete value at all:
+# no number, date or quoted text. A named item (for example "physiotherapy")
+# is not detected, so this lint is a cheap hint next to the judge's "concrete".
+
+[placeholders]
+enabled = true
+# Regular expressions for leftover template text anywhere in the case.
+patterns = [
+  '\bTBD\b', '\bTBC\b', '\bTODO\b', '\bxxx+\b', '\blorem ipsum\b',
+  '<[^<>]{1,40}>', '\[(insert|enter|add|value|tbd)[^\]]*\]', '\{\{?[^{}]{1,40}\}\}?', '\?\?\?',
+]
+
+[near_duplicate]
+enabled = true
+# Text similarity method: "tfidf" only. SBERT was considered and dropped (12 Nov): any text
+# similarity scores "missing the treatment" vs "missing the treatment date" as near-identical
+# and a copy with an irrelevant extra date as different. Whether a difference matters to the
+# rule is a judge question, so this lint only catches near-literal copies.
+method = "tfidf"
+# Pairs at or above this similarity are candidates (0.85 as in bench/score.py).
+threshold = 0.85
+# true: a candidate pair counts only if both cases use the same test values, so
+# 1,000 vs 1,000.01 (different sides of a limit) is not a duplicate.
+# false: similarity alone decides.
+require_same_values = true
+# When neither case has any test value the values rule cannot tell them apart.
+# false: do not flag such pairs (fewer false alarms); true: flag on similarity alone.
+flag_when_no_values = false
+
+[boundary_hint]
+enabled = true
+# For each number in an acceptance criterion, look for a case that uses the number
+# itself, the nearest value below and the nearest value above. The words around the
+# number decide what "nearest" means (added after Roger's review sheet, 12 Nov):
+#   count     "8 visits", "2 procedures"  -> whole steps (7 / 9), never below 0
+#   day       "day 182", "30 days"         -> whole days (181 / 183), never below 0
+#   duration  "12 months", "1 year"        -> the boundary is a date; the lint says what to check
+#   amount    anything else, e.g. money    -> a step from `steps` (999 / 999.99 and 1,001 / 1,000.01 both count)
+steps = [1, 0.01]
+# "two-value" (default): the limit itself plus a neighbour on either side (the usual ISTQB
+# minimum: the last value in one group and the first in the next). "three-value": the limit
+# and the nearest value on each side. Agreed 12 Nov: two-value matches how Roger labels.
+bva = "two-value"
+count_units = ["visit", "visits", "session", "sessions", "item", "items", "procedure", "procedures",
+               "night", "nights", "claim", "claims", "document", "documents", "time", "times",
+               "attempt", "attempts", "person", "people", "account", "accounts"]
+day_units = ["day", "days"]
+duration_units = ["week", "weeks", "month", "months", "year", "years"]
+
+[case_detail]
+# "high-level" (default): cases say what to test, with what data and outcome, not how
+# ("Submit the claim for assessment" is fine). "low-level": every step says where and how
+# (screen, field, button, API call); switches on the step_detail lint. ISTQB terms; agreed 13 Nov.
+level = "high-level"
+
+[step_detail]
+enabled = true
+# Only acts when case_detail level = "low-level".
+min_steps = 2
+# A step counts as saying "where or how" if it contains one of these words.
+place_words = ["screen", "page", "field", "button", "tab", "menu", "form", "dialog", "link", "list",
+               "endpoint", "API", "request", "GET", "POST", "PUT", "DELETE", "URL", "portal", "app",
+               "click", "enter", "type", "select", "tick", "upload", "download", "drop-down", "dropdown",
+               "email", "SMS", "file", "report", "table", "database", "log"]

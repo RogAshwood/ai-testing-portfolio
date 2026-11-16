@@ -1,0 +1,185 @@
+# checklist.toml: generic test ideas for the checklist judge (harness/checklist.py).
+#
+# Checklist-based testing (ISTQB): reusable test heuristics checked against each story and its
+# test cases. Each item has a "check" setting that says WHEN it is checked:
+#
+#   check = "when_raised"  (default) the judge reads the story first; the idea is checked only
+#                          when the story's words call for it. Otherwise: "not raised by the story"
+#                          (no finding; the tool makes no claim either way).
+#   check = "every_story"  the story is not consulted for this idea; every story's test cases are
+#                          checked for it. Use for what this project always requires, whatever the
+#                          story says (like a Definition of Done item). Never raises a question for
+#                          the product owner. Use sparingly: it gives suggestions on every story
+#                          whose tests miss it.
+#   check = "off"          never checked; the report lists it as excluded, so "not checked" is
+#                          never mistaken for "fine".
+#
+# For an idea that is checked, the result per story is one of:
+#   covered       the story raises it (or check = every_story) and a test case tests it
+#   not_covered   ... and no test case tests it         -> a SUGGESTION for the test cases
+#   ac_gap        the story implies it but no AC defines it -> a QUESTION for the product owner
+#   not_raised    check = when_raised and the story does not call for it -> no finding
+#   excluded      check = off
+# Every "raised" answer quotes the story or AC words that make it apply.
+#
+# Items are generic (any domain); the content comes from each story's ACs. A team can edit,
+# switch off or add items here, or keep its own items in a second file in the same format
+# (python -m harness.check ... --checklist <file>).
+#
+# triggers: words that usually signal the item. They do NOT decide what is sent to the judge;
+# they are a cross-check, and the report lists where the code and the judge disagree.
+#
+# Change history:
+#   2026-11-13  v1  first version (M7 step 4b), from draft v0.3 reviewed by Roger; C01 split
+#                   into C01 authorisation and C18 authentication.
+#   2026-11-13  v2  after Roger's marks: C07 limited to a stored record's status; C08 only the
+#                   edges that could change the rule's result, plus 12/24-hour times; new C19 files.
+#   2026-11-13  v3  "check" setting per item (Roger, design review): C09 every_story (every
+#                   decision in these systems must be traceable), C12 off (performance is tested
+#                   separately). The project rules file and "not stated" were dropped.
+
+[[item]]
+id = "C01"
+name = "Authorisation (permissions): who can do what"
+triggers = ["only", "authorised", "authorized", "permission", "privilege", "role", "approve", "sign off", "admin", "access"]
+question = """A case where a user with the right role or permission performs the action, AND a case where
+a user without it is refused."""
+
+[[item]]
+id = "C02"
+name = "Create, read, update, delete: the change is saved and can be read back"
+triggers = ["create", "add", "new", "register", "submit", "record", "save", "update", "change", "amend", "edit", "delete", "remove", "close", "cancel"]
+question = """Create: after creating, a case reads the new record back with the right values. Update: only
+the changed fields changed, and the change can be read back. Delete: the record is gone or can
+no longer be used. Not only that the action was accepted."""
+
+[[item]]
+id = "C03"
+name = "Required inputs missing"
+triggers = ["must", "needs", "requires", "required", "mandatory", "shows the", "includes"]
+question = """For each input or document the story says is required, a case where it is missing."""
+
+[[item]]
+id = "C04"
+name = "Invalid and unusual values"
+triggers = ["format", "valid", "invalid", "characters", "name", "amount", "number", "date", "text"]
+question = """Only where the story defines how such input is handled: text that is too long or too short,
+has invalid or special characters, leading or trailing spaces, or accented or non-English letters
+in names; numbers of the wrong type (a decimal where a whole number is expected, negative where
+positive, non-numeric); impossible or wrongly formatted dates. (Limit values themselves are C05.)"""
+
+[[item]]
+id = "C05"
+name = "Limits and thresholds, however they are written"
+triggers = ["more than", "less than", "at least", "up to", "within", "before", "after", "until", "one or more", "no more than", "limit", "maximum", "minimum"]
+question = """Every limit, whether written in digits ("1,000", "day 182"), in words ("one or more nights",
+"at least two documents") or relative to an event ("before the policy anniversary", "within the
+waiting period"): a case on the limit and a case just on the other side of it."""
+
+[[item]]
+id = "C06"
+name = "Rule interactions"
+triggers = ["even if", "instead of", "unless", "rather than", "except", "exempt", "takes precedence", "only when"]
+question = """Where two rules can apply to the same input, a case where both apply at once: precedence
+(one rule applies instead of another), exemptions, combined conditions (A and B both needed),
+overrides (a manual decision replaces an automatic one)."""
+
+[[item]]
+id = "C07"
+name = "State changes of one record"
+triggers = ["status", "state", "pending", "approved", "declined", "rejected", "open", "closed", "suspended", "active", "expired"]
+question = """Applies when the story describes the status of a stored record and how it can move between
+statuses (for example pending -> active, or declined -> approved on appeal). Then: a case for a move
+the story allows, AND a case for a move it does not allow. A single decision or routing outcome on
+its own ("routed to manual_review") is not a state change."""
+
+[[item]]
+id = "C08"
+name = "Date, time and period-end processing"
+triggers = ["day", "days", "month", "months", "year", "years", "anniversary", "deadline", "end of day", "cut-off", "overnight", "batch", "daily", "monthly", "quarterly", "quarter", "year end", "statement", "accrual", "time zone", "time", "UTC", "midnight", "noon", "24-hour", "12-hour"]
+question = """Where a rule depends on dates, times or a processing cycle: cases at the edges that could
+change this rule's result, such as a month end, quarter end, year end, 28/29 February, or end of
+day / cut-off (just before and just after). Quarter end and other processing cycles apply only when
+the story has such a cycle or cut-off. When a story takes or shows times: 12-hour and 24-hour
+formats, noon and midnight (12:00 AM / 12:00 PM, 00:00 and 24:00), and time zones if mentioned."""
+
+[[item]]
+id = "C09"
+name = "Record of the decision (audit trail)"
+check = "every_story"
+triggers = ["recorded", "logged", "audit", "history", "reason", "by whom", "timestamp"]
+question = """Where the story makes, changes or records a decision or action: a case that checks the
+record itself (who, what, when, why), not only the outcome."""
+
+[[item]]
+id = "C10"
+name = "Must-not rules"
+triggers = ["never", "must not", "cannot", "not allowed", "excluded", "is not"]
+question = """A case showing the forbidden outcome does not happen (or the excluded item is not accepted)."""
+
+[[item]]
+id = "C11"
+name = "Multi-step workflow, including branches"
+triggers = ["step", "stage", "then", "next", "save and continue", "draft", "application", "wizard", "submit for approval", "depending on"]
+question = """An end-to-end case through the steps; each branch (choosing X offers A or B, choosing Y
+offers only B); changing an earlier choice after moving on; stopping part way and resuming (draft);
+skipping or reordering a required step."""
+
+[[item]]
+id = "C12"
+name = "Stated performance or volume"
+check = "off"
+triggers = ["seconds", "minutes", "response time", "within", "records", "users", "at the same time"]
+question = """Only when the story states a time or a volume: a case (or a linked non-functional test) that
+checks it. If the story states none, this is at most an AC gap ("no performance criterion"),
+never not_covered."""
+
+[[item]]
+id = "C13"
+name = "Repeat submission"
+triggers = ["submit", "send", "pay", "create", "request", "twice", "again", "duplicate"]
+question = """When the story says what happens on a repeat: a case submitting the same item twice."""
+
+[[item]]
+id = "C14"
+name = "Two users at once"
+triggers = ["same record", "at the same time", "concurrent", "lock"]
+question = """When the story says what happens: a case with two users changing the same record at once."""
+
+[[item]]
+id = "C15"
+name = "Notifications"
+triggers = ["notify", "notification", "email", "sms", "alert", "letter", "message"]
+question = """A case checking the notification is sent, to whom, and its key content."""
+
+[[item]]
+id = "C16"
+name = "Personal data shown or masked"
+triggers = ["personal data", "masked", "hidden", "redacted", "address", "date of birth", "id number"]
+question = """When the story says what personal data is shown or hidden: a case checking who sees which data."""
+
+[[item]]
+id = "C17"
+name = "Dependent fields and options"
+triggers = ["depending on", "based on", "shown", "hidden", "enabled", "list of", "select", "choose", "when"]
+question = """Where one value changes what another field offers or requires (for example a country decides
+the list of counties; a field is required only for business customers): a case for each
+dependency, AND a case that changes the first value after the second was chosen (the second must
+update or be cleared)."""
+
+[[item]]
+id = "C18"
+name = "Authentication (log-in): who can get in"
+triggers = ["log in", "login", "sign in", "credentials", "password", "account", "locked", "session"]
+question = """When the story covers logging in: a case with valid credentials AND a case where wrong,
+expired or locked credentials are refused."""
+
+[[item]]
+id = "C19"
+name = "Files and attachments"
+triggers = ["upload", "uploads", "attach", "attached", "attachment", "file", "photo", "scan", "document"]
+question = """Applies when the story takes an upload or attachment. Only where the story says how it is
+handled: wrong file type, a file that is too large, an empty or unreadable (corrupt)
+file, a password-protected PDF, a poor-quality photo or scan, several pages or files where one is
+expected, and the same file uploaded twice. A missing file is C03; what the document says (wrong
+kind of document, expired, name mismatch) belongs to the story's own rules."""

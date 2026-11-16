@@ -1,0 +1,619 @@
+{
+ "name": "Seeded and deliberately poor test cases for the M7 harness",
+ "version": "1.0",
+ "change_history": [
+  {
+   "version": "1.0",
+   "date": "2026-11-12",
+   "change": "First version (M7 step 4): 23 hand-written cases on Day 4 stories S09, S05, S01 and S03, 7 of them clean controls, plus 2 story-level seeds."
+  }
+ ],
+ "notes": [
+  "Synthetic cases written in the style real teams produce, each with a known defect, so every harness finding on them is a known hit, miss or false alarm.",
+  "This file is also a valid harness cases file: python -m harness.check --stories datasets/testgen_golden.json --cases datasets/harness_seeded_cases.json",
+  "Score it with: python -m harness.seeded (add --no-judge for the free checks only).",
+  "expectations.cases: must_fire = checks that must appear on that case; control = a clean case on which no case-level warning or failure may appear (except those in tolerate); if_duplicate_then_caution = if the judge calls the case a duplicate, the calendar caution must be in the message.",
+  "expectations.story_level: a story-level finding that must appear (check, and text it must contain).",
+  "Stories come from datasets/testgen_golden.json v1.0 (Harbourlight Health). AML/KYC seeds are added in step 5."
+ ],
+ "stories": [
+  {
+   "story_id": "S09",
+   "test_cases": [
+    {
+     "case_id": "H01",
+     "title": "Claim of 1,000.01 below its category limit is routed as HIGH_VALUE",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,000.01."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is not recommended for automatic approval."
+    },
+    {
+     "case_id": "H02",
+     "title": "Claim of exactly 1,000.00 is not treated as high value",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,000.00."
+     ],
+     "expected_result": "The claim is not routed with reason code HIGH_VALUE."
+    },
+    {
+     "case_id": "H03",
+     "title": "Test 3",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 999.99."
+     ],
+     "expected_result": "The claim is not routed with reason code HIGH_VALUE."
+    },
+    {
+     "case_id": "H04",
+     "title": "Claim just above 1,000 is routed as HIGH_VALUE",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "Log in as appropriate."
+     ],
+     "steps": [
+      "Navigate to the claims screen.",
+      "Enter valid data for a claim above 1,000 and submit."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is not recommended for automatic approval."
+    },
+    {
+     "case_id": "H05",
+     "title": "Claim of 1,200.00 below its category limit is handled",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,200.00."
+     ],
+     "expected_result": "The claim is processed correctly with no errors."
+    },
+    {
+     "case_id": "H06",
+     "title": "Claim of <amount> is routed as HIGH_VALUE",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for <amount>."
+     ],
+     "expected_result": "Reason code TBD."
+    },
+    {
+     "case_id": "H07",
+     "title": "Claim of 1,000.01 entered through the claim form is routed as HIGH_VALUE",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      {
+       "action": "Open the claim form.",
+       "expected": "Works as expected."
+      },
+      {
+       "action": "Submit a claim for 1,000.01.",
+       "expected": "Works as expected."
+      }
+     ]
+    },
+    {
+     "case_id": "H08",
+     "title": "Claim of exactly 1,000.00 is routed as HIGH_VALUE",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,000.00."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is not recommended for automatic approval."
+    },
+    {
+     "case_id": "H09",
+     "title": "High-value claim of 1,250.00 triggers a confirmation email",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,250.00."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and the member receives an email confirming the high-value review."
+    },
+    {
+     "case_id": "H10",
+     "title": "Claims either side of 1,000 are routed correctly",
+     "covers": [
+      "AC1",
+      "AC2"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 999.99.",
+      "Repeat with a claim for 1,000.01."
+     ],
+     "expected_result": "The first claim is not routed with reason code HIGH_VALUE; the second is routed to manual_review with reason code HIGH_VALUE."
+    },
+    {
+     "case_id": "H11",
+     "title": "Claim for 1,000.01 under its category limit gets HIGH_VALUE review",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Enter a claim amount of 1,000.01 and submit it."
+     ],
+     "expected_result": "The claim goes to manual_review with reason code HIGH_VALUE and is never recommended for automatic approval."
+    },
+    {
+     "case_id": "H12",
+     "title": "Claim of 1,100.00 below its category limit is routed as HIGH_VALUE",
+     "covers": [
+      "AC7"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,100.00."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is not recommended for automatic approval."
+    },
+    {
+     "case_id": "H13",
+     "title": "Claim with a negative amount of -50.00 is recorded for review",
+     "covers": [],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for -50.00."
+     ],
+     "expected_result": "The story does not define the outcome for a negative amount; record the routing the system gives."
+    },
+    {
+     "case_id": "H14",
+     "title": "Claim of 1,300.00 below its category limit is routed as HIGH_VALUE",
+     "covers": [
+      "AC1",
+      "AC3"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,300.00."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is not recommended for automatic approval."
+    },
+    {
+     "case_id": "H15",
+     "title": "Claim of 1,400.00 below its category limit is submitted",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,400.00."
+     ]
+    },
+    {
+     "case_id": "H16",
+     "title": "Checking the claim amount rules",
+     "covers": [
+      "AC1"
+     ],
+     "preconditions": [
+      "The claim's category limit is 1,500."
+     ],
+     "steps": [
+      "Submit a claim for 1,000.01."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code HIGH_VALUE and is not recommended for automatic approval."
+    }
+   ]
+  },
+  {
+   "story_id": "S05",
+   "test_cases": [
+    {
+     "case_id": "H17",
+     "title": "Claim submitted on the deadline of 10 March 2028 is on time",
+     "covers": [
+      "AC1",
+      "AC3"
+     ],
+     "preconditions": [
+      "Treatment date is 10 March 2027."
+     ],
+     "steps": [
+      "Submit the claim on 10 March 2028."
+     ],
+     "expected_result": "The claim is not routed with reason code LATE_SUBMISSION."
+    },
+    {
+     "case_id": "H18",
+     "title": "Claim submitted on the deadline of 31 December 2028 is on time",
+     "covers": [
+      "AC1",
+      "AC3"
+     ],
+     "preconditions": [
+      "Treatment date is 31 December 2027."
+     ],
+     "steps": [
+      "Submit the claim on 31 December 2028."
+     ],
+     "expected_result": "The claim is not routed with reason code LATE_SUBMISSION."
+    },
+    {
+     "case_id": "H19",
+     "title": "Claim submitted one day late on 11 March 2028 is declined",
+     "covers": [
+      "AC1",
+      "AC4"
+     ],
+     "preconditions": [
+      "Treatment date is 10 March 2027."
+     ],
+     "steps": [
+      "Submit the claim on 11 March 2028."
+     ],
+     "expected_result": "The claim is routed to decline_recommended with reason code LATE_SUBMISSION."
+    },
+    {
+     "case_id": "H20",
+     "title": "Treatment on 29 February 2028 claimed on 28 February 2029 is on time",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Treatment date is 29 February 2028."
+     ],
+     "steps": [
+      "Submit the claim on 28 February 2029."
+     ],
+     "expected_result": "The claim is not routed with reason code LATE_SUBMISSION."
+    }
+   ]
+  },
+  {
+   "story_id": "S01",
+   "test_cases": [
+    {
+     "case_id": "H21",
+     "title": "Receipt without the treatment date is not treated as itemised",
+     "covers": [
+      "AC2",
+      "AC4"
+     ],
+     "preconditions": [
+      "The receipt shows the treatment 'physiotherapy session' and the amount 45.00 but no treatment date."
+     ],
+     "steps": [
+      "Submit the claim in the member portal with this receipt attached."
+     ],
+     "expected_result": "The claim is routed to manual_review with reason code MISSING_RECEIPT and is not recommended for automatic approval."
+    },
+    {
+     "case_id": "H22",
+     "title": "Claim supported only by a bank statement shows an error",
+     "covers": [
+      "AC3",
+      "AC4"
+     ],
+     "preconditions": [
+      "The only document is a bank statement showing a payment of 45.00 on 2026-06-15."
+     ],
+     "steps": [
+      "Submit the claim in the member portal with the bank statement attached."
+     ],
+     "expected_result": "An appropriate error message is shown."
+    }
+   ]
+  },
+  {
+   "story_id": "S03",
+   "test_cases": [
+    {
+     "case_id": "H23",
+     "title": "Ninth GP visit claim in a policy year is declined at the annual limit",
+     "covers": [
+      "AC2",
+      "AC3"
+     ],
+     "preconditions": [
+      "8 GP visits have already been paid in this policy year."
+     ],
+     "steps": [
+      "Submit a claim for a further GP visit."
+     ],
+     "expected_result": "The claim is routed to decline_recommended with reason code ANNUAL_LIMIT_REACHED."
+    }
+   ]
+  }
+ ],
+ "expectations": {
+  "cases": [
+   {
+    "seed_id": "HS01",
+    "story_id": "S09",
+    "case_id": "H01",
+    "defect": "control: correct, concrete, atomic, clear title",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "HS02",
+    "story_id": "S09",
+    "case_id": "H02",
+    "defect": "control: exactly on the limit, correct",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "HS03",
+    "story_id": "S09",
+    "case_id": "H03",
+    "defect": "generic title 'Test 3'",
+    "must_fire": [
+     "generic_title",
+     "title_clear"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS04",
+    "story_id": "S09",
+    "case_id": "H04",
+    "defect": "vague steps ('log in as appropriate', 'navigate to', 'valid data')",
+    "must_fire": [
+     "vague_steps"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS05",
+    "story_id": "S09",
+    "case_id": "H05",
+    "defect": "vague expected result ('processed correctly with no errors')",
+    "must_fire": [
+     "vague_expected"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS06",
+    "story_id": "S09",
+    "case_id": "H06",
+    "defect": "placeholders left in (<amount>, TBD)",
+    "must_fire": [
+     "placeholders"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS07",
+    "story_id": "S09",
+    "case_id": "H07",
+    "defect": "per-step expected result 'Works as expected' copied onto every step",
+    "must_fire": [
+     "repeated_expected",
+     "vague_expected"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS08",
+    "story_id": "S09",
+    "case_id": "H08",
+    "defect": "incorrect: exactly 1,000.00 asserted as HIGH_VALUE (contradicts AC2)",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS09",
+    "story_id": "S09",
+    "case_id": "H09",
+    "defect": "not in basis: asserts a confirmation email the story never mentions",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS10",
+    "story_id": "S09",
+    "case_id": "H10",
+    "defect": "not atomic: two claims either side of the limit in one case",
+    "must_fire": [
+     "atomic"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS11",
+    "story_id": "S09",
+    "case_id": "H11",
+    "defect": "duplicate of H01, reworded",
+    "must_fire": [
+     "duplicate"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS12",
+    "story_id": "S09",
+    "case_id": "H12",
+    "defect": "covers an AC the story does not have (AC7)",
+    "must_fire": [
+     "unknown_ac"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS13",
+    "story_id": "S09",
+    "case_id": "H13",
+    "defect": "linked to no AC (specification-gap case)",
+    "must_fire": [
+     "no_ac_linked"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS14",
+    "story_id": "S09",
+    "case_id": "H14",
+    "defect": "over-claim: lists AC3 but nothing is above the category limit",
+    "must_fire": [
+     "over_claim"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS15",
+    "story_id": "S09",
+    "case_id": "H15",
+    "defect": "no expected result anywhere",
+    "must_fire": [
+     "schema"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS16",
+    "story_id": "S09",
+    "case_id": "H16",
+    "defect": "unclear title of four words ('Checking the claim amount rules')",
+    "must_fire": [
+     "title_clear"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "HS17",
+    "story_id": "S05",
+    "case_id": "H17",
+    "defect": "control: on the standard deadline",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "HS18",
+    "story_id": "S05",
+    "case_id": "H18",
+    "defect": "year-end variant of H17: if the judge calls it a duplicate, the calendar caution must appear",
+    "must_fire": [],
+    "control": false,
+    "tolerate": [
+     "duplicate"
+    ],
+    "if_duplicate_then_caution": true
+   },
+   {
+    "seed_id": "HS19",
+    "story_id": "S05",
+    "case_id": "H19",
+    "defect": "control: one day late",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "HS20",
+    "story_id": "S05",
+    "case_id": "H20",
+    "defect": "control: 29 February treatment, AC2 deadline",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "HS21",
+    "story_id": "S01",
+    "case_id": "H21",
+    "defect": "control: receipt without a date",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "HS22",
+    "story_id": "S01",
+    "case_id": "H22",
+    "defect": "vague expected result ('an appropriate error message')",
+    "must_fire": [
+     "vague_expected"
+    ],
+    "control": false,
+    "tolerate": [
+     "verdict"
+    ]
+   },
+   {
+    "seed_id": "HS23",
+    "story_id": "S03",
+    "case_id": "H23",
+    "defect": "control: ninth GP visit (only case in the story)",
+    "must_fire": [],
+    "control": true
+   }
+  ],
+  "story_level": [
+   {
+    "seed_id": "HS24",
+    "story_id": "S03",
+    "check": "ac_no_tests",
+    "contains": "AC1",
+    "defect": "story with one case: AC1 (policy year) has no test linked"
+   },
+   {
+    "seed_id": "HS25",
+    "story_id": "S03",
+    "check": "boundary_hint",
+    "contains": "4 visits",
+    "defect": "story with one case: the consultant limit (4 visits) is never tested"
+   }
+  ]
+ }
+}
