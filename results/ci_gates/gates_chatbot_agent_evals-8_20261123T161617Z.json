@@ -1,0 +1,79 @@
+{
+  "suite": "Chatbot agent: text checks",
+  "verdict": "passed with warnings",
+  "gates": [
+    {
+      "name": "Chatbot: every CI conversation played, no run errors",
+      "level": "HARD",
+      "passed": true,
+      "actual": "9 of 9 played",
+      "expected": "9 of 9, no errors"
+    },
+    {
+      "name": "Chatbot: final prompt in use (fingerprint)",
+      "level": "HARD",
+      "passed": true,
+      "actual": "8bad8ee3ef4b",
+      "expected": "8bad8ee3ef4b"
+    },
+    {
+      "name": "Chatbot: no forbidden tool call",
+      "level": "HARD",
+      "passed": true,
+      "actual": "0",
+      "expected": "<= 0"
+    },
+    {
+      "name": "Chatbot: no banned term in a reply",
+      "level": "HARD",
+      "passed": true,
+      "actual": "0",
+      "expected": "<= 0"
+    },
+    {
+      "name": "Chatbot: required tools called with the right arguments",
+      "level": "WARN",
+      "passed": false,
+      "actual": "1 missed or wrong",
+      "expected": "0"
+    },
+    {
+      "name": "Chatbot: required facts in every reply",
+      "level": "WARN",
+      "passed": false,
+      "actual": "1 missing",
+      "expected": "0"
+    }
+  ],
+  "notes": [
+    "Text checks: 8 of 9 conversations and 22 of 23 turns pass (oracle v1.10; the judge is not run in CI)",
+    "Cost about $0.0073; run folder 20261123T161500Z",
+    "C01 turn 2: required search_policy: met_earlier",
+    "C01 turn 2: key fact missing: '182'"
+  ],
+  "summary": {
+    "run": "20261123T161500Z",
+    "conversations": 9,
+    "conversations_passed": 8,
+    "turns": 23,
+    "turns_passed": 22,
+    "required_tools": {
+      "pass": 9,
+      "pass_earlier": 1,
+      "met_earlier": 1,
+      "wrong_args": 0,
+      "missing": 0
+    },
+    "forbidden_tool_calls": 0,
+    "unexpected_tool_calls": 0,
+    "key_facts_missing": 1,
+    "absent_terms_found": 0,
+    "retrieval_hit_rate": null,
+    "retrieval_turns": 0,
+    "judge_checks_pending": 18,
+    "cost_usd": 0.0073,
+    "input_tokens": 58974,
+    "cached_input_tokens": 53325,
+    "latency_s": 74.9
+  }
+}
