@@ -1,0 +1,172 @@
+# glossary.toml: the terms the harness uses, in plain English, in one place.
+#
+# The HTML report (harness/report.py) shows these in its Glossary section and links every check
+# name, status and column heading to its entry (report.html#g-<key>), so a term can be linked to
+# from an email or a chat. The README points here too. Edit the wording here only.
+#
+# Each entry: key (used in links), term (as shown), group, definition.
+#
+# Change history:
+#   2026-11-24  v1  first version (M7 step 6, Roger: glossary terms users can link to).
+
+[[term]]
+key = "fail"
+term = "fail"
+group = "Levels"
+definition = "The case breaks the input contract (for example no expected result, or an AC that does not exist) or the judge found its expected result wrong or not based on the story. A run with any fail exits with code 1."
+
+[[term]]
+key = "warn"
+term = "warning"
+group = "Levels"
+definition = "Worth a human look, but not necessarily wrong: for example the case tests more than one thing, uses vague values, or repeats another case."
+
+[[term]]
+key = "suggestion"
+term = "suggestion"
+group = "Levels"
+definition = "A test the checklist thinks is missing. Never a fail or a warning: a prompt for the tester."
+
+[[term]]
+key = "question"
+term = "question for the PO"
+group = "Levels"
+definition = "Something the story implies but no acceptance criterion defines, so there is nothing to test against yet. A prompt for the product owner, not the tester."
+
+[[term]]
+key = "info"
+term = "info"
+group = "Levels"
+definition = "A reminder of something the code cannot check itself, for example a boundary that is a date."
+
+[[term]]
+key = "verdict"
+term = "verdict (correct / incorrect / not in basis)"
+group = "Judge checks"
+definition = "The judge's view of the expected result. Incorrect: it contradicts the acceptance criteria. Not in basis: it asserts something the story never defines (an invented rule, message or outcome). Both are fails."
+
+[[term]]
+key = "atomic"
+term = "atomic"
+group = "Judge checks"
+definition = "The case tests one condition. A case that checks several values or rules at once is flagged, because when it fails you cannot tell which part broke."
+
+[[term]]
+key = "concrete"
+term = "concrete"
+group = "Judge checks"
+definition = "The case uses exact test values (an amount, a date, a name) rather than classes such as 'a high score' or 'a valid date'."
+
+[[term]]
+key = "duplicate"
+term = "duplicate"
+group = "Judge checks"
+definition = "The case repeats an earlier one: same condition, same expected outcome. Duplicates are grouped. When the story's rules use dates, a caution reminds the reviewer that a year-end or month-end variant may not be a true duplicate."
+
+[[term]]
+key = "over_claim"
+term = "over-claim"
+group = "Judge checks"
+definition = "The case lists an acceptance criterion in 'covers' that it does not really test."
+
+[[term]]
+key = "title_clear"
+term = "title clear"
+group = "Judge checks"
+definition = "The title says what the test checks, so a reader can tell the case apart from its neighbours without opening it."
+
+[[term]]
+key = "verified"
+term = "verified (AC)"
+group = "Coverage"
+definition = "An acceptance criterion is verified when at least one case the judge marked correct really tests it. Claimed is not enough: the claim must be supported."
+
+[[term]]
+key = "ac_unverified"
+term = "AC not verified"
+group = "Coverage"
+definition = "No case judged correct really tests this acceptance criterion, even if cases claim it."
+
+[[term]]
+key = "ac_no_tests"
+term = "AC with no tests"
+group = "Coverage"
+definition = "No case lists this acceptance criterion in 'covers'."
+
+[[term]]
+key = "technique"
+term = "technique (positive / negative / boundary)"
+group = "Coverage"
+definition = "The kind of test, as the judge reads it. Positive: the allowed path. Negative: the refused or invalid path. Boundary: on or just either side of a limit."
+
+[[term]]
+key = "boundary_hint"
+term = "boundary hint"
+group = "Code checks and lints"
+definition = "A limit in the acceptance criteria (for example 'more than 10,000.00' or 'day 182') with no case on the value itself and a value just either side (two-value boundary value analysis)."
+
+[[term]]
+key = "schema"
+term = "schema / input contract"
+group = "Code checks and lints"
+definition = "The case has the fields the harness needs: an ID, a title, steps and an expected result (on the case or on its steps)."
+
+[[term]]
+key = "unknown_ac"
+term = "unknown AC"
+group = "Code checks and lints"
+definition = "The case links to an acceptance criterion the story does not have."
+
+[[term]]
+key = "vague"
+term = "vague steps / vague expected result"
+group = "Code checks and lints"
+definition = "Phrases that cannot be checked as pass or fail, such as 'works as expected', 'handled correctly' or 'enter valid data'."
+
+[[term]]
+key = "generic_title"
+term = "generic title / placeholders"
+group = "Code checks and lints"
+definition = "A title such as 'Test 3', or template text left in such as TBD or <amount>."
+
+[[term]]
+key = "checklist"
+term = "checklist of test ideas"
+group = "Checklist"
+definition = "Generic test ideas (ISTQB checklist-based testing) such as authorisation, limits, rule interactions and audit trail, in harness/checklist.toml. Each is checked against every story and its cases."
+
+[[term]]
+key = "covered"
+term = "covered / not covered"
+group = "Checklist"
+definition = "The idea applies to the story and at least one case tests it (covered), or none does (not covered, which gives a suggestion)."
+
+[[term]]
+key = "ac_gap"
+term = "AC gap"
+group = "Checklist"
+definition = "The story implies the idea, but no acceptance criterion defines the expected behaviour. Gives a question for the product owner."
+
+[[term]]
+key = "not_raised"
+term = "not raised by the story"
+group = "Checklist"
+definition = "Nothing in the story's words calls for the idea, so the tool makes no claim either way. Whether it matters is the reviewer's call, or the project's through the 'check' setting."
+
+[[term]]
+key = "check_setting"
+term = "check setting (when raised / every story / off)"
+group = "Checklist"
+definition = "Per checklist item. When raised (default): checked only if the story calls for it. Every story: always checked in the test cases, for things the project always requires. Off: never checked, and named in the report as excluded."
+
+[[term]]
+key = "excluded"
+term = "excluded"
+group = "Checklist"
+definition = "A checklist item switched off (check = off). Not checked in any story, which is not the same as passed."
+
+[[term]]
+key = "steps"
+term = "steps per case"
+group = "Other"
+definition = "How many steps a case has. High-level cases usually have one or two; low-level (detailed) cases more."

@@ -1,0 +1,101 @@
+﻿n,story,case_id,story_and_acs,test_case,Q1_correct,Q1_help,Q2_single_purpose,Q2_help,Q3_title_clear,Q3_help,notes
+1,K12,TC03,"Monitor transactions for suspicious activity. As a compliance analyst, I want completed transactions checked against the monitoring rules, so that suspicious activity is spotted and investigated.
+AC1: Every completed deposit, withdrawal and transfer is checked against the monitoring rules within 5 minutes of completing.
+AC2: A single transaction of more than 5,000.00 raises alert LARGE_TXN. For a customer with a HIGH risk rating the amount is more than 2,500.00.
+AC3: Three or more deposits within any 24 hours, each from 4,500.00 to 4,999.99, raise alert STRUCTURING.
+AC4: More than 10 transfers out in one calendar day, in the customer's time zone, raise alert VELOCITY.
+AC5: A transfer to or from a country on the high-risk country list raises alert HIGH_RISK_COUNTRY, whatever the amount.
+AC6: A deposit followed within 48 hours by transfers out totalling 90% or more of that deposit raises alert RAPID_MOVEMENT.
+AC7: One transaction can raise more than one alert. Each alert is recorded separately with the customer, the transaction, the rule and the date and time.
+AC8: Two or more alerts for the same customer within 30 days open a case for an analyst. A single alert does not open a case.
+AC9: Alerts and cases are never shown or mentioned to the customer.","Title: Completed transfer is checked within five minutes
+Covers: AC1
+Preconditions: A transfer can be completed and its completion and monitoring-check times can be observed.
+Steps: Complete a transfer. / Observe the time it completes and the time it is checked against the monitoring rules.
+Expected: The completed transfer is checked against the monitoring rules no later than five minutes after completion.",correct,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,Details look valid
+2,K05,TC06,"Screen for politically exposed persons. As a compliance officer, I want applicants who are politically exposed persons (PEPs) identified, so that they receive the extra checks they need.
+AC1: Every application is checked against the PEP list when the application is submitted.
+AC2: A PEP match sets the customer's risk rating to HIGH, whatever their risk score.
+AC3: A PEP application can only be approved by a senior compliance officer.
+AC4: A close family member or close associate of a PEP is treated as a PEP.","Title: Allow a senior compliance officer to approve a PEP application
+Covers: AC3
+Preconditions: The application is identified as a PEP application. / The acting compliance officer is a senior compliance officer.
+Steps: Approve the application as the acting compliance officer.
+Expected: The senior compliance officer can approve the PEP application.",correct,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,Details look valid
+3,K02,TC11,"Check the identity document. As a new applicant, I want to upload an identity document, so that my identity can be verified.
+AC1: Accepted documents are a passport, a national identity card or a driving licence. Any other document is refused with reason code DOC_NOT_ACCEPTED.
+AC2: A document that has expired on or before the submission date is refused with reason code DOC_EXPIRED.
+AC3: A document that expires within 30 days after the submission date is accepted and flagged EXPIRING_SOON.
+AC4: The name on the document must match the name entered on the application, ignoring upper and lower case, accents and spaces at the start or end. A mismatch is refused with reason code NAME_MISMATCH.","Title: Name matches when accents differ
+Covers: AC4
+Preconditions: The application submission date is 2025-06-01. / The application name is José Alvarez.
+Steps: Upload a passport with the name Jose Alvarez and an expiry date of 2025-06-11.
+Expected: The name matches under AC4; the document is accepted and flagged EXPIRING_SOON.",correct,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,Details are good. 
+4,K02,TC06,"Check the identity document. As a new applicant, I want to upload an identity document, so that my identity can be verified.
+AC1: Accepted documents are a passport, a national identity card or a driving licence. Any other document is refused with reason code DOC_NOT_ACCEPTED.
+AC2: A document that has expired on or before the submission date is refused with reason code DOC_EXPIRED.
+AC3: A document that expires within 30 days after the submission date is accepted and flagged EXPIRING_SOON.
+AC4: The name on the document must match the name entered on the application, ignoring upper and lower case, accents and spaces at the start or end. A mismatch is refused with reason code NAME_MISMATCH.","Title: Document expiring on submission date is refused
+Covers: AC2
+Preconditions: The application submission date is 2025-06-01. / The application name is Alex Morgan.
+Steps: Upload a passport with the name Alex Morgan and an expiry date of 2025-06-01.
+Expected: The document is refused with reason code DOC_EXPIRED.",correct,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,Details are good. 
+5,K08,TC05,"Analyst decision on a referred application. As a compliance analyst, I want to approve or reject applications referred for review, so that only applications that pass our checks are opened.
+AC1: Only a compliance analyst can approve or reject an application with status PENDING_REVIEW.
+AC2: An analyst cannot decide an application they submitted on behalf of a customer.
+AC3: Rejecting an application requires a reason chosen from the reason list.
+AC4: Each decision is recorded with the analyst's ID, the date and time, the decision and the reason.
+AC5: The applicant is emailed the outcome within 1 business day of the decision.
+AC6: The decision time is shown to staff in 24-hour format in the analyst's time zone (for example 14:05), and to the applicant in 12-hour format with AM or PM in the applicant's time zone (for example 2:05 PM). A decision at midnight is shown as 00:00 to staff and 12:00 AM to the applicant.","Title: Analyst cannot decide an application outside PENDING_REVIEW
+Covers: AC1
+Preconditions: The signed-in user is a compliance analyst. / The application has a status other than PENDING_REVIEW.
+Steps: Attempt to approve or reject the application.
+Expected: The decision is not accepted; the application is not approved or rejected.",not_in_basis,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,Unsure whether this is purely incorrect or not in basis. I have mentioned not_in_basis because the story doesn’t describe behaviour outside of PENDING_REVIEW
+6,K07,TC12,"Enhanced due diligence on a large first deposit. As a compliance analyst, I want large first deposits checked, so that the source of the money is understood.
+AC1: A first deposit of more than 10,000.00 made within 30 days of the account opening date opens an EDD case.
+AC2: A first deposit of exactly 10,000.00 does not open an EDD case.
+AC3: When an EDD case is opened, the customer is asked for a source-of-funds document, which must be received within 14 days.
+AC4: If the source-of-funds document is not received within 14 days, the account status changes to FROZEN.
+AC5: A frozen account cannot make withdrawals or transfers until an analyst closes the EDD case.","Title: Invalid account opening date
+Covers: AC1
+Preconditions: The customer's first deposit is 10,000.01.
+Steps: Submit or process the deposit with an invalid account opening date.
+Expected: Check and record the system response, including whether an EDD case is opened or a validation response is shown. The story does not define the outcome for an invalid opening date.",not_in_basis,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),n,Does the case test ONE thing? y / n,n,Does the title say what the case checks? y / n,Mentioned not_in_basis as there is nothing in the story describing behaviour when opening date is invalid. The test is not descriptive enough around the scenario
+7,K02,TC07,"Check the identity document. As a new applicant, I want to upload an identity document, so that my identity can be verified.
+AC1: Accepted documents are a passport, a national identity card or a driving licence. Any other document is refused with reason code DOC_NOT_ACCEPTED.
+AC2: A document that has expired on or before the submission date is refused with reason code DOC_EXPIRED.
+AC3: A document that expires within 30 days after the submission date is accepted and flagged EXPIRING_SOON.
+AC4: The name on the document must match the name entered on the application, ignoring upper and lower case, accents and spaces at the start or end. A mismatch is refused with reason code NAME_MISMATCH.","Title: Document expiring one day after submission is accepted and flagged
+Covers: AC2, AC3
+Preconditions: The application submission date is 2025-06-01. / The application name is Alex Morgan.
+Steps: Upload a passport with the name Alex Morgan and an expiry date of 2025-06-02.
+Expected: The document is accepted and flagged EXPIRING_SOON.",correct,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,The one caveat is that AC2 mentions expiry one day before or on that day. The test mentions day after
+8,K02,TC17,"Check the identity document. As a new applicant, I want to upload an identity document, so that my identity can be verified.
+AC1: Accepted documents are a passport, a national identity card or a driving licence. Any other document is refused with reason code DOC_NOT_ACCEPTED.
+AC2: A document that has expired on or before the submission date is refused with reason code DOC_EXPIRED.
+AC3: A document that expires within 30 days after the submission date is accepted and flagged EXPIRING_SOON.
+AC4: The name on the document must match the name entered on the application, ignoring upper and lower case, accents and spaces at the start or end. A mismatch is refused with reason code NAME_MISMATCH.","Title: Application name is missing
+Covers: AC4
+Preconditions: The application submission date is 2025-06-01. / No name has been entered on the application.
+Steps: Upload a passport with the name Alex Morgan and an expiry date of 2025-06-11.
+Expected: Record whether the submission is accepted or refused and any reason code. AC4 does not define the outcome when the application name is missing.",incorrect,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,The expected result does not seem correct as the application should be refused with reason code NAME_MISMATCH
+9,K11,TC12,"Onboard a business customer. As a compliance officer, I want to identify the directors and beneficial owners of a business applicant, so that we know who owns and controls every business customer.
+AC1: A business application needs the company name, the company registration number and the country of registration. An application missing any of these cannot be submitted.
+AC2: Every director must be named, with their full name and date of birth. At least one director is required.
+AC3: Every beneficial owner must be identified. A beneficial owner is a person who owns or controls more than 25% of the company, directly or indirectly. A person with exactly 25% is not a beneficial owner.
+AC4: Indirect ownership is worked out through each company in the chain by multiplying the percentages: a person who owns 50% of a company that owns 60% of the applicant owns 30% of the applicant. A person's direct and indirect percentages are added together.
+AC5: Every director and beneficial owner is screened against the sanctions list and the PEP list in the same way as an individual applicant. A match on any one of them applies to the whole application.
+AC6: If no person owns or controls more than 25%, the most senior director is recorded as the beneficial owner and the application is flagged NO_OWNER_ABOVE_THRESHOLD.","Title: Do not identify an owner below 25% as a beneficial owner
+Covers: AC3, AC6
+Preconditions: The application has all required company details and complete details for at least one director. / No person owns or controls more than 25% of the applicant.
+Steps: Record a person as owning 24.99% of the applicant. / Review the beneficial-owner identification and application flag.
+Expected: The 24.99% owner is not identified as a beneficial owner. The most senior director is recorded as the beneficial owner, and the application is flagged NO_OWNER_ABOVE_THRESHOLD.",not_in_basis,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,The test asserts items that are not contained or mentioned in the story or Acs
+10,K06,TC20,"Calculate the customer risk rating. As a compliance officer, I want every new customer given a risk rating, so that the level of checks matches the risk.
+AC1: The risk score is a whole number from 0 to 100.
+AC2: A score from 0 to 39 is LOW, from 40 to 69 is MEDIUM, and from 70 to 100 is HIGH.
+AC3: A customer whose country of residence is on the high-risk country list has 30 points added, and the score is capped at 100. The list is maintained by the compliance team; the rating uses the list in force on the day the rating is calculated.
+AC4: A HIGH rating opens an EDD (enhanced due diligence) case before the account is opened. The applicant is asked for a source-of-funds document, and the account is opened only after an analyst approves the EDD case.","Title: Open an EDD case for a HIGH rating before account opening
+Covers: AC2, AC4
+Preconditions: The customer's risk score is 70, giving the customer a HIGH rating. / The account has not been opened.
+Steps: Complete the risk rating and proceed with the account-opening process.
+Expected: An EDD case is opened before the account is opened.",correct,Is the expected result right for these ACs? correct / incorrect / not_in_basis (asserts something the story does not define),y,Does the case test ONE thing? y / n,y,Does the title say what the case checks? y / n,The title could be a bit clearer e.g. my understanding is that the high-rating will trigger the EDD case rather than it being something a person would open

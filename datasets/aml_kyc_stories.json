@@ -1,0 +1,389 @@
+{
+ "name": "AML/KYC onboarding stories for the M7 harness (Kestrel Wallet, fictional)",
+ "version": "0.3",
+ "change_history": [
+  {
+   "version": "0.1",
+   "date": "2026-11-13",
+   "change": "Draft by Claude for Roger's review (M7 step 5)."
+  },
+  {
+   "version": "0.2",
+   "date": "2026-11-24",
+   "change": "Roger's suggestions: K03 correspondence address and tax residence (AC5, AC6); K04 AC1 list-change time edge; K08 AC6 12/24-hour display incl. midnight; new K11 business customer (directors, beneficial owners incl. indirect, 25% boundary); new K12 transaction monitoring, a larger story (9 ACs) to check scale and cost."
+  },
+  {
+   "version": "0.3",
+   "date": "2026-11-24",
+   "change": "Roger's review: K01 AC4 says the 120-year limit is Kestrel's own plausibility limit; new K01 AC5 non-existent or wrongly formatted dates; K06 AC3 who maintains the high-risk country list and which version applies; K06 AC4 defines what EDD before opening means (case, source of funds, analyst approval). K01 AC4 made explicit: 121 or older on the submission date is rejected; 120 can continue."
+  }
+ ],
+ "notes": [
+  "Fictional fintech 'Kestrel Wallet'. Every rule, number, list and reason code is invented for testing the harness; no real regulation, regulator or company is named or quoted. Not compliance guidance.",
+  "No expected test ideas (no answer key): the harness is oracle-free.",
+  "Same story shape as datasets/testgen_golden.json, so the Day 4 generator prompts and the harness read it unchanged.",
+  "EDD cases: K06 opens one before an account exists (HIGH rating); K07 opens one after the account is open (large first deposit). Both ask for a source-of-funds document."
+ ],
+ "stories": [
+  {
+   "story_id": "K01",
+   "title": "Check the applicant's age",
+   "as_a": "new applicant",
+   "i_want": "to open an account by entering my date of birth",
+   "so_that": "I can use Kestrel Wallet if I am old enough",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "The date of birth is required to submit an application."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "An applicant who is 18 or over on the date the application is submitted can continue."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "An applicant who is under 18 on the date the application is submitted is refused with reason code UNDERAGE."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "A date of birth in the future, or one that makes the applicant 121 or older on the date the application is submitted, is rejected with reason code INVALID_DOB and the applicant can correct it. An applicant aged 120 on that date can continue."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "The date of birth is entered as DD/MM/YYYY. A date that does not exist (for example 31/02/1990 or 29/02/2001) or is not in that format is rejected with reason code INVALID_DOB and the applicant can correct it."
+    }
+   ]
+  },
+  {
+   "story_id": "K02",
+   "title": "Check the identity document",
+   "as_a": "new applicant",
+   "i_want": "to upload an identity document",
+   "so_that": "my identity can be verified",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "Accepted documents are a passport, a national identity card or a driving licence. Any other document is refused with reason code DOC_NOT_ACCEPTED."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A document that has expired on or before the submission date is refused with reason code DOC_EXPIRED."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "A document that expires within 30 days after the submission date is accepted and flagged EXPIRING_SOON."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "The name on the document must match the name entered on the application, ignoring upper and lower case, accents and spaces at the start or end. A mismatch is refused with reason code NAME_MISMATCH."
+    }
+   ]
+  },
+  {
+   "story_id": "K03",
+   "title": "Check the proof of address",
+   "as_a": "new applicant",
+   "i_want": "to upload a proof of address",
+   "so_that": "my address can be verified",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "Accepted proofs of address are a utility bill, a bank statement or a letter from a government body."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "The proof of address must be dated within the 90 days before the submission date. An older proof is refused with reason code ADDRESS_PROOF_OLD."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "The address on the proof must match the address entered on the application. A mismatch is refused with reason code ADDRESS_MISMATCH."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "A post office box is not accepted as a residential address."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "An applicant may also give a separate correspondence address. Only the residential address needs a proof of address, and a post office box is accepted as a correspondence address."
+    },
+    {
+     "ac_id": "AC6",
+     "text": "The applicant declares their country of tax residence. If it is different from the country of the residential address, a tax identification number for the country of tax residence is required; otherwise it is not asked for."
+    }
+   ]
+  },
+  {
+   "story_id": "K04",
+   "title": "Screen the applicant against the sanctions list",
+   "as_a": "compliance officer",
+   "i_want": "every applicant screened against the sanctions list before an account is opened",
+   "so_that": "we never open an account for a sanctioned person",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "Every application is screened against the sanctions list in force when the application is submitted. The list is replaced every day at 02:00 UTC: an application submitted at 01:59:59 UTC is screened against the previous day's list, and one submitted at 02:00:00 UTC or later against the new list."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A match on full name and date of birth sets the application status to BLOCKED, and the compliance team is alerted."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "A match on full name only sets the application status to PENDING_REVIEW for an analyst to decide."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "With no match, screening is passed and the application continues."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "A blocked applicant is shown the message \"We cannot open an account at this time\" and is never told about the sanctions match."
+    }
+   ]
+  },
+  {
+   "story_id": "K05",
+   "title": "Screen for politically exposed persons",
+   "as_a": "compliance officer",
+   "i_want": "applicants who are politically exposed persons (PEPs) identified",
+   "so_that": "they receive the extra checks they need",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "Every application is checked against the PEP list when the application is submitted."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A PEP match sets the customer's risk rating to HIGH, whatever their risk score."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "A PEP application can only be approved by a senior compliance officer."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "A close family member or close associate of a PEP is treated as a PEP."
+    }
+   ]
+  },
+  {
+   "story_id": "K06",
+   "title": "Calculate the customer risk rating",
+   "as_a": "compliance officer",
+   "i_want": "every new customer given a risk rating",
+   "so_that": "the level of checks matches the risk",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "The risk score is a whole number from 0 to 100."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A score from 0 to 39 is LOW, from 40 to 69 is MEDIUM, and from 70 to 100 is HIGH."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "A customer whose country of residence is on the high-risk country list has 30 points added, and the score is capped at 100. The list is maintained by the compliance team; the rating uses the list in force on the day the rating is calculated."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "A HIGH rating opens an EDD (enhanced due diligence) case before the account is opened. The applicant is asked for a source-of-funds document, and the account is opened only after an analyst approves the EDD case."
+    }
+   ]
+  },
+  {
+   "story_id": "K07",
+   "title": "Enhanced due diligence on a large first deposit",
+   "as_a": "compliance analyst",
+   "i_want": "large first deposits checked",
+   "so_that": "the source of the money is understood",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "A first deposit of more than 10,000.00 made within 30 days of the account opening date opens an EDD case."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A first deposit of exactly 10,000.00 does not open an EDD case."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "When an EDD case is opened, the customer is asked for a source-of-funds document, which must be received within 14 days."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "If the source-of-funds document is not received within 14 days, the account status changes to FROZEN."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "A frozen account cannot make withdrawals or transfers until an analyst closes the EDD case."
+    }
+   ]
+  },
+  {
+   "story_id": "K08",
+   "title": "Analyst decision on a referred application",
+   "as_a": "compliance analyst",
+   "i_want": "to approve or reject applications referred for review",
+   "so_that": "only applications that pass our checks are opened",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "Only a compliance analyst can approve or reject an application with status PENDING_REVIEW."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "An analyst cannot decide an application they submitted on behalf of a customer."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "Rejecting an application requires a reason chosen from the reason list."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "Each decision is recorded with the analyst's ID, the date and time, the decision and the reason."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "The applicant is emailed the outcome within 1 business day of the decision."
+    },
+    {
+     "ac_id": "AC6",
+     "text": "The decision time is shown to staff in 24-hour format in the analyst's time zone (for example 14:05), and to the applicant in 12-hour format with AM or PM in the applicant's time zone (for example 2:05 PM). A decision at midnight is shown as 00:00 to staff and 12:00 AM to the applicant."
+    }
+   ]
+  },
+  {
+   "story_id": "K09",
+   "title": "Periodic review of existing customers",
+   "as_a": "compliance analyst",
+   "i_want": "customers reviewed again at intervals that match their risk",
+   "so_that": "their information stays up to date",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "The next review is due 12 months after the last review for HIGH risk, 24 months for MEDIUM risk and 36 months for LOW risk."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A review due date that falls on a Saturday, Sunday or public holiday moves to the next business day."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "A customer whose review is overdue at the end of the due date (23:59 in the customer's time zone) has their account status changed to RESTRICTED."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "A RESTRICTED account can make withdrawals but not deposits or transfers until the review is completed."
+    }
+   ]
+  },
+  {
+   "story_id": "K10",
+   "title": "Complete the online application",
+   "as_a": "new applicant",
+   "i_want": "to complete the application in steps and come back to it later",
+   "so_that": "I do not have to finish it in one go",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "The application has four steps in this order: personal details, address, documents, declaration."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "The applicant must be logged in to start or resume an application."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "An application can be saved as a draft at any step and resumed later. A draft not resumed within 30 days is deleted."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "When the country of residence is Ireland, the county field is required and offers the 26 counties. For any other country the county field is hidden."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "The application cannot be submitted until all four steps are complete."
+    }
+   ]
+  },
+  {
+   "story_id": "K11",
+   "title": "Onboard a business customer",
+   "as_a": "compliance officer",
+   "i_want": "to identify the directors and beneficial owners of a business applicant",
+   "so_that": "we know who owns and controls every business customer",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "A business application needs the company name, the company registration number and the country of registration. An application missing any of these cannot be submitted."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "Every director must be named, with their full name and date of birth. At least one director is required."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "Every beneficial owner must be identified. A beneficial owner is a person who owns or controls more than 25% of the company, directly or indirectly. A person with exactly 25% is not a beneficial owner."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "Indirect ownership is worked out through each company in the chain by multiplying the percentages: a person who owns 50% of a company that owns 60% of the applicant owns 30% of the applicant. A person's direct and indirect percentages are added together."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "Every director and beneficial owner is screened against the sanctions list and the PEP list in the same way as an individual applicant. A match on any one of them applies to the whole application."
+    },
+    {
+     "ac_id": "AC6",
+     "text": "If no person owns or controls more than 25%, the most senior director is recorded as the beneficial owner and the application is flagged NO_OWNER_ABOVE_THRESHOLD."
+    }
+   ]
+  },
+  {
+   "story_id": "K12",
+   "title": "Monitor transactions for suspicious activity",
+   "as_a": "compliance analyst",
+   "i_want": "completed transactions checked against the monitoring rules",
+   "so_that": "suspicious activity is spotted and investigated",
+   "acceptance_criteria": [
+    {
+     "ac_id": "AC1",
+     "text": "Every completed deposit, withdrawal and transfer is checked against the monitoring rules within 5 minutes of completing."
+    },
+    {
+     "ac_id": "AC2",
+     "text": "A single transaction of more than 5,000.00 raises alert LARGE_TXN. For a customer with a HIGH risk rating the amount is more than 2,500.00."
+    },
+    {
+     "ac_id": "AC3",
+     "text": "Three or more deposits within any 24 hours, each from 4,500.00 to 4,999.99, raise alert STRUCTURING."
+    },
+    {
+     "ac_id": "AC4",
+     "text": "More than 10 transfers out in one calendar day, in the customer's time zone, raise alert VELOCITY."
+    },
+    {
+     "ac_id": "AC5",
+     "text": "A transfer to or from a country on the high-risk country list raises alert HIGH_RISK_COUNTRY, whatever the amount."
+    },
+    {
+     "ac_id": "AC6",
+     "text": "A deposit followed within 48 hours by transfers out totalling 90% or more of that deposit raises alert RAPID_MOVEMENT."
+    },
+    {
+     "ac_id": "AC7",
+     "text": "One transaction can raise more than one alert. Each alert is recorded separately with the customer, the transaction, the rule and the date and time."
+    },
+    {
+     "ac_id": "AC8",
+     "text": "Two or more alerts for the same customer within 30 days open a case for an analyst. A single alert does not open a case."
+    },
+    {
+     "ac_id": "AC9",
+     "text": "Alerts and cases are never shown or mentioned to the customer."
+    }
+   ]
+  }
+ ]
+}

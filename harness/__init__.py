@@ -25,6 +25,10 @@ Modules
                    and the Day 4 seeds) and reports caught / missed / false alarms
 - generate_bare.py generates cases with a bare "write test cases" prompt (prompts/testgen_bare.txt),
                    a weaker, everyday generator style to check
+- report.py        one HTML page per run (report.html): flagged cases first, coverage map per AC,
+                   checklist, duplicate groups, steps per case; can rebuild a page for an earlier run
+- generate.py      generates cases for ANY stories file with the Day 4 v1/v2 prompts or the bare
+                   prompt (M7 step 5: datasets/aml_kyc_stories.json)
 - measure_lints.py how often each lint flags, and how often it agrees with Roger's
                    Day 4 labels and the Day 4 judge (run once to tune the lints)
 
@@ -37,4 +41,6 @@ Change history:
   2026-11-12  v3  M7 step 4: seeded.py, generate_bare.py, calendar caution in judge.py.
   2026-11-13  v4  M7 step 4b: checklist.py, checklist.toml; two-value BVA; case_detail setting.
   2026-11-13  v5  two-pass checklist, parallel stories, --stories-only.
+  2026-11-24  v6  M7 step 5: generate.py (any stories file); checklist "check" setting (v5 of checklist.py).
+  2026-11-24  v7  M7 step 6: report.py (report.html).
 """

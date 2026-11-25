@@ -1,0 +1,503 @@
+{
+ "name": "Seeded and deliberately poor test cases for the M7 harness: AML/KYC (Kestrel Wallet, fictional)",
+ "version": "1.0",
+ "change_history": [
+  {
+   "version": "1.0",
+   "date": "2026-11-24",
+   "change": "First version (M7 step 5): 18 hand-written cases on K01, K06, K11 and K12, 6 of them clean controls, plus 2 story-level seeds. Same format as harness_seeded_cases.json."
+  }
+ ],
+ "notes": [
+  "Synthetic cases on the fictional Kestrel Wallet stories (datasets/aml_kyc_stories.json v0.3), each with a known defect or known to be clean.",
+  "Score with: python -m harness.seeded --set aml (add --no-judge for the free checks only).",
+  "Defects mirror the insurance seeds in a second domain: wrong boundary (exactly on a 'more than' limit), invented rule, over-claim, not atomic, vague values, wrong arithmetic on indirect ownership, missing expected result, unknown AC, reworded duplicate, generic title with placeholders."
+ ],
+ "stories": [
+  {
+   "story_id": "K01",
+   "test_cases": [
+    {
+     "case_id": "A01",
+     "title": "Applicant who turns 18 on the submission date can continue",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Applicant 'Ana Silva' with date of birth 24/11/2008.",
+      "Submission date 24/11/2026."
+     ],
+     "steps": [
+      "Submit the application on 24/11/2026."
+     ],
+     "expected_result": "The application continues; it is not refused with reason code UNDERAGE."
+    },
+    {
+     "case_id": "A02",
+     "title": "Applicant who turns 18 on the submission date is refused as underage",
+     "covers": [
+      "AC3"
+     ],
+     "preconditions": [
+      "Applicant 'Ben Okoro' with date of birth 24/11/2008.",
+      "Submission date 24/11/2026."
+     ],
+     "steps": [
+      "Submit the application on 24/11/2026."
+     ],
+     "expected_result": "The application is refused with reason code UNDERAGE."
+    },
+    {
+     "case_id": "A03",
+     "title": "Date of birth 31/02/1990 is rejected as a date that does not exist",
+     "covers": [
+      "AC5"
+     ],
+     "preconditions": [
+      "Applicant 'Cara Byrne'.",
+      "Submission date 24/11/2026."
+     ],
+     "steps": [
+      "Enter the date of birth 31/02/1990.",
+      "Submit the application."
+     ],
+     "expected_result": "The date of birth is rejected with reason code INVALID_DOB and the applicant can correct it."
+    },
+    {
+     "case_id": "A04",
+     "title": "Applicant aged 17 is refused and locked out for 12 months",
+     "covers": [
+      "AC3"
+     ],
+     "preconditions": [
+      "Applicant 'Dan Walsh' with date of birth 25/11/2008.",
+      "Submission date 24/11/2026."
+     ],
+     "steps": [
+      "Submit the application on 24/11/2026."
+     ],
+     "expected_result": "The application is refused with reason code UNDERAGE and the applicant cannot apply again for 12 months."
+    },
+    {
+     "case_id": "A05",
+     "title": "Applicant aged 30 can continue",
+     "covers": [
+      "AC2",
+      "AC4"
+     ],
+     "preconditions": [
+      "Applicant 'Eva Novak' with date of birth 10/05/1996.",
+      "Submission date 24/11/2026."
+     ],
+     "steps": [
+      "Submit the application on 24/11/2026."
+     ],
+     "expected_result": "The application continues."
+    }
+   ]
+  },
+  {
+   "story_id": "K06",
+   "test_cases": [
+    {
+     "case_id": "A06",
+     "title": "Risk score 40 is rated MEDIUM",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Customer 'Finn Doyle' resident in a country not on the high-risk country list.",
+      "Risk score 40."
+     ],
+     "steps": [
+      "Calculate the risk rating."
+     ],
+     "expected_result": "The risk rating is MEDIUM."
+    },
+    {
+     "case_id": "A07",
+     "title": "Risk score 70 is rated MEDIUM",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Customer 'Gita Rao' resident in a country not on the high-risk country list.",
+      "Risk score 70."
+     ],
+     "steps": [
+      "Calculate the risk rating."
+     ],
+     "expected_result": "The risk rating is MEDIUM."
+    },
+    {
+     "case_id": "A08",
+     "title": "Risk bands, cap and EDD are applied",
+     "covers": [
+      "AC2",
+      "AC3",
+      "AC4"
+     ],
+     "preconditions": [
+      "Customers with risk scores 39, 40 and 70, and one with score 85 resident in a high-risk country."
+     ],
+     "steps": [
+      "Calculate each customer's risk rating.",
+      "Check the capped score of the high-risk-country customer.",
+      "Check whether an EDD case is opened for each HIGH rating."
+     ],
+     "expected_result": "Scores 39, 40 and 70 are LOW, MEDIUM and HIGH; the high-risk-country customer's score is capped at 100; an EDD case is opened for each HIGH rating."
+    },
+    {
+     "case_id": "A09",
+     "title": "High score gives a high rating",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "A customer with a high risk score."
+     ],
+     "steps": [
+      "Enter a high risk score.",
+      "Calculate the risk rating."
+     ],
+     "expected_result": "The rating is handled correctly."
+    }
+   ]
+  },
+  {
+   "story_id": "K11",
+   "test_cases": [
+    {
+     "case_id": "A15",
+     "title": "Person owning 50% of a company that owns 60% of the applicant is a beneficial owner",
+     "covers": [
+      "AC3",
+      "AC4"
+     ],
+     "preconditions": [
+      "Business applicant 'Teal Freight Ltd'.",
+      "'Holdco A Ltd' owns 60% of Teal Freight Ltd.",
+      "'Hana Kim' owns 50% of Holdco A Ltd and has no direct holding."
+     ],
+     "steps": [
+      "Submit the business application."
+     ],
+     "expected_result": "Hana Kim is identified as a beneficial owner with 30% indirect ownership."
+    },
+    {
+     "case_id": "A16",
+     "title": "Person owning 40% of a company that owns 60% of the applicant is a beneficial owner",
+     "covers": [
+      "AC3",
+      "AC4"
+     ],
+     "preconditions": [
+      "Business applicant 'Teal Freight Ltd'.",
+      "'Holdco B Ltd' owns 60% of Teal Freight Ltd.",
+      "'Ivan Petrov' owns 40% of Holdco B Ltd and has no direct holding."
+     ],
+     "steps": [
+      "Submit the business application."
+     ],
+     "expected_result": "Ivan Petrov is identified as a beneficial owner."
+    },
+    {
+     "case_id": "A17",
+     "title": "Business application with a director but no date of birth",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Business applicant 'Teal Freight Ltd' with director 'Jo Murphy' and no date of birth for her."
+     ],
+     "steps": [
+      "Submit the business application."
+     ],
+     "expected_result": ""
+    },
+    {
+     "case_id": "A18",
+     "title": "Company registration number is required",
+     "covers": [
+      "AC9"
+     ],
+     "preconditions": [
+      "Business applicant 'Teal Freight Ltd' with no company registration number."
+     ],
+     "steps": [
+      "Try to submit the business application."
+     ],
+     "expected_result": "The application cannot be submitted."
+    }
+   ]
+  },
+  {
+   "story_id": "K12",
+   "test_cases": [
+    {
+     "case_id": "A10",
+     "title": "Single transaction of 5,000.01 raises LARGE_TXN for a MEDIUM-risk customer",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Customer 'Kofi Mensah' with a MEDIUM risk rating."
+     ],
+     "steps": [
+      "Complete a transfer out of 5,000.01."
+     ],
+     "expected_result": "Alert LARGE_TXN is raised for the transfer."
+    },
+    {
+     "case_id": "A11",
+     "title": "Single transaction of exactly 5,000.00 raises LARGE_TXN",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Customer 'Lena Fischer' with a MEDIUM risk rating."
+     ],
+     "steps": [
+      "Complete a transfer out of 5,000.00."
+     ],
+     "expected_result": "Alert LARGE_TXN is raised for the transfer."
+    },
+    {
+     "case_id": "A12",
+     "title": "Transfer one cent over 5,000 triggers a large-transaction alert",
+     "covers": [
+      "AC2"
+     ],
+     "preconditions": [
+      "Customer 'Kofi Mensah' with a MEDIUM risk rating."
+     ],
+     "steps": [
+      "Make a transfer out for 5,000.01."
+     ],
+     "expected_result": "A LARGE_TXN alert is raised."
+    },
+    {
+     "case_id": "A13",
+     "title": "TC 13",
+     "covers": [
+      "AC3"
+     ],
+     "preconditions": [
+      "Customer 'Mia Costa' with a LOW risk rating."
+     ],
+     "steps": [
+      "Complete three deposits of <amount> within 24 hours."
+     ],
+     "expected_result": "Alert STRUCTURING is raised. Exact amounts TBD."
+    },
+    {
+     "case_id": "A14",
+     "title": "Three deposits of 4,500.00 to 4,999.99 within 24 hours raise STRUCTURING",
+     "covers": [
+      "AC3"
+     ],
+     "preconditions": [
+      "Customer 'Noor Haddad' with a LOW risk rating."
+     ],
+     "steps": [
+      "Complete a deposit of 4,500.00 at 09:00 on 10/11/2026.",
+      "Complete a deposit of 4,750.00 at 15:00 on 10/11/2026.",
+      "Complete a deposit of 4,999.99 at 08:00 on 11/11/2026."
+     ],
+     "expected_result": "Alert STRUCTURING is raised."
+    }
+   ]
+  }
+ ],
+ "expectations": {
+  "cases": [
+   {
+    "seed_id": "AS01",
+    "story_id": "K01",
+    "case_id": "A01",
+    "defect": "control: exactly 18 on the submission date continues (AC2 boundary, correct)",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "AS02",
+    "story_id": "K01",
+    "case_id": "A02",
+    "defect": "incorrect: exactly 18 asserted as UNDERAGE (contradicts AC2)",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS03",
+    "story_id": "K01",
+    "case_id": "A03",
+    "defect": "control: non-existent date 31/02 rejected (AC5)",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "AS04",
+    "story_id": "K01",
+    "case_id": "A04",
+    "defect": "not in basis: invents a 12-month lock-out",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS05",
+    "story_id": "K01",
+    "case_id": "A05",
+    "defect": "over-claim: lists AC4 but the date of birth is neither in the future nor 121+",
+    "must_fire": [
+     "over_claim"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS06",
+    "story_id": "K06",
+    "case_id": "A06",
+    "defect": "control: score 40 is MEDIUM (band boundary)",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "AS07",
+    "story_id": "K06",
+    "case_id": "A07",
+    "defect": "incorrect: score 70 asserted as MEDIUM (AC2: 70 is HIGH)",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS08",
+    "story_id": "K06",
+    "case_id": "A08",
+    "defect": "not atomic: bands, cap and EDD in one case",
+    "must_fire": [
+     "atomic"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS09",
+    "story_id": "K06",
+    "case_id": "A09",
+    "defect": "vague: 'a high risk score' and 'handled correctly'",
+    "must_fire": [
+     "concrete",
+     "vague_expected"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS15",
+    "story_id": "K11",
+    "case_id": "A15",
+    "defect": "control: indirect 50% x 60% = 30% is a beneficial owner (AC4 worked example)",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "AS16",
+    "story_id": "K11",
+    "case_id": "A16",
+    "defect": "incorrect: 40% x 60% = 24% is not over 25%, asserted as a beneficial owner",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS17",
+    "story_id": "K11",
+    "case_id": "A17",
+    "defect": "no expected result",
+    "must_fire": [
+     "schema"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS18",
+    "story_id": "K11",
+    "case_id": "A18",
+    "defect": "links to an AC the story does not have (AC9)",
+    "must_fire": [
+     "unknown_ac"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS10",
+    "story_id": "K12",
+    "case_id": "A10",
+    "defect": "control: 5,000.01 raises LARGE_TXN (AC2, just above)",
+    "must_fire": [],
+    "control": true
+   },
+   {
+    "seed_id": "AS11",
+    "story_id": "K12",
+    "case_id": "A11",
+    "defect": "incorrect: exactly 5,000.00 asserted as LARGE_TXN ('more than')",
+    "must_fire": [
+     "verdict"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS12",
+    "story_id": "K12",
+    "case_id": "A12",
+    "defect": "duplicate of A10, reworded",
+    "must_fire": [
+     "duplicate"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS13",
+    "story_id": "K12",
+    "case_id": "A13",
+    "defect": "generic title 'TC 13' and placeholders (<amount>, TBD)",
+    "must_fire": [
+     "generic_title",
+     "placeholders",
+     "title_clear"
+    ],
+    "control": false
+   },
+   {
+    "seed_id": "AS14",
+    "story_id": "K12",
+    "case_id": "A14",
+    "defect": "control: three deposits in band within 24 hours raise STRUCTURING (AC3)",
+    "must_fire": [],
+    "control": true
+   }
+  ],
+  "story_level": [
+   {
+    "seed_id": "AS19",
+    "story_id": "K12",
+    "check": "ac_no_tests",
+    "contains": "AC5",
+    "defect": "K12 seeds test AC2 and AC3 only: AC5 (high-risk country) has no test linked"
+   },
+   {
+    "seed_id": "AS20",
+    "story_id": "K06",
+    "check": "boundary_hint",
+    "contains": "AC1",
+    "defect": "K06: the 0 and 100 ends of the score range (AC1) are never tested"
+   }
+  ]
+ }
+}

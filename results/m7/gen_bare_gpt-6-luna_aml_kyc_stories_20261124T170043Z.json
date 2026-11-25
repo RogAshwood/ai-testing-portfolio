@@ -1,0 +1,2540 @@
+{
+ "meta": {
+  "started_utc": "2026-11-24T17:00:43+00:00",
+  "model": "gpt-6-luna",
+  "prompt_version": "bare",
+  "prompt_fingerprint": "910f84447aa7",
+  "stories_file": "aml_kyc_stories.json",
+  "golden_version": "0.3",
+  "golden_fingerprint": "fd81c6e45997",
+  "stories": [
+   "K01",
+   "K02",
+   "K03",
+   "K04",
+   "K05",
+   "K06",
+   "K07",
+   "K08",
+   "K09",
+   "K10",
+   "K11",
+   "K12"
+  ],
+  "totals": {
+   "cases": 134,
+   "schema_valid": 12,
+   "input_tokens": 3808,
+   "output_tokens": 22787,
+   "cost_usd": 0.011774,
+   "latency_s": 158.4
+  }
+ },
+ "records": [
+  {
+   "story_id": "K01",
+   "raw_reply": "{\n  \"story_id\": \"K01\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Require date of birth before submitting an application\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Leave the date of birth blank.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The application is not submitted, and the applicant is prompted to enter a date of birth.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Allow an applicant who is exactly 18 to continue\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 15/06/2007 as the date of birth.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The applicant is considered 18 on the submission date and can continue.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Refuse an applicant who is under 18\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 16/06/2007 as the date of birth.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The application is refused with reason code UNDERAGE.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Reject a future date of birth and allow correction\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 16/06/2025 as the date of birth.\",\n        \"Submit the application.\",\n        \"Replace the date of birth with 15/06/2007.\",\n        \"Submit the application again.\"\n      ],\n      \"expected_result\": \"The future date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Reject an applicant who is exactly 121 and allow correction\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 15/06/1904 as the date of birth.\",\n        \"Submit the application.\",\n        \"Replace the date of birth with 15/06/1905.\",\n        \"Submit the application again.\"\n      ],\n      \"expected_result\": \"The 121-year-old applicant is rejected with reason code INVALID_DOB and can correct the date. After entering a date that makes the applicant 120, the applicant can continue.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Allow an applicant who is exactly 120 to continue\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 15/06/1905 as the date of birth.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The applicant is considered 120 on the submission date and can continue.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Reject a nonexistent calendar date and allow correction\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 31/02/1990 as the date of birth.\",\n        \"Submit the application.\",\n        \"Replace the date of birth with 15/06/2007.\",\n        \"Submit the application again.\"\n      ],\n      \"expected_result\": \"The nonexistent date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Reject an invalid leap-day date and allow correction\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 29/02/2001 as the date of birth.\",\n        \"Submit the application.\",\n        \"Replace the date of birth with 15/06/2007.\",\n        \"Submit the application again.\"\n      ],\n      \"expected_result\": \"The invalid leap-day date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Reject a date of birth that is not in DD/MM/YYYY format\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is on the account application form.\",\n        \"The application submission date is 15/06/2025.\"\n      ],\n      \"steps\": [\n        \"Enter 2007-06-15 as the date of birth.\",\n        \"Submit the application.\",\n        \"Replace the date of birth with 15/06/2007.\",\n        \"Submit the application again.\"\n      ],\n      \"expected_result\": \"The incorrectly formatted date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K01",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Require date of birth before submitting an application",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Leave the date of birth blank.",
+       "Submit the application."
+      ],
+      "expected_result": "The application is not submitted, and the applicant is prompted to enter a date of birth."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Allow an applicant who is exactly 18 to continue",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 15/06/2007 as the date of birth.",
+       "Submit the application."
+      ],
+      "expected_result": "The applicant is considered 18 on the submission date and can continue."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Refuse an applicant who is under 18",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 16/06/2007 as the date of birth.",
+       "Submit the application."
+      ],
+      "expected_result": "The application is refused with reason code UNDERAGE."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Reject a future date of birth and allow correction",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 16/06/2025 as the date of birth.",
+       "Submit the application.",
+       "Replace the date of birth with 15/06/2007.",
+       "Submit the application again."
+      ],
+      "expected_result": "The future date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Reject an applicant who is exactly 121 and allow correction",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 15/06/1904 as the date of birth.",
+       "Submit the application.",
+       "Replace the date of birth with 15/06/1905.",
+       "Submit the application again."
+      ],
+      "expected_result": "The 121-year-old applicant is rejected with reason code INVALID_DOB and can correct the date. After entering a date that makes the applicant 120, the applicant can continue."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Allow an applicant who is exactly 120 to continue",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 15/06/1905 as the date of birth.",
+       "Submit the application."
+      ],
+      "expected_result": "The applicant is considered 120 on the submission date and can continue."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Reject a nonexistent calendar date and allow correction",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 31/02/1990 as the date of birth.",
+       "Submit the application.",
+       "Replace the date of birth with 15/06/2007.",
+       "Submit the application again."
+      ],
+      "expected_result": "The nonexistent date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Reject an invalid leap-day date and allow correction",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 29/02/2001 as the date of birth.",
+       "Submit the application.",
+       "Replace the date of birth with 15/06/2007.",
+       "Submit the application again."
+      ],
+      "expected_result": "The invalid leap-day date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Reject a date of birth that is not in DD/MM/YYYY format",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is on the account application form.",
+       "The application submission date is 15/06/2025."
+      ],
+      "steps": [
+       "Enter 2007-06-15 as the date of birth.",
+       "Submit the application.",
+       "Replace the date of birth with 15/06/2007.",
+       "Submit the application again."
+      ],
+      "expected_result": "The incorrectly formatted date is rejected with reason code INVALID_DOB and can be corrected. After correction, the applicant can continue."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 9,
+   "usage": {
+    "latency_s": 12.42,
+    "input_tokens": 339,
+    "output_tokens": 1749,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K02",
+   "raw_reply": "{\n  \"story_id\": \"K02\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Accept a valid passport\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a name that matches the name on the document.\",\n        \"The passport is unexpired and expires more than 30 days after submission.\"\n      ],\n      \"steps\": [\n        \"Select passport as the document type.\",\n        \"Upload the passport and submit the application.\"\n      ],\n      \"expected_result\": \"The passport is accepted with no DOC_NOT_ACCEPTED refusal.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Accept a valid national identity card\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a name that matches the name on the document.\",\n        \"The national identity card is unexpired and expires more than 30 days after submission.\"\n      ],\n      \"steps\": [\n        \"Select national identity card as the document type.\",\n        \"Upload the card and submit the application.\"\n      ],\n      \"expected_result\": \"The national identity card is accepted with no DOC_NOT_ACCEPTED refusal.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Accept a valid driving licence\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a name that matches the name on the document.\",\n        \"The driving licence is unexpired and expires more than 30 days after submission.\"\n      ],\n      \"steps\": [\n        \"Select driving licence as the document type.\",\n        \"Upload the licence and submit the application.\"\n      ],\n      \"expected_result\": \"The driving licence is accepted with no DOC_NOT_ACCEPTED refusal.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Refuse a document type that is not accepted\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a name that matches the name on the document.\",\n        \"The uploaded document is unexpired.\"\n      ],\n      \"steps\": [\n        \"Select a document type other than passport, national identity card, or driving licence.\",\n        \"Upload the document and submit the application.\"\n      ],\n      \"expected_result\": \"The document is refused with reason code DOC_NOT_ACCEPTED.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Refuse a document that expired before submission\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The submission date is 2026-06-01.\",\n        \"The applicant has entered a name that matches the name on the document.\"\n      ],\n      \"steps\": [\n        \"Upload an accepted document type with an expiry date of 2026-05-31.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The document is refused with reason code DOC_EXPIRED.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Refuse a document expiring on the submission date\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The submission date is 2026-06-01.\",\n        \"The applicant has entered a name that matches the name on the document.\"\n      ],\n      \"steps\": [\n        \"Upload an accepted document type with an expiry date of 2026-06-01.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The document is refused with reason code DOC_EXPIRED.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Accept and flag a document expiring 30 days after submission\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The submission date is 2026-06-01.\",\n        \"The applicant has entered a name that matches the name on the document.\"\n      ],\n      \"steps\": [\n        \"Upload an accepted document type with an expiry date of 2026-07-01.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The document is accepted and flagged EXPIRING_SOON.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Accept and flag a document expiring within 30 days\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The submission date is 2026-06-01.\",\n        \"The applicant has entered a name that matches the name on the document.\"\n      ],\n      \"steps\": [\n        \"Upload an accepted document type with an expiry date of 2026-06-02.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The document is accepted and flagged EXPIRING_SOON.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Match names despite case, accent, and surrounding spaces\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The document is an accepted type, is unexpired, and expires more than 30 days after submission.\",\n        \"The name on the document is José Alvarez.\"\n      ],\n      \"steps\": [\n        \"Enter the application name as \\\"  JOSE ALVAREZ  \\\".\",\n        \"Upload the document and submit the application.\"\n      ],\n      \"expected_result\": \"The names are considered a match despite differences in case, accent, and leading or trailing spaces; the document is not refused with NAME_MISMATCH.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Refuse a document when the names do not match\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The document is an accepted type, is unexpired, and expires more than 30 days after submission.\",\n        \"The name on the document is Jane Smith.\"\n      ],\n      \"steps\": [\n        \"Enter the application name as Jane Smyth.\",\n        \"Upload the document and submit the application.\"\n      ],\n      \"expected_result\": \"The document is refused with reason code NAME_MISMATCH.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K02",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Accept a valid passport",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a name that matches the name on the document.",
+       "The passport is unexpired and expires more than 30 days after submission."
+      ],
+      "steps": [
+       "Select passport as the document type.",
+       "Upload the passport and submit the application."
+      ],
+      "expected_result": "The passport is accepted with no DOC_NOT_ACCEPTED refusal."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Accept a valid national identity card",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a name that matches the name on the document.",
+       "The national identity card is unexpired and expires more than 30 days after submission."
+      ],
+      "steps": [
+       "Select national identity card as the document type.",
+       "Upload the card and submit the application."
+      ],
+      "expected_result": "The national identity card is accepted with no DOC_NOT_ACCEPTED refusal."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Accept a valid driving licence",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a name that matches the name on the document.",
+       "The driving licence is unexpired and expires more than 30 days after submission."
+      ],
+      "steps": [
+       "Select driving licence as the document type.",
+       "Upload the licence and submit the application."
+      ],
+      "expected_result": "The driving licence is accepted with no DOC_NOT_ACCEPTED refusal."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Refuse a document type that is not accepted",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a name that matches the name on the document.",
+       "The uploaded document is unexpired."
+      ],
+      "steps": [
+       "Select a document type other than passport, national identity card, or driving licence.",
+       "Upload the document and submit the application."
+      ],
+      "expected_result": "The document is refused with reason code DOC_NOT_ACCEPTED."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Refuse a document that expired before submission",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The submission date is 2026-06-01.",
+       "The applicant has entered a name that matches the name on the document."
+      ],
+      "steps": [
+       "Upload an accepted document type with an expiry date of 2026-05-31.",
+       "Submit the application."
+      ],
+      "expected_result": "The document is refused with reason code DOC_EXPIRED."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Refuse a document expiring on the submission date",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The submission date is 2026-06-01.",
+       "The applicant has entered a name that matches the name on the document."
+      ],
+      "steps": [
+       "Upload an accepted document type with an expiry date of 2026-06-01.",
+       "Submit the application."
+      ],
+      "expected_result": "The document is refused with reason code DOC_EXPIRED."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Accept and flag a document expiring 30 days after submission",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The submission date is 2026-06-01.",
+       "The applicant has entered a name that matches the name on the document."
+      ],
+      "steps": [
+       "Upload an accepted document type with an expiry date of 2026-07-01.",
+       "Submit the application."
+      ],
+      "expected_result": "The document is accepted and flagged EXPIRING_SOON."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Accept and flag a document expiring within 30 days",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The submission date is 2026-06-01.",
+       "The applicant has entered a name that matches the name on the document."
+      ],
+      "steps": [
+       "Upload an accepted document type with an expiry date of 2026-06-02.",
+       "Submit the application."
+      ],
+      "expected_result": "The document is accepted and flagged EXPIRING_SOON."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Match names despite case, accent, and surrounding spaces",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The document is an accepted type, is unexpired, and expires more than 30 days after submission.",
+       "The name on the document is José Alvarez."
+      ],
+      "steps": [
+       "Enter the application name as \"  JOSE ALVAREZ  \".",
+       "Upload the document and submit the application."
+      ],
+      "expected_result": "The names are considered a match despite differences in case, accent, and leading or trailing spaces; the document is not refused with NAME_MISMATCH."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Refuse a document when the names do not match",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The document is an accepted type, is unexpired, and expires more than 30 days after submission.",
+       "The name on the document is Jane Smith."
+      ],
+      "steps": [
+       "Enter the application name as Jane Smyth.",
+       "Upload the document and submit the application."
+      ],
+      "expected_result": "The document is refused with reason code NAME_MISMATCH."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 10,
+   "usage": {
+    "latency_s": 11.74,
+    "input_tokens": 274,
+    "output_tokens": 1621,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K03",
+   "raw_reply": "{\n  \"story_id\": \"K03\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Accept a utility bill as proof of address\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address.\",\n        \"The utility bill is dated within 90 days before submission and shows the entered residential address.\"\n      ],\n      \"steps\": [\n        \"Upload the utility bill as proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The utility bill is accepted as proof of address.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Accept a bank statement as proof of address\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address.\",\n        \"The bank statement is dated within 90 days before submission and shows the entered residential address.\"\n      ],\n      \"steps\": [\n        \"Upload the bank statement as proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The bank statement is accepted as proof of address.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Accept a government letter as proof of address\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address.\",\n        \"The government letter is dated within 90 days before submission and shows the entered residential address.\"\n      ],\n      \"steps\": [\n        \"Upload the letter from a government body as proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The government letter is accepted as proof of address.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Refuse an unsupported proof document type\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address.\",\n        \"The uploaded document is not a utility bill, bank statement, or letter from a government body.\"\n      ],\n      \"steps\": [\n        \"Upload the unsupported document as proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The document is not accepted as proof of address.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Accept proof dated exactly 90 days before submission\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The submission date is fixed.\",\n        \"The proof is dated exactly 90 days before the submission date and shows the entered residential address.\"\n      ],\n      \"steps\": [\n        \"Upload the proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The proof is accepted because it is within the 90-day period.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Refuse proof dated more than 90 days before submission\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The submission date is fixed.\",\n        \"The proof is dated 91 days before the submission date.\"\n      ],\n      \"steps\": [\n        \"Upload the proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The proof is refused with reason code ADDRESS_PROOF_OLD.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Accept proof whose address matches the application\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address.\",\n        \"The proof is an accepted document type, is dated within 90 days, and shows the same address as the application.\"\n      ],\n      \"steps\": [\n        \"Upload the proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The proof is accepted because its address matches the residential address entered on the application.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Refuse proof whose address does not match the application\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address.\",\n        \"The proof is an accepted document type and is dated within 90 days, but shows a different address.\"\n      ],\n      \"steps\": [\n        \"Upload the proof of address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The proof is refused with reason code ADDRESS_MISMATCH.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Reject a post office box as the residential address\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant enters a post office box as their residential address.\"\n      ],\n      \"steps\": [\n        \"Continue the application with the post office box entered as the residential address.\"\n      ],\n      \"expected_result\": \"The post office box is not accepted as a residential address.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Accept a post office box as a separate correspondence address\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address that is not a post office box.\",\n        \"The applicant has proof of address for the residential address that meets the document type, date, and address-match requirements.\"\n      ],\n      \"steps\": [\n        \"Enter a post office box as the separate correspondence address.\",\n        \"Upload proof of address for the residential address.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The post office box is accepted as the correspondence address, and only the residential address requires proof.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Require a tax identification number when tax residence differs from residential country\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address in one country.\",\n        \"The applicant declares tax residence in a different country.\"\n      ],\n      \"steps\": [\n        \"Declare the country of tax residence.\",\n        \"Continue to the tax identification number section.\"\n      ],\n      \"expected_result\": \"The application asks for a tax identification number for the declared country of tax residence and requires it before the applicant can proceed.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"Do not ask for a tax identification number when countries match\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\n        \"The applicant has entered a residential address in a country.\",\n        \"The applicant declares tax residence in the same country.\"\n      ],\n      \"steps\": [\n        \"Declare the country of tax residence.\",\n        \"Continue through the tax information section.\"\n      ],\n      \"expected_result\": \"The application does not ask for a tax identification number.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K03",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Accept a utility bill as proof of address",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address.",
+       "The utility bill is dated within 90 days before submission and shows the entered residential address."
+      ],
+      "steps": [
+       "Upload the utility bill as proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The utility bill is accepted as proof of address."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Accept a bank statement as proof of address",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address.",
+       "The bank statement is dated within 90 days before submission and shows the entered residential address."
+      ],
+      "steps": [
+       "Upload the bank statement as proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The bank statement is accepted as proof of address."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Accept a government letter as proof of address",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address.",
+       "The government letter is dated within 90 days before submission and shows the entered residential address."
+      ],
+      "steps": [
+       "Upload the letter from a government body as proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The government letter is accepted as proof of address."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Refuse an unsupported proof document type",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address.",
+       "The uploaded document is not a utility bill, bank statement, or letter from a government body."
+      ],
+      "steps": [
+       "Upload the unsupported document as proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The document is not accepted as proof of address."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Accept proof dated exactly 90 days before submission",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The submission date is fixed.",
+       "The proof is dated exactly 90 days before the submission date and shows the entered residential address."
+      ],
+      "steps": [
+       "Upload the proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The proof is accepted because it is within the 90-day period."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Refuse proof dated more than 90 days before submission",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The submission date is fixed.",
+       "The proof is dated 91 days before the submission date."
+      ],
+      "steps": [
+       "Upload the proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The proof is refused with reason code ADDRESS_PROOF_OLD."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Accept proof whose address matches the application",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address.",
+       "The proof is an accepted document type, is dated within 90 days, and shows the same address as the application."
+      ],
+      "steps": [
+       "Upload the proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The proof is accepted because its address matches the residential address entered on the application."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Refuse proof whose address does not match the application",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address.",
+       "The proof is an accepted document type and is dated within 90 days, but shows a different address."
+      ],
+      "steps": [
+       "Upload the proof of address.",
+       "Submit the application."
+      ],
+      "expected_result": "The proof is refused with reason code ADDRESS_MISMATCH."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Reject a post office box as the residential address",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant enters a post office box as their residential address."
+      ],
+      "steps": [
+       "Continue the application with the post office box entered as the residential address."
+      ],
+      "expected_result": "The post office box is not accepted as a residential address."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Accept a post office box as a separate correspondence address",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address that is not a post office box.",
+       "The applicant has proof of address for the residential address that meets the document type, date, and address-match requirements."
+      ],
+      "steps": [
+       "Enter a post office box as the separate correspondence address.",
+       "Upload proof of address for the residential address.",
+       "Submit the application."
+      ],
+      "expected_result": "The post office box is accepted as the correspondence address, and only the residential address requires proof."
+     },
+     {
+      "case_id": "TC11",
+      "title": "Require a tax identification number when tax residence differs from residential country",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address in one country.",
+       "The applicant declares tax residence in a different country."
+      ],
+      "steps": [
+       "Declare the country of tax residence.",
+       "Continue to the tax identification number section."
+      ],
+      "expected_result": "The application asks for a tax identification number for the declared country of tax residence and requires it before the applicant can proceed."
+     },
+     {
+      "case_id": "TC12",
+      "title": "Do not ask for a tax identification number when countries match",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "The applicant has entered a residential address in a country.",
+       "The applicant declares tax residence in the same country."
+      ],
+      "steps": [
+       "Declare the country of tax residence.",
+       "Continue through the tax information section."
+      ],
+      "expected_result": "The application does not ask for a tax identification number."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 12,
+   "usage": {
+    "latency_s": 12.74,
+    "input_tokens": 333,
+    "output_tokens": 1794,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K04",
+   "raw_reply": "{\n  \"story_id\": \"K04\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Application submitted immediately before list replacement uses the previous list\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The previous sanctions list contains a full-name-and-date-of-birth match for the test applicant.\",\n        \"The new sanctions list contains no match for the test applicant.\"\n      ],\n      \"steps\": [\n        \"Submit an application at 01:59:59 UTC on the list replacement day.\",\n        \"Inspect the list version used for screening and the screening result.\"\n      ],\n      \"expected_result\": \"The application is screened against the previous day's list and is identified as a match.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Application submitted at list replacement time uses the new list\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The previous sanctions list contains no match for the test applicant.\",\n        \"The new sanctions list contains a full-name-and-date-of-birth match for the test applicant.\"\n      ],\n      \"steps\": [\n        \"Submit an application at exactly 02:00:00 UTC on the list replacement day.\",\n        \"Inspect the list version used for screening and the screening result.\"\n      ],\n      \"expected_result\": \"The application is screened against the new day's list and is identified as a match.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Full name and date-of-birth match blocks the application and alerts compliance\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The active sanctions list contains an entry matching the applicant's full name and date of birth.\",\n        \"The compliance alert mechanism is available.\"\n      ],\n      \"steps\": [\n        \"Submit an application for the matching applicant.\",\n        \"Inspect the application status and compliance alerts.\"\n      ],\n      \"expected_result\": \"The application status is set to BLOCKED, and the compliance team receives an alert for the match.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Full-name-only match sends the application for analyst review\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The active sanctions list contains an entry matching the applicant's full name but not the applicant's date of birth.\"\n      ],\n      \"steps\": [\n        \"Submit an application for the applicant.\",\n        \"Inspect the application status and review queue.\"\n      ],\n      \"expected_result\": \"The application status is set to PENDING_REVIEW and is available for an analyst to decide.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Application with no sanctions-list match passes screening\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The active sanctions list contains no match for the applicant.\"\n      ],\n      \"steps\": [\n        \"Submit an application for the applicant.\",\n        \"Inspect the screening result and application progression.\"\n      ],\n      \"expected_result\": \"Screening passes, and the application continues through the account-opening process.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Blocked applicant sees the approved message without sanctions details\",\n      \"covers\": [\"AC2\", \"AC5\"],\n      \"preconditions\": [\n        \"The active sanctions list contains an entry matching the applicant's full name and date of birth.\"\n      ],\n      \"steps\": [\n        \"Submit an application for the matching applicant.\",\n        \"View the applicant-facing application outcome.\"\n      ],\n      \"expected_result\": \"The application is BLOCKED, and the applicant is shown exactly: \\\"We cannot open an account at this time\\\". The message and applicant-facing outcome do not disclose or imply that the block was caused by a sanctions match.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K04",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Application submitted immediately before list replacement uses the previous list",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The previous sanctions list contains a full-name-and-date-of-birth match for the test applicant.",
+       "The new sanctions list contains no match for the test applicant."
+      ],
+      "steps": [
+       "Submit an application at 01:59:59 UTC on the list replacement day.",
+       "Inspect the list version used for screening and the screening result."
+      ],
+      "expected_result": "The application is screened against the previous day's list and is identified as a match."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Application submitted at list replacement time uses the new list",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The previous sanctions list contains no match for the test applicant.",
+       "The new sanctions list contains a full-name-and-date-of-birth match for the test applicant."
+      ],
+      "steps": [
+       "Submit an application at exactly 02:00:00 UTC on the list replacement day.",
+       "Inspect the list version used for screening and the screening result."
+      ],
+      "expected_result": "The application is screened against the new day's list and is identified as a match."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Full name and date-of-birth match blocks the application and alerts compliance",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The active sanctions list contains an entry matching the applicant's full name and date of birth.",
+       "The compliance alert mechanism is available."
+      ],
+      "steps": [
+       "Submit an application for the matching applicant.",
+       "Inspect the application status and compliance alerts."
+      ],
+      "expected_result": "The application status is set to BLOCKED, and the compliance team receives an alert for the match."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Full-name-only match sends the application for analyst review",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The active sanctions list contains an entry matching the applicant's full name but not the applicant's date of birth."
+      ],
+      "steps": [
+       "Submit an application for the applicant.",
+       "Inspect the application status and review queue."
+      ],
+      "expected_result": "The application status is set to PENDING_REVIEW and is available for an analyst to decide."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Application with no sanctions-list match passes screening",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The active sanctions list contains no match for the applicant."
+      ],
+      "steps": [
+       "Submit an application for the applicant.",
+       "Inspect the screening result and application progression."
+      ],
+      "expected_result": "Screening passes, and the application continues through the account-opening process."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Blocked applicant sees the approved message without sanctions details",
+      "covers": [
+       "AC2",
+       "AC5"
+      ],
+      "preconditions": [
+       "The active sanctions list contains an entry matching the applicant's full name and date of birth."
+      ],
+      "steps": [
+       "Submit an application for the matching applicant.",
+       "View the applicant-facing application outcome."
+      ],
+      "expected_result": "The application is BLOCKED, and the applicant is shown exactly: \"We cannot open an account at this time\". The message and applicant-facing outcome do not disclose or imply that the block was caused by a sanctions match."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 6,
+   "usage": {
+    "latency_s": 8.29,
+    "input_tokens": 329,
+    "output_tokens": 1002,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K05",
+   "raw_reply": "{\n  \"story_id\": \"K05\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Screen every application against the PEP list on submission\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The PEP list is available to the application screening system.\",\n        \"An applicant has details that do not match an entry on the PEP list.\"\n      ],\n      \"steps\": [\n        \"Submit the applicant's application.\",\n        \"Check the application's screening result or screening record.\"\n      ],\n      \"expected_result\": \"The application is checked against the PEP list upon submission, and the screening result is recorded.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Set a direct PEP match to HIGH risk when the risk score is low\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"The PEP list contains an entry matching the applicant.\",\n        \"The applicant's calculated risk score would otherwise result in a rating below HIGH.\"\n      ],\n      \"steps\": [\n        \"Submit the applicant's application.\",\n        \"Review the PEP screening result and customer risk rating.\"\n      ],\n      \"expected_result\": \"The application is screened, the applicant is identified as a PEP, and the customer's risk rating is HIGH despite the lower risk score.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Keep a PEP match at HIGH risk when the risk score is already high\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"The PEP list contains an entry matching the applicant.\",\n        \"The applicant's calculated risk score would result in a HIGH risk rating.\"\n      ],\n      \"steps\": [\n        \"Submit the applicant's application.\",\n        \"Review the PEP screening result and customer risk rating.\"\n      ],\n      \"expected_result\": \"The application is screened, the applicant is identified as a PEP, and the customer's risk rating is HIGH.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Prevent a non-senior compliance officer from approving a PEP application\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"An application has been identified as a PEP application.\",\n        \"A compliance officer who is not a senior compliance officer is signed in.\"\n      ],\n      \"steps\": [\n        \"Open the PEP application.\",\n        \"Attempt to approve the application.\"\n      ],\n      \"expected_result\": \"The approval is blocked, and the application remains unapproved.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Allow a senior compliance officer to approve a PEP application\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"An application has been identified as a PEP application.\",\n        \"A senior compliance officer is signed in.\"\n      ],\n      \"steps\": [\n        \"Open the PEP application.\",\n        \"Approve the application.\"\n      ],\n      \"expected_result\": \"The senior compliance officer can approve the PEP application, and the approval is recorded.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Treat a close family member of a PEP as a PEP\",\n      \"covers\": [\"AC1\", \"AC2\", \"AC4\"],\n      \"preconditions\": [\n        \"The PEP list contains an entry for a person identified as a PEP.\",\n        \"The applicant is recorded as a close family member of that person.\",\n        \"The applicant's calculated risk score would otherwise result in a rating below HIGH.\"\n      ],\n      \"steps\": [\n        \"Submit the applicant's application.\",\n        \"Review the screening result and customer risk rating.\"\n      ],\n      \"expected_result\": \"The application is screened, the applicant is identified as a PEP because of the close family relationship, and the customer's risk rating is HIGH.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Treat a close associate of a PEP as a PEP\",\n      \"covers\": [\"AC1\", \"AC2\", \"AC4\"],\n      \"preconditions\": [\n        \"The PEP list contains an entry for a person identified as a PEP.\",\n        \"The applicant is recorded as a close associate of that person.\",\n        \"The applicant's calculated risk score would otherwise result in a rating below HIGH.\"\n      ],\n      \"steps\": [\n        \"Submit the applicant's application.\",\n        \"Review the screening result and customer risk rating.\"\n      ],\n      \"expected_result\": \"The application is screened, the applicant is identified as a PEP because of the close association, and the customer's risk rating is HIGH.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K05",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Screen every application against the PEP list on submission",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The PEP list is available to the application screening system.",
+       "An applicant has details that do not match an entry on the PEP list."
+      ],
+      "steps": [
+       "Submit the applicant's application.",
+       "Check the application's screening result or screening record."
+      ],
+      "expected_result": "The application is checked against the PEP list upon submission, and the screening result is recorded."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Set a direct PEP match to HIGH risk when the risk score is low",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "The PEP list contains an entry matching the applicant.",
+       "The applicant's calculated risk score would otherwise result in a rating below HIGH."
+      ],
+      "steps": [
+       "Submit the applicant's application.",
+       "Review the PEP screening result and customer risk rating."
+      ],
+      "expected_result": "The application is screened, the applicant is identified as a PEP, and the customer's risk rating is HIGH despite the lower risk score."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Keep a PEP match at HIGH risk when the risk score is already high",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "The PEP list contains an entry matching the applicant.",
+       "The applicant's calculated risk score would result in a HIGH risk rating."
+      ],
+      "steps": [
+       "Submit the applicant's application.",
+       "Review the PEP screening result and customer risk rating."
+      ],
+      "expected_result": "The application is screened, the applicant is identified as a PEP, and the customer's risk rating is HIGH."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Prevent a non-senior compliance officer from approving a PEP application",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "An application has been identified as a PEP application.",
+       "A compliance officer who is not a senior compliance officer is signed in."
+      ],
+      "steps": [
+       "Open the PEP application.",
+       "Attempt to approve the application."
+      ],
+      "expected_result": "The approval is blocked, and the application remains unapproved."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Allow a senior compliance officer to approve a PEP application",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "An application has been identified as a PEP application.",
+       "A senior compliance officer is signed in."
+      ],
+      "steps": [
+       "Open the PEP application.",
+       "Approve the application."
+      ],
+      "expected_result": "The senior compliance officer can approve the PEP application, and the approval is recorded."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Treat a close family member of a PEP as a PEP",
+      "covers": [
+       "AC1",
+       "AC2",
+       "AC4"
+      ],
+      "preconditions": [
+       "The PEP list contains an entry for a person identified as a PEP.",
+       "The applicant is recorded as a close family member of that person.",
+       "The applicant's calculated risk score would otherwise result in a rating below HIGH."
+      ],
+      "steps": [
+       "Submit the applicant's application.",
+       "Review the screening result and customer risk rating."
+      ],
+      "expected_result": "The application is screened, the applicant is identified as a PEP because of the close family relationship, and the customer's risk rating is HIGH."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Treat a close associate of a PEP as a PEP",
+      "covers": [
+       "AC1",
+       "AC2",
+       "AC4"
+      ],
+      "preconditions": [
+       "The PEP list contains an entry for a person identified as a PEP.",
+       "The applicant is recorded as a close associate of that person.",
+       "The applicant's calculated risk score would otherwise result in a rating below HIGH."
+      ],
+      "steps": [
+       "Submit the applicant's application.",
+       "Review the screening result and customer risk rating."
+      ],
+      "expected_result": "The application is screened, the applicant is identified as a PEP because of the close association, and the customer's risk rating is HIGH."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 7,
+   "usage": {
+    "latency_s": 8.27,
+    "input_tokens": 236,
+    "output_tokens": 1202,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K06",
+   "raw_reply": "{\n  \"story_id\": \"K06\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Risk score is a whole number within the permitted range\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A new customer has inputs that produce a risk score of 0 before any high-risk country adjustment.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the returned risk score and its data type.\"\n      ],\n      \"expected_result\": \"The risk score is the whole number 0 and is within the range 0 to 100.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Score of 39 is rated LOW\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A new customer has inputs that produce a final risk score of 39.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score and rating.\"\n      ],\n      \"expected_result\": \"The final score is the whole number 39 and the rating is LOW.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Score of 40 is rated MEDIUM\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A new customer has inputs that produce a final risk score of 40.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score and rating.\"\n      ],\n      \"expected_result\": \"The final score is the whole number 40 and the rating is MEDIUM.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Score of 69 is rated MEDIUM\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A new customer has inputs that produce a final risk score of 69.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score and rating.\"\n      ],\n      \"expected_result\": \"The final score is the whole number 69 and the rating is MEDIUM.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Score of 70 is rated HIGH\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A new customer has inputs that produce a final risk score of 70.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score and rating.\"\n      ],\n      \"expected_result\": \"The final score is the whole number 70 and the rating is HIGH.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"High-risk country adjustment adds 30 points\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The customer's pre-adjustment score is 25.\",\n        \"The customer's country of residence is on the high-risk country list in force on the rating calculation date.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score.\"\n      ],\n      \"expected_result\": \"The final score is the whole number 55, reflecting the addition of 30 points.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Country not on the applicable high-risk list receives no country adjustment\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The customer's pre-adjustment score is 25.\",\n        \"The customer's country of residence is not on the high-risk country list in force on the rating calculation date.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score.\"\n      ],\n      \"expected_result\": \"The final score remains the whole number 25; no 30-point country adjustment is applied.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"High-risk country adjustment is capped at 100\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The customer's pre-adjustment score is 80.\",\n        \"The customer's country of residence is on the high-risk country list in force on the rating calculation date.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the final score.\"\n      ],\n      \"expected_result\": \"The final score is the whole number 100 and does not exceed the maximum permitted score.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Rating uses the high-risk country list in force on the calculation date\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The customer's pre-adjustment score is 20.\",\n        \"The country is absent from the high-risk list before a configured effective date and present on the list from that date onward.\"\n      ],\n      \"steps\": [\n        \"Calculate a rating for the customer on a date before the list change takes effect.\",\n        \"Calculate a rating for the same customer on the list change's effective date.\"\n      ],\n      \"expected_result\": \"The rating calculated before the effective date has a score of 20. The rating calculated on the effective date has a score of 50.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"HIGH rating opens EDD and blocks account opening until approval\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"A new customer's final risk score will be 70 or higher.\",\n        \"An analyst is available to review EDD cases.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Attempt to open the account before an analyst has reviewed the EDD case.\",\n        \"Verify that the applicant is asked to provide a source-of-funds document.\",\n        \"Submit the source-of-funds document and leave the EDD case awaiting analyst review.\",\n        \"Attempt to open the account again.\",\n        \"Have an analyst approve the EDD case.\",\n        \"Attempt to open the account.\"\n      ],\n      \"expected_result\": \"The HIGH rating opens an EDD case before account opening and requests a source-of-funds document. The account remains unopened while the EDD case is awaiting approval and can be opened after an analyst approves the case.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"MEDIUM rating does not open a HIGH-rating EDD case\",\n      \"covers\": [\"AC2\", \"AC4\"],\n      \"preconditions\": [\n        \"A new customer's final risk score is 69.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's risk rating.\",\n        \"Inspect the rating and any EDD case created for the customer.\"\n      ],\n      \"expected_result\": \"The customer is rated MEDIUM and no EDD case is opened by the HIGH-rating rule.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K06",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Risk score is a whole number within the permitted range",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A new customer has inputs that produce a risk score of 0 before any high-risk country adjustment."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the returned risk score and its data type."
+      ],
+      "expected_result": "The risk score is the whole number 0 and is within the range 0 to 100."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Score of 39 is rated LOW",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A new customer has inputs that produce a final risk score of 39."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score and rating."
+      ],
+      "expected_result": "The final score is the whole number 39 and the rating is LOW."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Score of 40 is rated MEDIUM",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A new customer has inputs that produce a final risk score of 40."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score and rating."
+      ],
+      "expected_result": "The final score is the whole number 40 and the rating is MEDIUM."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Score of 69 is rated MEDIUM",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A new customer has inputs that produce a final risk score of 69."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score and rating."
+      ],
+      "expected_result": "The final score is the whole number 69 and the rating is MEDIUM."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Score of 70 is rated HIGH",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A new customer has inputs that produce a final risk score of 70."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score and rating."
+      ],
+      "expected_result": "The final score is the whole number 70 and the rating is HIGH."
+     },
+     {
+      "case_id": "TC06",
+      "title": "High-risk country adjustment adds 30 points",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The customer's pre-adjustment score is 25.",
+       "The customer's country of residence is on the high-risk country list in force on the rating calculation date."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score."
+      ],
+      "expected_result": "The final score is the whole number 55, reflecting the addition of 30 points."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Country not on the applicable high-risk list receives no country adjustment",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The customer's pre-adjustment score is 25.",
+       "The customer's country of residence is not on the high-risk country list in force on the rating calculation date."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score."
+      ],
+      "expected_result": "The final score remains the whole number 25; no 30-point country adjustment is applied."
+     },
+     {
+      "case_id": "TC08",
+      "title": "High-risk country adjustment is capped at 100",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The customer's pre-adjustment score is 80.",
+       "The customer's country of residence is on the high-risk country list in force on the rating calculation date."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the final score."
+      ],
+      "expected_result": "The final score is the whole number 100 and does not exceed the maximum permitted score."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Rating uses the high-risk country list in force on the calculation date",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The customer's pre-adjustment score is 20.",
+       "The country is absent from the high-risk list before a configured effective date and present on the list from that date onward."
+      ],
+      "steps": [
+       "Calculate a rating for the customer on a date before the list change takes effect.",
+       "Calculate a rating for the same customer on the list change's effective date."
+      ],
+      "expected_result": "The rating calculated before the effective date has a score of 20. The rating calculated on the effective date has a score of 50."
+     },
+     {
+      "case_id": "TC10",
+      "title": "HIGH rating opens EDD and blocks account opening until approval",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "A new customer's final risk score will be 70 or higher.",
+       "An analyst is available to review EDD cases."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Attempt to open the account before an analyst has reviewed the EDD case.",
+       "Verify that the applicant is asked to provide a source-of-funds document.",
+       "Submit the source-of-funds document and leave the EDD case awaiting analyst review.",
+       "Attempt to open the account again.",
+       "Have an analyst approve the EDD case.",
+       "Attempt to open the account."
+      ],
+      "expected_result": "The HIGH rating opens an EDD case before account opening and requests a source-of-funds document. The account remains unopened while the EDD case is awaiting approval and can be opened after an analyst approves the case."
+     },
+     {
+      "case_id": "TC11",
+      "title": "MEDIUM rating does not open a HIGH-rating EDD case",
+      "covers": [
+       "AC2",
+       "AC4"
+      ],
+      "preconditions": [
+       "A new customer's final risk score is 69."
+      ],
+      "steps": [
+       "Calculate the customer's risk rating.",
+       "Inspect the rating and any EDD case created for the customer."
+      ],
+      "expected_result": "The customer is rated MEDIUM and no EDD case is opened by the HIGH-rating rule."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 11,
+   "usage": {
+    "latency_s": 14.14,
+    "input_tokens": 312,
+    "output_tokens": 2068,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K07",
+   "raw_reply": "{\n  \"story_id\": \"K07\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Open an EDD case for a qualifying first deposit\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"A customer account was opened 10 days ago.\",\n        \"The account has not previously received a deposit.\"\n      ],\n      \"steps\": [\n        \"Make a first deposit of 10,000.01.\"\n      ],\n      \"expected_result\": \"An EDD case is opened, and the customer is asked to provide a source-of-funds document within 14 days.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Do not open an EDD case for a first deposit of exactly 10,000.00\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"A customer account was opened 10 days ago.\",\n        \"The account has not previously received a deposit.\"\n      ],\n      \"steps\": [\n        \"Make a first deposit of exactly 10,000.00.\"\n      ],\n      \"expected_result\": \"No EDD case is opened.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Open an EDD case for a qualifying first deposit on day 30\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A customer account was opened exactly 30 days ago.\",\n        \"The account has not previously received a deposit.\"\n      ],\n      \"steps\": [\n        \"Make a first deposit of 10,000.01.\"\n      ],\n      \"expected_result\": \"An EDD case is opened.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Do not open an EDD case for a large first deposit after day 30\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A customer account was opened 31 days ago.\",\n        \"The account has not previously received a deposit.\"\n      ],\n      \"steps\": [\n        \"Make a first deposit of 10,000.01.\"\n      ],\n      \"expected_result\": \"No EDD case is opened.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Keep the account unfrozen when the document is received within 14 days\",\n      \"covers\": [\"AC3\", \"AC4\"],\n      \"preconditions\": [\n        \"An EDD case is open and the customer has been asked for a source-of-funds document.\",\n        \"The account is not frozen.\"\n      ],\n      \"steps\": [\n        \"Submit the requested source-of-funds document within 14 days of the request.\",\n        \"Check the account status.\"\n      ],\n      \"expected_result\": \"The document is received within the required period, and the account does not change to FROZEN due to a missed document deadline.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Freeze the account when the source-of-funds document is not received within 14 days\",\n      \"covers\": [\"AC3\", \"AC4\"],\n      \"preconditions\": [\n        \"An EDD case is open and the customer has been asked for a source-of-funds document.\",\n        \"The account is not frozen.\"\n      ],\n      \"steps\": [\n        \"Allow 14 days to pass without receiving the document.\",\n        \"Check the account status.\"\n      ],\n      \"expected_result\": \"The account status changes to FROZEN.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Block withdrawals and transfers from a frozen account until the EDD case is closed\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The account is FROZEN because the source-of-funds document was not received within 14 days.\",\n        \"The EDD case is still open.\"\n      ],\n      \"steps\": [\n        \"Attempt to make a withdrawal.\",\n        \"Attempt to make a transfer.\",\n        \"Have an analyst close the EDD case.\",\n        \"Attempt a withdrawal and a transfer again.\"\n      ],\n      \"expected_result\": \"The withdrawal and transfer are blocked while the account is frozen and the EDD case is open. After the analyst closes the EDD case, the account is no longer prevented from making withdrawals or transfers by this restriction.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K07",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Open an EDD case for a qualifying first deposit",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "A customer account was opened 10 days ago.",
+       "The account has not previously received a deposit."
+      ],
+      "steps": [
+       "Make a first deposit of 10,000.01."
+      ],
+      "expected_result": "An EDD case is opened, and the customer is asked to provide a source-of-funds document within 14 days."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Do not open an EDD case for a first deposit of exactly 10,000.00",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "A customer account was opened 10 days ago.",
+       "The account has not previously received a deposit."
+      ],
+      "steps": [
+       "Make a first deposit of exactly 10,000.00."
+      ],
+      "expected_result": "No EDD case is opened."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Open an EDD case for a qualifying first deposit on day 30",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A customer account was opened exactly 30 days ago.",
+       "The account has not previously received a deposit."
+      ],
+      "steps": [
+       "Make a first deposit of 10,000.01."
+      ],
+      "expected_result": "An EDD case is opened."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Do not open an EDD case for a large first deposit after day 30",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A customer account was opened 31 days ago.",
+       "The account has not previously received a deposit."
+      ],
+      "steps": [
+       "Make a first deposit of 10,000.01."
+      ],
+      "expected_result": "No EDD case is opened."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Keep the account unfrozen when the document is received within 14 days",
+      "covers": [
+       "AC3",
+       "AC4"
+      ],
+      "preconditions": [
+       "An EDD case is open and the customer has been asked for a source-of-funds document.",
+       "The account is not frozen."
+      ],
+      "steps": [
+       "Submit the requested source-of-funds document within 14 days of the request.",
+       "Check the account status."
+      ],
+      "expected_result": "The document is received within the required period, and the account does not change to FROZEN due to a missed document deadline."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Freeze the account when the source-of-funds document is not received within 14 days",
+      "covers": [
+       "AC3",
+       "AC4"
+      ],
+      "preconditions": [
+       "An EDD case is open and the customer has been asked for a source-of-funds document.",
+       "The account is not frozen."
+      ],
+      "steps": [
+       "Allow 14 days to pass without receiving the document.",
+       "Check the account status."
+      ],
+      "expected_result": "The account status changes to FROZEN."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Block withdrawals and transfers from a frozen account until the EDD case is closed",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The account is FROZEN because the source-of-funds document was not received within 14 days.",
+       "The EDD case is still open."
+      ],
+      "steps": [
+       "Attempt to make a withdrawal.",
+       "Attempt to make a transfer.",
+       "Have an analyst close the EDD case.",
+       "Attempt a withdrawal and a transfer again."
+      ],
+      "expected_result": "The withdrawal and transfer are blocked while the account is frozen and the EDD case is open. After the analyst closes the EDD case, the account is no longer prevented from making withdrawals or transfers by this restriction."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 7,
+   "usage": {
+    "latency_s": 8.9,
+    "input_tokens": 288,
+    "output_tokens": 1209,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K08",
+   "raw_reply": "{\n  \"story_id\": \"K08\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Compliance analyst can approve an application pending review\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in.\",\n        \"An application has status PENDING_REVIEW.\",\n        \"The analyst did not submit the application on behalf of the customer.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Choose Approve and confirm the decision.\"\n      ],\n      \"expected_result\": \"The approval is accepted and recorded for the application.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Compliance analyst can reject an application pending review\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in.\",\n        \"An application has status PENDING_REVIEW.\",\n        \"The analyst did not submit the application on behalf of the customer.\",\n        \"The rejection reason list contains at least one selectable reason.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Choose Reject.\",\n        \"Select a reason from the reason list.\",\n        \"Confirm the decision.\"\n      ],\n      \"expected_result\": \"The rejection is accepted with the selected reason.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Non-analyst cannot decide an application pending review\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A user who is not a compliance analyst is signed in.\",\n        \"An application has status PENDING_REVIEW.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Attempt to approve or reject it.\"\n      ],\n      \"expected_result\": \"The user cannot submit either decision, and the application remains undecided.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Analyst cannot decide an application they submitted\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in.\",\n        \"The analyst submitted an application on behalf of a customer.\",\n        \"The application has status PENDING_REVIEW.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Attempt to approve or reject it.\"\n      ],\n      \"expected_result\": \"The analyst cannot submit a decision on the application, and it remains undecided.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Application not pending review cannot be decided\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in.\",\n        \"An application has a status other than PENDING_REVIEW.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Attempt to approve or reject it.\"\n      ],\n      \"expected_result\": \"The decision is not accepted for the application.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Rejecting without a reason is blocked\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in.\",\n        \"An application has status PENDING_REVIEW.\",\n        \"The analyst did not submit the application on behalf of the customer.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Choose Reject.\",\n        \"Leave the reason unselected.\",\n        \"Attempt to confirm the decision.\"\n      ],\n      \"expected_result\": \"The rejection is not accepted, and the application remains undecided until a reason is selected.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Rejecting with a reason not in the reason list is blocked\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in.\",\n        \"An application has status PENDING_REVIEW.\",\n        \"The analyst did not submit the application on behalf of the customer.\"\n      ],\n      \"steps\": [\n        \"Open the application.\",\n        \"Choose Reject.\",\n        \"Attempt to submit a reason that is not in the reason list.\"\n      ],\n      \"expected_result\": \"The rejection is not accepted unless a reason from the reason list is selected.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Decision record contains analyst, timestamp, decision, and reason\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"A compliance analyst is signed in and has a known analyst ID.\",\n        \"An application has status PENDING_REVIEW.\",\n        \"The analyst did not submit the application on behalf of the customer.\",\n        \"The decision record can be inspected.\"\n      ],\n      \"steps\": [\n        \"Reject the application using a reason from the reason list.\",\n        \"Inspect the recorded decision.\"\n      ],\n      \"expected_result\": \"The decision record contains the analyst's ID, the decision date and time, the rejection decision, and the selected reason.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Applicant receives decision outcome email within one business day\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"An application has an applicant email address.\",\n        \"A valid decision can be made on the application.\",\n        \"Email delivery records or a test mailbox can be inspected.\"\n      ],\n      \"steps\": [\n        \"Make a decision on the application.\",\n        \"Check the applicant's email or email delivery record through the end of the next business day.\"\n      ],\n      \"expected_result\": \"The applicant receives an email stating the decision outcome no later than one business day after the decision.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Decision time is shown in each viewer's time zone and required format\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\n        \"A decision has been recorded at a known instant.\",\n        \"The staff user's time zone and the applicant's time zone are configured and differ.\",\n        \"The decision time can be viewed by staff and by the applicant.\"\n      ],\n      \"steps\": [\n        \"View the decision as staff.\",\n        \"View the decision as the applicant.\",\n        \"Compare each displayed time with the recorded instant converted to that viewer's time zone.\"\n      ],\n      \"expected_result\": \"Staff see the decision time in their time zone using 24-hour format, such as 14:05. The applicant sees the same instant in their time zone using 12-hour format with AM or PM, such as 2:05 PM.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Midnight decision time uses the specified formats\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\n        \"A decision is recorded at midnight in the configured staff and applicant time zone.\",\n        \"Staff and applicant views of the decision are available.\"\n      ],\n      \"steps\": [\n        \"View the decision as staff.\",\n        \"View the decision as the applicant.\"\n      ],\n      \"expected_result\": \"Staff see the decision time as 00:00, and the applicant sees it as 12:00 AM.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K08",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Compliance analyst can approve an application pending review",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in.",
+       "An application has status PENDING_REVIEW.",
+       "The analyst did not submit the application on behalf of the customer."
+      ],
+      "steps": [
+       "Open the application.",
+       "Choose Approve and confirm the decision."
+      ],
+      "expected_result": "The approval is accepted and recorded for the application."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Compliance analyst can reject an application pending review",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in.",
+       "An application has status PENDING_REVIEW.",
+       "The analyst did not submit the application on behalf of the customer.",
+       "The rejection reason list contains at least one selectable reason."
+      ],
+      "steps": [
+       "Open the application.",
+       "Choose Reject.",
+       "Select a reason from the reason list.",
+       "Confirm the decision."
+      ],
+      "expected_result": "The rejection is accepted with the selected reason."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Non-analyst cannot decide an application pending review",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A user who is not a compliance analyst is signed in.",
+       "An application has status PENDING_REVIEW."
+      ],
+      "steps": [
+       "Open the application.",
+       "Attempt to approve or reject it."
+      ],
+      "expected_result": "The user cannot submit either decision, and the application remains undecided."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Analyst cannot decide an application they submitted",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in.",
+       "The analyst submitted an application on behalf of a customer.",
+       "The application has status PENDING_REVIEW."
+      ],
+      "steps": [
+       "Open the application.",
+       "Attempt to approve or reject it."
+      ],
+      "expected_result": "The analyst cannot submit a decision on the application, and it remains undecided."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Application not pending review cannot be decided",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in.",
+       "An application has a status other than PENDING_REVIEW."
+      ],
+      "steps": [
+       "Open the application.",
+       "Attempt to approve or reject it."
+      ],
+      "expected_result": "The decision is not accepted for the application."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Rejecting without a reason is blocked",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in.",
+       "An application has status PENDING_REVIEW.",
+       "The analyst did not submit the application on behalf of the customer."
+      ],
+      "steps": [
+       "Open the application.",
+       "Choose Reject.",
+       "Leave the reason unselected.",
+       "Attempt to confirm the decision."
+      ],
+      "expected_result": "The rejection is not accepted, and the application remains undecided until a reason is selected."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Rejecting with a reason not in the reason list is blocked",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in.",
+       "An application has status PENDING_REVIEW.",
+       "The analyst did not submit the application on behalf of the customer."
+      ],
+      "steps": [
+       "Open the application.",
+       "Choose Reject.",
+       "Attempt to submit a reason that is not in the reason list."
+      ],
+      "expected_result": "The rejection is not accepted unless a reason from the reason list is selected."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Decision record contains analyst, timestamp, decision, and reason",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "A compliance analyst is signed in and has a known analyst ID.",
+       "An application has status PENDING_REVIEW.",
+       "The analyst did not submit the application on behalf of the customer.",
+       "The decision record can be inspected."
+      ],
+      "steps": [
+       "Reject the application using a reason from the reason list.",
+       "Inspect the recorded decision."
+      ],
+      "expected_result": "The decision record contains the analyst's ID, the decision date and time, the rejection decision, and the selected reason."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Applicant receives decision outcome email within one business day",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "An application has an applicant email address.",
+       "A valid decision can be made on the application.",
+       "Email delivery records or a test mailbox can be inspected."
+      ],
+      "steps": [
+       "Make a decision on the application.",
+       "Check the applicant's email or email delivery record through the end of the next business day."
+      ],
+      "expected_result": "The applicant receives an email stating the decision outcome no later than one business day after the decision."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Decision time is shown in each viewer's time zone and required format",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "A decision has been recorded at a known instant.",
+       "The staff user's time zone and the applicant's time zone are configured and differ.",
+       "The decision time can be viewed by staff and by the applicant."
+      ],
+      "steps": [
+       "View the decision as staff.",
+       "View the decision as the applicant.",
+       "Compare each displayed time with the recorded instant converted to that viewer's time zone."
+      ],
+      "expected_result": "Staff see the decision time in their time zone using 24-hour format, such as 14:05. The applicant sees the same instant in their time zone using 12-hour format with AM or PM, such as 2:05 PM."
+     },
+     {
+      "case_id": "TC11",
+      "title": "Midnight decision time uses the specified formats",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "A decision is recorded at midnight in the configured staff and applicant time zone.",
+       "Staff and applicant views of the decision are available."
+      ],
+      "steps": [
+       "View the decision as staff.",
+       "View the decision as the applicant."
+      ],
+      "expected_result": "Staff see the decision time as 00:00, and the applicant sees it as 12:00 AM."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 11,
+   "usage": {
+    "latency_s": 13.32,
+    "input_tokens": 334,
+    "output_tokens": 1942,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K09",
+   "raw_reply": "{\n  \"story_id\": \"K09\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Calculate next review due date for HIGH-risk customer\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A customer has HIGH risk and a recorded last review date of 2025-03-10.\",\n        \"The customer's local calendar has no non-business days affecting the calculated due date.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The next review due date is 2026-03-10, 12 months after the last review.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Calculate next review due date for MEDIUM-risk customer\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A customer has MEDIUM risk and a recorded last review date of 2025-03-10.\",\n        \"The customer's local calendar has no non-business days affecting the calculated due date.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The next review due date is 2027-03-10, 24 months after the last review.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Calculate next review due date for LOW-risk customer\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"A customer has LOW risk and a recorded last review date of 2025-03-10.\",\n        \"The customer's local calendar has no non-business days affecting the calculated due date.\"\n      ],\n      \"steps\": [\n        \"Calculate the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The next review due date is 2028-03-10, 36 months after the last review.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Move a Saturday review due date to the next business day\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A customer's calculated review due date is Saturday, 2026-05-16.\",\n        \"Monday, 2026-05-18 is a business day and is not a public holiday.\"\n      ],\n      \"steps\": [\n        \"Calculate and schedule the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The review due date is moved to Monday, 2026-05-18.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Move a Sunday review due date to the next business day\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A customer's calculated review due date is Sunday, 2026-05-17.\",\n        \"Monday, 2026-05-18 is a business day and is not a public holiday.\"\n      ],\n      \"steps\": [\n        \"Calculate and schedule the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The review due date is moved to Monday, 2026-05-18.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Move a review due date falling on a public holiday to the next business day\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A customer's calculated review due date is Thursday, 2026-07-02.\",\n        \"Thursday, 2026-07-02 is a public holiday in the customer's applicable calendar.\",\n        \"Friday, 2026-07-03 is a business day.\"\n      ],\n      \"steps\": [\n        \"Calculate and schedule the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The review due date is moved to Friday, 2026-07-03.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Move a due date past consecutive non-business days\",\n      \"covers\": [\"AC1\", \"AC2\"],\n      \"preconditions\": [\n        \"A customer's calculated review due date is Saturday, 2026-05-16.\",\n        \"Monday, 2026-05-18 is a public holiday.\",\n        \"Tuesday, 2026-05-19 is the next business day.\"\n      ],\n      \"steps\": [\n        \"Calculate and schedule the customer's next review due date.\"\n      ],\n      \"expected_result\": \"The review due date is moved to Tuesday, 2026-05-19, the next business day after the weekend and public holiday.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Do not restrict an account before the end of its due date\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A customer has not completed a review due on 2026-06-15.\",\n        \"The customer's time zone is America/New_York.\",\n        \"The current time is 2026-06-15 23:58 in the customer's time zone.\",\n        \"The account status is ACTIVE.\"\n      ],\n      \"steps\": [\n        \"Run the review-due status processing.\"\n      ],\n      \"expected_result\": \"The account remains ACTIVE because the due date has not ended in the customer's time zone.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Restrict an account at the end of the due date in the customer's time zone\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A customer has not completed a review due on 2026-06-15.\",\n        \"The customer's time zone is America/New_York.\",\n        \"The current time is 2026-06-15 23:59 in the customer's time zone.\",\n        \"The account status is ACTIVE.\"\n      ],\n      \"steps\": [\n        \"Run the review-due status processing.\"\n      ],\n      \"expected_result\": \"The account status changes to RESTRICTED at the end of the due date in the customer's time zone.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Apply the due-date cutoff using the customer's time zone\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A customer has not completed a review due on 2026-06-15.\",\n        \"The customer's time zone is America/Los_Angeles.\",\n        \"The current UTC time is 2026-06-16 06:59, which is 2026-06-15 23:59 in the customer's time zone.\",\n        \"The account status is ACTIVE.\"\n      ],\n      \"steps\": [\n        \"Run the review-due status processing.\"\n      ],\n      \"expected_result\": \"The account status changes to RESTRICTED because the due date has ended in the customer's time zone.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Allow withdrawals from a RESTRICTED account\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"A customer account is RESTRICTED because its review is overdue.\",\n        \"The account has sufficient funds for the withdrawal.\"\n      ],\n      \"steps\": [\n        \"Submit a withdrawal from the account.\"\n      ],\n      \"expected_result\": \"The withdrawal is allowed and processed.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"Block deposits to a RESTRICTED account\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"A customer account is RESTRICTED because its review is overdue.\"\n      ],\n      \"steps\": [\n        \"Submit a deposit to the account.\"\n      ],\n      \"expected_result\": \"The deposit is rejected and no funds are added to the account.\"\n    },\n    {\n      \"case_id\": \"TC13\",\n      \"title\": \"Block transfers from a RESTRICTED account\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"A customer account is RESTRICTED because its review is overdue.\",\n        \"A valid destination account is available.\"\n      ],\n      \"steps\": [\n        \"Submit a transfer from the restricted account to the destination account.\"\n      ],\n      \"expected_result\": \"The transfer is rejected and no funds are moved.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K09",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Calculate next review due date for HIGH-risk customer",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A customer has HIGH risk and a recorded last review date of 2025-03-10.",
+       "The customer's local calendar has no non-business days affecting the calculated due date."
+      ],
+      "steps": [
+       "Calculate the customer's next review due date."
+      ],
+      "expected_result": "The next review due date is 2026-03-10, 12 months after the last review."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Calculate next review due date for MEDIUM-risk customer",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A customer has MEDIUM risk and a recorded last review date of 2025-03-10.",
+       "The customer's local calendar has no non-business days affecting the calculated due date."
+      ],
+      "steps": [
+       "Calculate the customer's next review due date."
+      ],
+      "expected_result": "The next review due date is 2027-03-10, 24 months after the last review."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Calculate next review due date for LOW-risk customer",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "A customer has LOW risk and a recorded last review date of 2025-03-10.",
+       "The customer's local calendar has no non-business days affecting the calculated due date."
+      ],
+      "steps": [
+       "Calculate the customer's next review due date."
+      ],
+      "expected_result": "The next review due date is 2028-03-10, 36 months after the last review."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Move a Saturday review due date to the next business day",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A customer's calculated review due date is Saturday, 2026-05-16.",
+       "Monday, 2026-05-18 is a business day and is not a public holiday."
+      ],
+      "steps": [
+       "Calculate and schedule the customer's next review due date."
+      ],
+      "expected_result": "The review due date is moved to Monday, 2026-05-18."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Move a Sunday review due date to the next business day",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A customer's calculated review due date is Sunday, 2026-05-17.",
+       "Monday, 2026-05-18 is a business day and is not a public holiday."
+      ],
+      "steps": [
+       "Calculate and schedule the customer's next review due date."
+      ],
+      "expected_result": "The review due date is moved to Monday, 2026-05-18."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Move a review due date falling on a public holiday to the next business day",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A customer's calculated review due date is Thursday, 2026-07-02.",
+       "Thursday, 2026-07-02 is a public holiday in the customer's applicable calendar.",
+       "Friday, 2026-07-03 is a business day."
+      ],
+      "steps": [
+       "Calculate and schedule the customer's next review due date."
+      ],
+      "expected_result": "The review due date is moved to Friday, 2026-07-03."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Move a due date past consecutive non-business days",
+      "covers": [
+       "AC1",
+       "AC2"
+      ],
+      "preconditions": [
+       "A customer's calculated review due date is Saturday, 2026-05-16.",
+       "Monday, 2026-05-18 is a public holiday.",
+       "Tuesday, 2026-05-19 is the next business day."
+      ],
+      "steps": [
+       "Calculate and schedule the customer's next review due date."
+      ],
+      "expected_result": "The review due date is moved to Tuesday, 2026-05-19, the next business day after the weekend and public holiday."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Do not restrict an account before the end of its due date",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "A customer has not completed a review due on 2026-06-15.",
+       "The customer's time zone is America/New_York.",
+       "The current time is 2026-06-15 23:58 in the customer's time zone.",
+       "The account status is ACTIVE."
+      ],
+      "steps": [
+       "Run the review-due status processing."
+      ],
+      "expected_result": "The account remains ACTIVE because the due date has not ended in the customer's time zone."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Restrict an account at the end of the due date in the customer's time zone",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "A customer has not completed a review due on 2026-06-15.",
+       "The customer's time zone is America/New_York.",
+       "The current time is 2026-06-15 23:59 in the customer's time zone.",
+       "The account status is ACTIVE."
+      ],
+      "steps": [
+       "Run the review-due status processing."
+      ],
+      "expected_result": "The account status changes to RESTRICTED at the end of the due date in the customer's time zone."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Apply the due-date cutoff using the customer's time zone",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "A customer has not completed a review due on 2026-06-15.",
+       "The customer's time zone is America/Los_Angeles.",
+       "The current UTC time is 2026-06-16 06:59, which is 2026-06-15 23:59 in the customer's time zone.",
+       "The account status is ACTIVE."
+      ],
+      "steps": [
+       "Run the review-due status processing."
+      ],
+      "expected_result": "The account status changes to RESTRICTED because the due date has ended in the customer's time zone."
+     },
+     {
+      "case_id": "TC11",
+      "title": "Allow withdrawals from a RESTRICTED account",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "A customer account is RESTRICTED because its review is overdue.",
+       "The account has sufficient funds for the withdrawal."
+      ],
+      "steps": [
+       "Submit a withdrawal from the account."
+      ],
+      "expected_result": "The withdrawal is allowed and processed."
+     },
+     {
+      "case_id": "TC12",
+      "title": "Block deposits to a RESTRICTED account",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "A customer account is RESTRICTED because its review is overdue."
+      ],
+      "steps": [
+       "Submit a deposit to the account."
+      ],
+      "expected_result": "The deposit is rejected and no funds are added to the account."
+     },
+     {
+      "case_id": "TC13",
+      "title": "Block transfers from a RESTRICTED account",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "A customer account is RESTRICTED because its review is overdue.",
+       "A valid destination account is available."
+      ],
+      "steps": [
+       "Submit a transfer from the restricted account to the destination account."
+      ],
+      "expected_result": "The transfer is rejected and no funds are moved."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 13,
+   "usage": {
+    "latency_s": 14.52,
+    "input_tokens": 274,
+    "output_tokens": 2002,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K10",
+   "raw_reply": "{\n  \"story_id\": \"K10\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Application contains the four steps in the required order\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The applicant has not started an application.\"\n      ],\n      \"steps\": [\n        \"Start a new application.\",\n        \"Observe the step names and their order.\",\n        \"Proceed through the application using the next-step controls.\"\n      ],\n      \"expected_result\": \"The application steps are presented in this order: personal details, address, documents, declaration.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Applicant must be logged in to start an application\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The applicant is logged out.\",\n        \"No application is currently open.\"\n      ],\n      \"steps\": [\n        \"Attempt to start a new application.\"\n      ],\n      \"expected_result\": \"The applicant cannot start an application while logged out and is prompted to log in or is taken to the login page.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Applicant must be logged in to resume an application\",\n      \"covers\": [\"AC2\", \"AC3\"],\n      \"preconditions\": [\n        \"A saved draft exists for the applicant.\",\n        \"The applicant is logged out.\"\n      ],\n      \"steps\": [\n        \"Attempt to resume the saved draft.\"\n      ],\n      \"expected_result\": \"The applicant cannot access or resume the draft while logged out and is prompted to log in or is taken to the login page.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Save and resume a draft from the personal details step\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The applicant has started a new application and is on the personal details step.\"\n      ],\n      \"steps\": [\n        \"Enter valid personal details.\",\n        \"Save the application as a draft.\",\n        \"Leave the application.\",\n        \"Return to the application and select the saved draft.\"\n      ],\n      \"expected_result\": \"The draft is available to resume, opens at the personal details step, and retains the entered personal details.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Save and resume a draft from the address step\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The applicant has completed personal details and is on the address step.\"\n      ],\n      \"steps\": [\n        \"Enter valid address details.\",\n        \"Save the application as a draft.\",\n        \"Leave the application.\",\n        \"Return to the application and select the saved draft.\"\n      ],\n      \"expected_result\": \"The draft is available to resume, opens at the address step, and retains the entered personal details and address details.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Save and resume a draft from the documents step\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The applicant has completed personal details and address and is on the documents step.\"\n      ],\n      \"steps\": [\n        \"Enter or upload valid document information.\",\n        \"Save the application as a draft.\",\n        \"Leave the application.\",\n        \"Return to the application and select the saved draft.\"\n      ],\n      \"expected_result\": \"The draft is available to resume, opens at the documents step, and retains the information entered in the earlier steps and documents step.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Save and resume a draft from the declaration step\",\n      \"covers\": [\"AC1\", \"AC3\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The applicant has completed personal details, address, and documents and is on the declaration step.\"\n      ],\n      \"steps\": [\n        \"Enter the required declaration information without submitting the application.\",\n        \"Save the application as a draft.\",\n        \"Leave the application.\",\n        \"Return to the application and select the saved draft.\"\n      ],\n      \"expected_result\": \"The draft is available to resume, opens at the declaration step, and retains the information entered in all four steps.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Draft remains available when resumed within 30 days\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"A saved draft exists and is 29 days old.\"\n      ],\n      \"steps\": [\n        \"Open the applicant's saved applications.\",\n        \"Select the draft to resume it.\"\n      ],\n      \"expected_result\": \"The draft is available to resume and its saved application data is retained.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Draft is deleted when it has not been resumed within 30 days\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"A saved draft exists and has not been resumed for more than 30 days.\"\n      ],\n      \"steps\": [\n        \"Log in as the applicant who owns the draft.\",\n        \"Open the applicant's saved applications.\"\n      ],\n      \"expected_result\": \"The expired draft has been deleted and is not available to resume.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Ireland residence requires a county and offers all 26 counties\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is logged in and has opened the address step.\"\n      ],\n      \"steps\": [\n        \"Select Ireland as the country of residence.\",\n        \"Observe the county field and its required status.\",\n        \"Open the county options.\"\n      ],\n      \"expected_result\": \"The county field is displayed and required. It offers exactly these 26 counties: Carlow, Cavan, Clare, Cork, Donegal, Dublin, Galway, Kerry, Kildare, Kilkenny, Laois, Leitrim, Limerick, Longford, Louth, Mayo, Meath, Monaghan, Offaly, Roscommon, Sligo, Tipperary, Waterford, Westmeath, Wexford, and Wicklow.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Ireland address cannot be completed without a county\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is logged in and is on the address step.\",\n        \"Ireland is selected as the country of residence.\"\n      ],\n      \"steps\": [\n        \"Complete all other required address fields.\",\n        \"Leave the county field empty.\",\n        \"Attempt to continue to the documents step.\"\n      ],\n      \"expected_result\": \"The applicant cannot continue, and the county field is identified as required.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"County field is hidden for a non-Ireland country\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is logged in and has opened the address step.\"\n      ],\n      \"steps\": [\n        \"Select a country other than Ireland as the country of residence.\",\n        \"Observe the address fields.\"\n      ],\n      \"expected_result\": \"The county field is hidden.\"\n    },\n    {\n      \"case_id\": \"TC13\",\n      \"title\": \"Changing country from Ireland to another country hides the county field\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The applicant is logged in and has opened the address step.\"\n      ],\n      \"steps\": [\n        \"Select Ireland as the country of residence and observe the county field.\",\n        \"Change the country of residence to a country other than Ireland.\",\n        \"Observe the county field.\"\n      ],\n      \"expected_result\": \"The county field is displayed for Ireland and is hidden after another country is selected.\"\n    },\n    {\n      \"case_id\": \"TC14\",\n      \"title\": \"Application cannot be submitted when personal details are incomplete\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The application has complete address, documents, and declaration information.\"\n      ],\n      \"steps\": [\n        \"Leave at least one required personal details field incomplete.\",\n        \"Attempt to submit the application.\"\n      ],\n      \"expected_result\": \"The application is not submitted because the personal details step is incomplete, and the applicant is informed that the step must be completed.\"\n    },\n    {\n      \"case_id\": \"TC15\",\n      \"title\": \"Application cannot be submitted when the address step is incomplete\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The application has complete personal details, documents, and declaration information.\"\n      ],\n      \"steps\": [\n        \"Leave at least one required address field incomplete.\",\n        \"Attempt to submit the application.\"\n      ],\n      \"expected_result\": \"The application is not submitted because the address step is incomplete, and the applicant is informed that the step must be completed.\"\n    },\n    {\n      \"case_id\": \"TC16\",\n      \"title\": \"Application cannot be submitted when the documents step is incomplete\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The application has complete personal details, address, and declaration information.\"\n      ],\n      \"steps\": [\n        \"Leave at least one required document or document field incomplete.\",\n        \"Attempt to submit the application.\"\n      ],\n      \"expected_result\": \"The application is not submitted because the documents step is incomplete, and the applicant is informed that the step must be completed.\"\n    },\n    {\n      \"case_id\": \"TC17\",\n      \"title\": \"Application cannot be submitted when the declaration step is incomplete\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"The application has complete personal details, address, and documents information.\"\n      ],\n      \"steps\": [\n        \"Leave at least one required declaration field incomplete.\",\n        \"Attempt to submit the application.\"\n      ],\n      \"expected_result\": \"The application is not submitted because the declaration step is incomplete, and the applicant is informed that the step must be completed.\"\n    },\n    {\n      \"case_id\": \"TC18\",\n      \"title\": \"Application can be submitted when all four steps are complete\",\n      \"covers\": [\"AC1\", \"AC5\"],\n      \"preconditions\": [\n        \"The applicant is logged in.\",\n        \"All required fields and information in personal details, address, documents, and declaration are complete.\"\n      ],\n      \"steps\": [\n        \"Review the completed application.\",\n        \"Submit the application.\"\n      ],\n      \"expected_result\": \"The application is submitted successfully.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K10",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Application contains the four steps in the required order",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The applicant has not started an application."
+      ],
+      "steps": [
+       "Start a new application.",
+       "Observe the step names and their order.",
+       "Proceed through the application using the next-step controls."
+      ],
+      "expected_result": "The application steps are presented in this order: personal details, address, documents, declaration."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Applicant must be logged in to start an application",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The applicant is logged out.",
+       "No application is currently open."
+      ],
+      "steps": [
+       "Attempt to start a new application."
+      ],
+      "expected_result": "The applicant cannot start an application while logged out and is prompted to log in or is taken to the login page."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Applicant must be logged in to resume an application",
+      "covers": [
+       "AC2",
+       "AC3"
+      ],
+      "preconditions": [
+       "A saved draft exists for the applicant.",
+       "The applicant is logged out."
+      ],
+      "steps": [
+       "Attempt to resume the saved draft."
+      ],
+      "expected_result": "The applicant cannot access or resume the draft while logged out and is prompted to log in or is taken to the login page."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Save and resume a draft from the personal details step",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The applicant has started a new application and is on the personal details step."
+      ],
+      "steps": [
+       "Enter valid personal details.",
+       "Save the application as a draft.",
+       "Leave the application.",
+       "Return to the application and select the saved draft."
+      ],
+      "expected_result": "The draft is available to resume, opens at the personal details step, and retains the entered personal details."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Save and resume a draft from the address step",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The applicant has completed personal details and is on the address step."
+      ],
+      "steps": [
+       "Enter valid address details.",
+       "Save the application as a draft.",
+       "Leave the application.",
+       "Return to the application and select the saved draft."
+      ],
+      "expected_result": "The draft is available to resume, opens at the address step, and retains the entered personal details and address details."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Save and resume a draft from the documents step",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The applicant has completed personal details and address and is on the documents step."
+      ],
+      "steps": [
+       "Enter or upload valid document information.",
+       "Save the application as a draft.",
+       "Leave the application.",
+       "Return to the application and select the saved draft."
+      ],
+      "expected_result": "The draft is available to resume, opens at the documents step, and retains the information entered in the earlier steps and documents step."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Save and resume a draft from the declaration step",
+      "covers": [
+       "AC1",
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The applicant has completed personal details, address, and documents and is on the declaration step."
+      ],
+      "steps": [
+       "Enter the required declaration information without submitting the application.",
+       "Save the application as a draft.",
+       "Leave the application.",
+       "Return to the application and select the saved draft."
+      ],
+      "expected_result": "The draft is available to resume, opens at the declaration step, and retains the information entered in all four steps."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Draft remains available when resumed within 30 days",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "A saved draft exists and is 29 days old."
+      ],
+      "steps": [
+       "Open the applicant's saved applications.",
+       "Select the draft to resume it."
+      ],
+      "expected_result": "The draft is available to resume and its saved application data is retained."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Draft is deleted when it has not been resumed within 30 days",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "A saved draft exists and has not been resumed for more than 30 days."
+      ],
+      "steps": [
+       "Log in as the applicant who owns the draft.",
+       "Open the applicant's saved applications."
+      ],
+      "expected_result": "The expired draft has been deleted and is not available to resume."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Ireland residence requires a county and offers all 26 counties",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is logged in and has opened the address step."
+      ],
+      "steps": [
+       "Select Ireland as the country of residence.",
+       "Observe the county field and its required status.",
+       "Open the county options."
+      ],
+      "expected_result": "The county field is displayed and required. It offers exactly these 26 counties: Carlow, Cavan, Clare, Cork, Donegal, Dublin, Galway, Kerry, Kildare, Kilkenny, Laois, Leitrim, Limerick, Longford, Louth, Mayo, Meath, Monaghan, Offaly, Roscommon, Sligo, Tipperary, Waterford, Westmeath, Wexford, and Wicklow."
+     },
+     {
+      "case_id": "TC11",
+      "title": "Ireland address cannot be completed without a county",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is logged in and is on the address step.",
+       "Ireland is selected as the country of residence."
+      ],
+      "steps": [
+       "Complete all other required address fields.",
+       "Leave the county field empty.",
+       "Attempt to continue to the documents step."
+      ],
+      "expected_result": "The applicant cannot continue, and the county field is identified as required."
+     },
+     {
+      "case_id": "TC12",
+      "title": "County field is hidden for a non-Ireland country",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is logged in and has opened the address step."
+      ],
+      "steps": [
+       "Select a country other than Ireland as the country of residence.",
+       "Observe the address fields."
+      ],
+      "expected_result": "The county field is hidden."
+     },
+     {
+      "case_id": "TC13",
+      "title": "Changing country from Ireland to another country hides the county field",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The applicant is logged in and has opened the address step."
+      ],
+      "steps": [
+       "Select Ireland as the country of residence and observe the county field.",
+       "Change the country of residence to a country other than Ireland.",
+       "Observe the county field."
+      ],
+      "expected_result": "The county field is displayed for Ireland and is hidden after another country is selected."
+     },
+     {
+      "case_id": "TC14",
+      "title": "Application cannot be submitted when personal details are incomplete",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The application has complete address, documents, and declaration information."
+      ],
+      "steps": [
+       "Leave at least one required personal details field incomplete.",
+       "Attempt to submit the application."
+      ],
+      "expected_result": "The application is not submitted because the personal details step is incomplete, and the applicant is informed that the step must be completed."
+     },
+     {
+      "case_id": "TC15",
+      "title": "Application cannot be submitted when the address step is incomplete",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The application has complete personal details, documents, and declaration information."
+      ],
+      "steps": [
+       "Leave at least one required address field incomplete.",
+       "Attempt to submit the application."
+      ],
+      "expected_result": "The application is not submitted because the address step is incomplete, and the applicant is informed that the step must be completed."
+     },
+     {
+      "case_id": "TC16",
+      "title": "Application cannot be submitted when the documents step is incomplete",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The application has complete personal details, address, and declaration information."
+      ],
+      "steps": [
+       "Leave at least one required document or document field incomplete.",
+       "Attempt to submit the application."
+      ],
+      "expected_result": "The application is not submitted because the documents step is incomplete, and the applicant is informed that the step must be completed."
+     },
+     {
+      "case_id": "TC17",
+      "title": "Application cannot be submitted when the declaration step is incomplete",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "The application has complete personal details, address, and documents information."
+      ],
+      "steps": [
+       "Leave at least one required declaration field incomplete.",
+       "Attempt to submit the application."
+      ],
+      "expected_result": "The application is not submitted because the declaration step is incomplete, and the applicant is informed that the step must be completed."
+     },
+     {
+      "case_id": "TC18",
+      "title": "Application can be submitted when all four steps are complete",
+      "covers": [
+       "AC1",
+       "AC5"
+      ],
+      "preconditions": [
+       "The applicant is logged in.",
+       "All required fields and information in personal details, address, documents, and declaration are complete."
+      ],
+      "steps": [
+       "Review the completed application.",
+       "Submit the application."
+      ],
+      "expected_result": "The application is submitted successfully."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 18,
+   "usage": {
+    "latency_s": 18.56,
+    "input_tokens": 277,
+    "output_tokens": 2905,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K11",
+   "raw_reply": "{\n  \"story_id\": \"K11\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Submit a business application with all required company details\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\"The applicant has a valid company name, company registration number, and country of registration.\", \"The application includes at least one director with a full name and date of birth.\"],\n      \"steps\": [\"Enter the company name, registration number, and country of registration.\", \"Enter the required director details.\", \"Submit the business application.\"],\n      \"expected_result\": \"The application is accepted for submission with all required company details recorded.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Prevent submission when the company name is missing\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\"The application has a registration number and country of registration.\", \"The application includes at least one director with a full name and date of birth.\"],\n      \"steps\": [\"Leave the company name blank.\", \"Submit the business application.\"],\n      \"expected_result\": \"The application cannot be submitted, and the missing company name is identified.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Prevent submission when the registration number is missing\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\"The application has a company name and country of registration.\", \"The application includes at least one director with a full name and date of birth.\"],\n      \"steps\": [\"Leave the company registration number blank.\", \"Submit the business application.\"],\n      \"expected_result\": \"The application cannot be submitted, and the missing registration number is identified.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Prevent submission when the country of registration is missing\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\"The application has a company name and registration number.\", \"The application includes at least one director with a full name and date of birth.\"],\n      \"steps\": [\"Leave the country of registration blank.\", \"Submit the business application.\"],\n      \"expected_result\": \"The application cannot be submitted, and the missing country of registration is identified.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Require at least one director\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\"The application has all required company details.\"],\n      \"steps\": [\"Add no directors to the application.\", \"Attempt to submit the application.\"],\n      \"expected_result\": \"The application cannot be submitted because at least one director is required.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Require each director's full name and date of birth\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\"The application has all required company details and at least one director.\"],\n      \"steps\": [\"Enter a director with a missing or incomplete full name or a missing date of birth.\", \"Attempt to submit the application.\"],\n      \"expected_result\": \"The application cannot be submitted until every director has a full name and date of birth.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Identify owners above the threshold and exclude an owner at exactly 25%\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\"The application has valid company and director details.\", \"Ownership percentages are provided for all owners.\"],\n      \"steps\": [\"Enter one person's direct ownership as 25.01% and another person's direct ownership as exactly 25%.\", \"Review the beneficial-owner records.\"],\n      \"expected_result\": \"The person owning 25.01% is identified as a beneficial owner. The person owning exactly 25% is not identified as a beneficial owner.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Calculate indirect ownership through a company in the ownership chain\",\n      \"covers\": [\"AC3\", \"AC4\"],\n      \"preconditions\": [\"The application has valid company and director details.\", \"The ownership chain is documented.\"],\n      \"steps\": [\"Record that a person owns 50% of an intermediary company and that the intermediary owns 60% of the applicant.\", \"Record a second person's ownership of 40% of an intermediary that owns 60% of the applicant.\", \"Review the calculated ownership and beneficial-owner records.\"],\n      \"expected_result\": \"The first person's indirect ownership is calculated as 30% and they are identified as a beneficial owner. The second person's indirect ownership is calculated as 24% and they are not identified as a beneficial owner on that basis.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Add direct and indirect ownership percentages for the same person\",\n      \"covers\": [\"AC3\", \"AC4\"],\n      \"preconditions\": [\"The application has valid company and director details.\", \"The ownership chain and direct holdings are documented.\"],\n      \"steps\": [\"Record that a person directly owns 15% of the applicant.\", \"Record that the same person owns 20% of an intermediary company that owns 60% of the applicant.\", \"Review the person's total calculated ownership.\"],\n      \"expected_result\": \"The indirect share is calculated as 12%, the direct and indirect shares are added to 27%, and the person is identified as a beneficial owner.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Identify a person who controls more than 25% without owning more than 25%\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\"The application has valid company and director details.\", \"The applicant's ownership and control information is documented.\"],\n      \"steps\": [\"Record a person's ownership as 25% or less.\", \"Record evidence that the person controls more than 25% of the company.\", \"Review the beneficial-owner records.\"],\n      \"expected_result\": \"The person is identified as a beneficial owner on the basis of control.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Screen every director and beneficial owner against both lists\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\"The application contains multiple directors and beneficial owners.\", \"Sanctions-list and PEP-list screening is available.\"],\n      \"steps\": [\"Submit the application for screening.\", \"Review screening records for every director and every beneficial owner.\"],\n      \"expected_result\": \"Every director and every beneficial owner has been screened against both the sanctions list and the PEP list using the same screening process as for an individual applicant.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"Apply a sanctions match on one person to the whole application\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\"The application contains at least one director and one beneficial owner.\", \"Screening is configured to return a sanctions match for one director and no matches for the other people.\"],\n      \"steps\": [\"Submit the application for screening.\", \"Review the application status and screening outcome.\"],\n      \"expected_result\": \"The sanctions match is recorded against the person and applied to the whole application under the standard individual-applicant match handling.\"\n    },\n    {\n      \"case_id\": \"TC13\",\n      \"title\": \"Apply a PEP match on one person to the whole application\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\"The application contains at least one director and one beneficial owner.\", \"Screening is configured to return a PEP match for one beneficial owner and no matches for the other people.\"],\n      \"steps\": [\"Submit the application for screening.\", \"Review the application status and screening outcome.\"],\n      \"expected_result\": \"The PEP match is recorded against the person and applied to the whole application under the standard individual-applicant match handling.\"\n    },\n    {\n      \"case_id\": \"TC14\",\n      \"title\": \"Record the most senior director when no person exceeds the ownership or control threshold\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\"The application has valid company and director details.\", \"No person owns or controls more than 25% of the applicant, directly or indirectly.\", \"The directors' seniority is recorded.\"],\n      \"steps\": [\"Enter ownership and control information showing that no person exceeds 25%.\", \"Identify the most senior director in the director records.\", \"Complete the beneficial-owner determination.\"],\n      \"expected_result\": \"The most senior director is recorded as the beneficial owner, and the application is flagged NO_OWNER_ABOVE_THRESHOLD.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K11",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Submit a business application with all required company details",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The applicant has a valid company name, company registration number, and country of registration.",
+       "The application includes at least one director with a full name and date of birth."
+      ],
+      "steps": [
+       "Enter the company name, registration number, and country of registration.",
+       "Enter the required director details.",
+       "Submit the business application."
+      ],
+      "expected_result": "The application is accepted for submission with all required company details recorded."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Prevent submission when the company name is missing",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The application has a registration number and country of registration.",
+       "The application includes at least one director with a full name and date of birth."
+      ],
+      "steps": [
+       "Leave the company name blank.",
+       "Submit the business application."
+      ],
+      "expected_result": "The application cannot be submitted, and the missing company name is identified."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Prevent submission when the registration number is missing",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The application has a company name and country of registration.",
+       "The application includes at least one director with a full name and date of birth."
+      ],
+      "steps": [
+       "Leave the company registration number blank.",
+       "Submit the business application."
+      ],
+      "expected_result": "The application cannot be submitted, and the missing registration number is identified."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Prevent submission when the country of registration is missing",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "The application has a company name and registration number.",
+       "The application includes at least one director with a full name and date of birth."
+      ],
+      "steps": [
+       "Leave the country of registration blank.",
+       "Submit the business application."
+      ],
+      "expected_result": "The application cannot be submitted, and the missing country of registration is identified."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Require at least one director",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The application has all required company details."
+      ],
+      "steps": [
+       "Add no directors to the application.",
+       "Attempt to submit the application."
+      ],
+      "expected_result": "The application cannot be submitted because at least one director is required."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Require each director's full name and date of birth",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The application has all required company details and at least one director."
+      ],
+      "steps": [
+       "Enter a director with a missing or incomplete full name or a missing date of birth.",
+       "Attempt to submit the application."
+      ],
+      "expected_result": "The application cannot be submitted until every director has a full name and date of birth."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Identify owners above the threshold and exclude an owner at exactly 25%",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The application has valid company and director details.",
+       "Ownership percentages are provided for all owners."
+      ],
+      "steps": [
+       "Enter one person's direct ownership as 25.01% and another person's direct ownership as exactly 25%.",
+       "Review the beneficial-owner records."
+      ],
+      "expected_result": "The person owning 25.01% is identified as a beneficial owner. The person owning exactly 25% is not identified as a beneficial owner."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Calculate indirect ownership through a company in the ownership chain",
+      "covers": [
+       "AC3",
+       "AC4"
+      ],
+      "preconditions": [
+       "The application has valid company and director details.",
+       "The ownership chain is documented."
+      ],
+      "steps": [
+       "Record that a person owns 50% of an intermediary company and that the intermediary owns 60% of the applicant.",
+       "Record a second person's ownership of 40% of an intermediary that owns 60% of the applicant.",
+       "Review the calculated ownership and beneficial-owner records."
+      ],
+      "expected_result": "The first person's indirect ownership is calculated as 30% and they are identified as a beneficial owner. The second person's indirect ownership is calculated as 24% and they are not identified as a beneficial owner on that basis."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Add direct and indirect ownership percentages for the same person",
+      "covers": [
+       "AC3",
+       "AC4"
+      ],
+      "preconditions": [
+       "The application has valid company and director details.",
+       "The ownership chain and direct holdings are documented."
+      ],
+      "steps": [
+       "Record that a person directly owns 15% of the applicant.",
+       "Record that the same person owns 20% of an intermediary company that owns 60% of the applicant.",
+       "Review the person's total calculated ownership."
+      ],
+      "expected_result": "The indirect share is calculated as 12%, the direct and indirect shares are added to 27%, and the person is identified as a beneficial owner."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Identify a person who controls more than 25% without owning more than 25%",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "The application has valid company and director details.",
+       "The applicant's ownership and control information is documented."
+      ],
+      "steps": [
+       "Record a person's ownership as 25% or less.",
+       "Record evidence that the person controls more than 25% of the company.",
+       "Review the beneficial-owner records."
+      ],
+      "expected_result": "The person is identified as a beneficial owner on the basis of control."
+     },
+     {
+      "case_id": "TC11",
+      "title": "Screen every director and beneficial owner against both lists",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The application contains multiple directors and beneficial owners.",
+       "Sanctions-list and PEP-list screening is available."
+      ],
+      "steps": [
+       "Submit the application for screening.",
+       "Review screening records for every director and every beneficial owner."
+      ],
+      "expected_result": "Every director and every beneficial owner has been screened against both the sanctions list and the PEP list using the same screening process as for an individual applicant."
+     },
+     {
+      "case_id": "TC12",
+      "title": "Apply a sanctions match on one person to the whole application",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The application contains at least one director and one beneficial owner.",
+       "Screening is configured to return a sanctions match for one director and no matches for the other people."
+      ],
+      "steps": [
+       "Submit the application for screening.",
+       "Review the application status and screening outcome."
+      ],
+      "expected_result": "The sanctions match is recorded against the person and applied to the whole application under the standard individual-applicant match handling."
+     },
+     {
+      "case_id": "TC13",
+      "title": "Apply a PEP match on one person to the whole application",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "The application contains at least one director and one beneficial owner.",
+       "Screening is configured to return a PEP match for one beneficial owner and no matches for the other people."
+      ],
+      "steps": [
+       "Submit the application for screening.",
+       "Review the application status and screening outcome."
+      ],
+      "expected_result": "The PEP match is recorded against the person and applied to the whole application under the standard individual-applicant match handling."
+     },
+     {
+      "case_id": "TC14",
+      "title": "Record the most senior director when no person exceeds the ownership or control threshold",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "The application has valid company and director details.",
+       "No person owns or controls more than 25% of the applicant, directly or indirectly.",
+       "The directors' seniority is recorded."
+      ],
+      "steps": [
+       "Enter ownership and control information showing that no person exceeds 25%.",
+       "Identify the most senior director in the director records.",
+       "Complete the beneficial-owner determination."
+      ],
+      "expected_result": "The most senior director is recorded as the beneficial owner, and the application is flagged NO_OWNER_ABOVE_THRESHOLD."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 14,
+   "usage": {
+    "latency_s": 17.71,
+    "input_tokens": 396,
+    "output_tokens": 2560,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  },
+  {
+   "story_id": "K12",
+   "raw_reply": "{\n  \"story_id\": \"K12\",\n  \"test_cases\": [\n    {\n      \"case_id\": \"TC01\",\n      \"title\": \"Check completed deposits, withdrawals, and transfers within five minutes\",\n      \"covers\": [\"AC1\"],\n      \"preconditions\": [\n        \"Monitoring rules are enabled.\",\n        \"A customer account can complete deposits, withdrawals, and transfers.\"\n      ],\n      \"steps\": [\n        \"Complete a deposit and record its completion time.\",\n        \"Complete a withdrawal and record its completion time.\",\n        \"Complete a transfer and record its completion time.\",\n        \"Inspect the monitoring result and check time for each transaction.\"\n      ],\n      \"expected_result\": \"Each completed transaction is checked against the monitoring rules no later than five minutes after its completion.\"\n    },\n    {\n      \"case_id\": \"TC02\",\n      \"title\": \"Raise LARGE_TXN for a standard-risk transaction above 5,000.00\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The customer has a standard risk rating.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete a transaction for 5,000.01.\",\n        \"Wait for the transaction to be checked by the monitoring rules.\"\n      ],\n      \"expected_result\": \"The transaction raises a LARGE_TXN alert.\"\n    },\n    {\n      \"case_id\": \"TC03\",\n      \"title\": \"Do not raise LARGE_TXN for a standard-risk transaction of exactly 5,000.00\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The customer has a standard risk rating.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete a transaction for 5,000.00.\",\n        \"Wait for the transaction to be checked by the monitoring rules.\"\n      ],\n      \"expected_result\": \"The transaction does not raise a LARGE_TXN alert.\"\n    },\n    {\n      \"case_id\": \"TC04\",\n      \"title\": \"Apply the lower LARGE_TXN threshold to a HIGH-risk customer\",\n      \"covers\": [\"AC2\"],\n      \"preconditions\": [\n        \"The customer has a HIGH risk rating.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete a transaction for 2,500.01.\",\n        \"Wait for the transaction to be checked by the monitoring rules.\",\n        \"Complete another transaction for exactly 2,500.00.\",\n        \"Wait for the second transaction to be checked.\"\n      ],\n      \"expected_result\": \"The 2,500.01 transaction raises LARGE_TXN, while the 2,500.00 transaction does not.\"\n    },\n    {\n      \"case_id\": \"TC05\",\n      \"title\": \"Raise STRUCTURING for three qualifying deposits within 24 hours\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"Monitoring rules are enabled.\",\n        \"The customer has no other deposits that affect the test window.\"\n      ],\n      \"steps\": [\n        \"Complete deposits of 4,500.00 and 4,999.99 within a 24-hour period.\",\n        \"Verify that these two deposits alone do not raise STRUCTURING.\",\n        \"Complete a third deposit of 4,750.00 before 24 hours have elapsed since the first deposit.\",\n        \"Wait for the third deposit to be checked.\"\n      ],\n      \"expected_result\": \"The third qualifying deposit causes a STRUCTURING alert for the customer's qualifying deposits.\"\n    },\n    {\n      \"case_id\": \"TC06\",\n      \"title\": \"Do not raise STRUCTURING when fewer than three deposits qualify\",\n      \"covers\": [\"AC3\"],\n      \"preconditions\": [\n        \"Monitoring rules are enabled.\",\n        \"The customer has no other deposits that affect the test window.\"\n      ],\n      \"steps\": [\n        \"Complete two deposits within 24 hours, each between 4,500.00 and 4,999.99 inclusive.\",\n        \"Wait for both deposits to be checked.\"\n      ],\n      \"expected_result\": \"No STRUCTURING alert is raised because fewer than three qualifying deposits occurred within the 24-hour period.\"\n    },\n    {\n      \"case_id\": \"TC07\",\n      \"title\": \"Raise VELOCITY after more than ten transfers out in the customer's calendar day\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The customer's time zone is configured.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete ten transfers out during one calendar day in the customer's time zone.\",\n        \"Verify that the ten transfers alone do not raise VELOCITY.\",\n        \"Complete an eleventh transfer out before that calendar day ends in the customer's time zone.\",\n        \"Wait for the eleventh transfer to be checked.\"\n      ],\n      \"expected_result\": \"A VELOCITY alert is raised once the customer completes more than ten transfers out in that calendar day.\"\n    },\n    {\n      \"case_id\": \"TC08\",\n      \"title\": \"Use the customer's time zone to determine the VELOCITY calendar day\",\n      \"covers\": [\"AC4\"],\n      \"preconditions\": [\n        \"The customer's time zone is configured so that the test transfers fall on different local calendar days despite sharing a UTC date.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete ten transfers out before local midnight in the customer's time zone.\",\n        \"Complete one transfer out after local midnight in the customer's time zone.\",\n        \"Wait for the transfers to be checked.\"\n      ],\n      \"expected_result\": \"The transfers are counted against their calendar days in the customer's time zone, so no VELOCITY alert is raised for either day.\"\n    },\n    {\n      \"case_id\": \"TC09\",\n      \"title\": \"Raise HIGH_RISK_COUNTRY for a transfer to a listed country regardless of amount\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"A country is present on the high-risk country list.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete a transfer to the listed country for a small amount.\",\n        \"Wait for the transfer to be checked.\"\n      ],\n      \"expected_result\": \"The transfer raises a HIGH_RISK_COUNTRY alert regardless of its amount.\"\n    },\n    {\n      \"case_id\": \"TC10\",\n      \"title\": \"Raise HIGH_RISK_COUNTRY for a transfer from a listed country\",\n      \"covers\": [\"AC5\"],\n      \"preconditions\": [\n        \"A country is present on the high-risk country list.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete a transfer originating from the listed country for a small amount.\",\n        \"Wait for the transfer to be checked.\"\n      ],\n      \"expected_result\": \"The transfer raises a HIGH_RISK_COUNTRY alert regardless of its amount.\"\n    },\n    {\n      \"case_id\": \"TC11\",\n      \"title\": \"Raise RAPID_MOVEMENT when transfers out total exactly 90% of a deposit within 48 hours\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\n        \"Monitoring rules are enabled.\",\n        \"The customer has no other deposits or transfers that affect the test.\"\n      ],\n      \"steps\": [\n        \"Complete a deposit of 10,000.00.\",\n        \"Within 48 hours of the deposit, complete transfers out totalling exactly 9,000.00.\",\n        \"Wait for the transfers to be checked.\"\n      ],\n      \"expected_result\": \"A RAPID_MOVEMENT alert is raised because transfers out total 90% of the deposit within 48 hours.\"\n    },\n    {\n      \"case_id\": \"TC12\",\n      \"title\": \"Do not raise RAPID_MOVEMENT when transfers out total less than 90% of the deposit\",\n      \"covers\": [\"AC6\"],\n      \"preconditions\": [\n        \"Monitoring rules are enabled.\",\n        \"The customer has no other deposits or transfers that affect the test.\"\n      ],\n      \"steps\": [\n        \"Complete a deposit of 10,000.00.\",\n        \"Within 48 hours of the deposit, complete transfers out totalling 8,999.99.\",\n        \"Wait for the transfers to be checked.\"\n      ],\n      \"expected_result\": \"No RAPID_MOVEMENT alert is raised because transfers out total less than 90% of the deposit.\"\n    },\n    {\n      \"case_id\": \"TC13\",\n      \"title\": \"Record separate alerts when one transaction matches multiple rules\",\n      \"covers\": [\"AC2\", \"AC5\", \"AC7\"],\n      \"preconditions\": [\n        \"A country is present on the high-risk country list.\",\n        \"The customer has a standard risk rating.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Complete a transfer of 6,000.01 to the listed country.\",\n        \"Wait for the transfer to be checked.\",\n        \"Inspect the alert records for the transaction.\"\n      ],\n      \"expected_result\": \"Two separate alerts are recorded for the transaction: LARGE_TXN and HIGH_RISK_COUNTRY. Each alert records the customer, transaction, applicable rule, and date and time.\"\n    },\n    {\n      \"case_id\": \"TC14\",\n      \"title\": \"Open an analyst case after two alerts for the same customer within 30 days\",\n      \"covers\": [\"AC8\"],\n      \"preconditions\": [\n        \"The customer has no existing alerts or open case in the test period.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Cause one alert for the customer.\",\n        \"Cause a second alert for the same customer within 30 days of the first.\",\n        \"Inspect the analyst case queue.\"\n      ],\n      \"expected_result\": \"A case is opened for an analyst for the customer after the second alert.\"\n    },\n    {\n      \"case_id\": \"TC15\",\n      \"title\": \"Do not open an analyst case for a single alert\",\n      \"covers\": [\"AC8\"],\n      \"preconditions\": [\n        \"The customer has no existing alerts or open case in the test period.\",\n        \"Monitoring rules are enabled.\"\n      ],\n      \"steps\": [\n        \"Cause one alert for the customer.\",\n        \"Inspect the analyst case queue.\"\n      ],\n      \"expected_result\": \"No case is opened for the customer based on the single alert.\"\n    },\n    {\n      \"case_id\": \"TC16\",\n      \"title\": \"Keep alerts and cases out of customer-facing channels\",\n      \"covers\": [\"AC9\"],\n      \"preconditions\": [\n        \"A customer-facing portal, notifications, and statements are available for inspection.\",\n        \"The customer has an alert and an analyst case.\"\n      ],\n      \"steps\": [\n        \"Inspect the customer's portal and transaction history.\",\n        \"Inspect customer-facing email, SMS, and other notification content generated for the alert and case.\",\n        \"Inspect the customer's statements.\"\n      ],\n      \"expected_result\": \"No alert or case details, references, or mentions appear in any customer-facing channel.\"\n    }\n  ]\n}",
+   "parsed": {
+    "story_id": "K12",
+    "test_cases": [
+     {
+      "case_id": "TC01",
+      "title": "Check completed deposits, withdrawals, and transfers within five minutes",
+      "covers": [
+       "AC1"
+      ],
+      "preconditions": [
+       "Monitoring rules are enabled.",
+       "A customer account can complete deposits, withdrawals, and transfers."
+      ],
+      "steps": [
+       "Complete a deposit and record its completion time.",
+       "Complete a withdrawal and record its completion time.",
+       "Complete a transfer and record its completion time.",
+       "Inspect the monitoring result and check time for each transaction."
+      ],
+      "expected_result": "Each completed transaction is checked against the monitoring rules no later than five minutes after its completion."
+     },
+     {
+      "case_id": "TC02",
+      "title": "Raise LARGE_TXN for a standard-risk transaction above 5,000.00",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The customer has a standard risk rating.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete a transaction for 5,000.01.",
+       "Wait for the transaction to be checked by the monitoring rules."
+      ],
+      "expected_result": "The transaction raises a LARGE_TXN alert."
+     },
+     {
+      "case_id": "TC03",
+      "title": "Do not raise LARGE_TXN for a standard-risk transaction of exactly 5,000.00",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The customer has a standard risk rating.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete a transaction for 5,000.00.",
+       "Wait for the transaction to be checked by the monitoring rules."
+      ],
+      "expected_result": "The transaction does not raise a LARGE_TXN alert."
+     },
+     {
+      "case_id": "TC04",
+      "title": "Apply the lower LARGE_TXN threshold to a HIGH-risk customer",
+      "covers": [
+       "AC2"
+      ],
+      "preconditions": [
+       "The customer has a HIGH risk rating.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete a transaction for 2,500.01.",
+       "Wait for the transaction to be checked by the monitoring rules.",
+       "Complete another transaction for exactly 2,500.00.",
+       "Wait for the second transaction to be checked."
+      ],
+      "expected_result": "The 2,500.01 transaction raises LARGE_TXN, while the 2,500.00 transaction does not."
+     },
+     {
+      "case_id": "TC05",
+      "title": "Raise STRUCTURING for three qualifying deposits within 24 hours",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "Monitoring rules are enabled.",
+       "The customer has no other deposits that affect the test window."
+      ],
+      "steps": [
+       "Complete deposits of 4,500.00 and 4,999.99 within a 24-hour period.",
+       "Verify that these two deposits alone do not raise STRUCTURING.",
+       "Complete a third deposit of 4,750.00 before 24 hours have elapsed since the first deposit.",
+       "Wait for the third deposit to be checked."
+      ],
+      "expected_result": "The third qualifying deposit causes a STRUCTURING alert for the customer's qualifying deposits."
+     },
+     {
+      "case_id": "TC06",
+      "title": "Do not raise STRUCTURING when fewer than three deposits qualify",
+      "covers": [
+       "AC3"
+      ],
+      "preconditions": [
+       "Monitoring rules are enabled.",
+       "The customer has no other deposits that affect the test window."
+      ],
+      "steps": [
+       "Complete two deposits within 24 hours, each between 4,500.00 and 4,999.99 inclusive.",
+       "Wait for both deposits to be checked."
+      ],
+      "expected_result": "No STRUCTURING alert is raised because fewer than three qualifying deposits occurred within the 24-hour period."
+     },
+     {
+      "case_id": "TC07",
+      "title": "Raise VELOCITY after more than ten transfers out in the customer's calendar day",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The customer's time zone is configured.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete ten transfers out during one calendar day in the customer's time zone.",
+       "Verify that the ten transfers alone do not raise VELOCITY.",
+       "Complete an eleventh transfer out before that calendar day ends in the customer's time zone.",
+       "Wait for the eleventh transfer to be checked."
+      ],
+      "expected_result": "A VELOCITY alert is raised once the customer completes more than ten transfers out in that calendar day."
+     },
+     {
+      "case_id": "TC08",
+      "title": "Use the customer's time zone to determine the VELOCITY calendar day",
+      "covers": [
+       "AC4"
+      ],
+      "preconditions": [
+       "The customer's time zone is configured so that the test transfers fall on different local calendar days despite sharing a UTC date.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete ten transfers out before local midnight in the customer's time zone.",
+       "Complete one transfer out after local midnight in the customer's time zone.",
+       "Wait for the transfers to be checked."
+      ],
+      "expected_result": "The transfers are counted against their calendar days in the customer's time zone, so no VELOCITY alert is raised for either day."
+     },
+     {
+      "case_id": "TC09",
+      "title": "Raise HIGH_RISK_COUNTRY for a transfer to a listed country regardless of amount",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "A country is present on the high-risk country list.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete a transfer to the listed country for a small amount.",
+       "Wait for the transfer to be checked."
+      ],
+      "expected_result": "The transfer raises a HIGH_RISK_COUNTRY alert regardless of its amount."
+     },
+     {
+      "case_id": "TC10",
+      "title": "Raise HIGH_RISK_COUNTRY for a transfer from a listed country",
+      "covers": [
+       "AC5"
+      ],
+      "preconditions": [
+       "A country is present on the high-risk country list.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete a transfer originating from the listed country for a small amount.",
+       "Wait for the transfer to be checked."
+      ],
+      "expected_result": "The transfer raises a HIGH_RISK_COUNTRY alert regardless of its amount."
+     },
+     {
+      "case_id": "TC11",
+      "title": "Raise RAPID_MOVEMENT when transfers out total exactly 90% of a deposit within 48 hours",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "Monitoring rules are enabled.",
+       "The customer has no other deposits or transfers that affect the test."
+      ],
+      "steps": [
+       "Complete a deposit of 10,000.00.",
+       "Within 48 hours of the deposit, complete transfers out totalling exactly 9,000.00.",
+       "Wait for the transfers to be checked."
+      ],
+      "expected_result": "A RAPID_MOVEMENT alert is raised because transfers out total 90% of the deposit within 48 hours."
+     },
+     {
+      "case_id": "TC12",
+      "title": "Do not raise RAPID_MOVEMENT when transfers out total less than 90% of the deposit",
+      "covers": [
+       "AC6"
+      ],
+      "preconditions": [
+       "Monitoring rules are enabled.",
+       "The customer has no other deposits or transfers that affect the test."
+      ],
+      "steps": [
+       "Complete a deposit of 10,000.00.",
+       "Within 48 hours of the deposit, complete transfers out totalling 8,999.99.",
+       "Wait for the transfers to be checked."
+      ],
+      "expected_result": "No RAPID_MOVEMENT alert is raised because transfers out total less than 90% of the deposit."
+     },
+     {
+      "case_id": "TC13",
+      "title": "Record separate alerts when one transaction matches multiple rules",
+      "covers": [
+       "AC2",
+       "AC5",
+       "AC7"
+      ],
+      "preconditions": [
+       "A country is present on the high-risk country list.",
+       "The customer has a standard risk rating.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Complete a transfer of 6,000.01 to the listed country.",
+       "Wait for the transfer to be checked.",
+       "Inspect the alert records for the transaction."
+      ],
+      "expected_result": "Two separate alerts are recorded for the transaction: LARGE_TXN and HIGH_RISK_COUNTRY. Each alert records the customer, transaction, applicable rule, and date and time."
+     },
+     {
+      "case_id": "TC14",
+      "title": "Open an analyst case after two alerts for the same customer within 30 days",
+      "covers": [
+       "AC8"
+      ],
+      "preconditions": [
+       "The customer has no existing alerts or open case in the test period.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Cause one alert for the customer.",
+       "Cause a second alert for the same customer within 30 days of the first.",
+       "Inspect the analyst case queue."
+      ],
+      "expected_result": "A case is opened for an analyst for the customer after the second alert."
+     },
+     {
+      "case_id": "TC15",
+      "title": "Do not open an analyst case for a single alert",
+      "covers": [
+       "AC8"
+      ],
+      "preconditions": [
+       "The customer has no existing alerts or open case in the test period.",
+       "Monitoring rules are enabled."
+      ],
+      "steps": [
+       "Cause one alert for the customer.",
+       "Inspect the analyst case queue."
+      ],
+      "expected_result": "No case is opened for the customer based on the single alert."
+     },
+     {
+      "case_id": "TC16",
+      "title": "Keep alerts and cases out of customer-facing channels",
+      "covers": [
+       "AC9"
+      ],
+      "preconditions": [
+       "A customer-facing portal, notifications, and statements are available for inspection.",
+       "The customer has an alert and an analyst case."
+      ],
+      "steps": [
+       "Inspect the customer's portal and transaction history.",
+       "Inspect customer-facing email, SMS, and other notification content generated for the alert and case.",
+       "Inspect the customer's statements."
+      ],
+      "expected_result": "No alert or case details, references, or mentions appear in any customer-facing channel."
+     }
+    ]
+   },
+   "parse_info": {
+    "strict_json": true,
+    "fenced": false,
+    "error": null
+   },
+   "schema_issues": [],
+   "schema_valid": true,
+   "n_cases": 16,
+   "usage": {
+    "latency_s": 17.8,
+    "input_tokens": 416,
+    "output_tokens": 2733,
+    "attempts": 1,
+    "model_served": "gpt-6-luna"
+   }
+  }
+ ]
+}

@@ -14,6 +14,7 @@ money and is run by hand (python -m harness.seeded); here the model is never cal
 
 Change history:
   2026-11-12  v1  first version (M7 step 4).
+  2026-11-24  v2  the AML/KYC seed set (datasets/aml_seeded_cases.json, --set aml).
 """
 from __future__ import annotations
 
@@ -70,6 +71,28 @@ def test_the_free_checks_catch_every_free_seed_with_no_false_alarm(tmp_path):
     assert not [s for s, r in results.items() if r in ("missed", "false alarm")]
     assert results["HS06"] == "caught" and results["HS15"] == "caught" and results["HS25"] == "caught"
     assert results["HS08"] == "not run" and results["HS01"] == "ok"
+
+
+def test_the_aml_seed_file_points_at_real_aml_stories_and_cases():
+    """datasets/aml_seeded_cases.json is a valid cases file on the AML/KYC stories: 18 case
+    expectations (6 clean controls) and 2 story-level seeds, each naming a real case or story."""
+    groups, problems = load_cases(seeded.AML_SEEDS)
+    stories = load_stories(seeded.AML_STORIES)
+    assert problems == [] and set(groups) <= set(stories)
+    _, case_exp, story_exp = seeded.harness_set(seeded.AML_SEEDS)
+    ids = {(sid, c["case_id"]) for sid, cases in groups.items() for c in cases}
+    assert all((e["story_id"], e["case_id"]) in ids for e in case_exp)
+    assert len(case_exp) == 18 and sum(e["control"] for e in case_exp) == 6 and len(story_exp) == 2
+
+
+def test_the_free_checks_catch_the_free_aml_seeds_with_no_false_alarm(tmp_path):
+    """Second domain, free checks only: missing expected result, unknown AC, an untested AC and an
+    untested range end are caught; controls stay clean; judge-only seeds are 'not run'."""
+    rows, _ = seeded.run_set("aml", tmp_path, judge=False)
+    results = {r["seed_id"]: r["result"] for r in rows}
+    assert not [s for s, r in results.items() if r in ("missed", "false alarm")]
+    assert [results[k] for k in ("AS17", "AS18", "AS19", "AS20")] == ["caught"] * 4
+    assert results["AS02"] == "not run" and results["AS01"] == "ok"
 
 
 def test_day4_seeds_become_must_and_must_not_checks():

@@ -31,6 +31,8 @@ What it does
          checklist.csv one row per story and checklist item: check setting, status, quote, ACs,
                        cases, cross-check
          judge.json    the judge's raw replies and token counts (only when the judge ran live)
+         report.html   one page for a browser: flagged cases first, coverage map per AC,
+                       checklist, duplicate groups, steps per case (harness/report.py)
 
 Exit code: 0 if no case fails, 1 if any case fails, 2 if a file cannot be read.
 
@@ -43,6 +45,7 @@ Change history:
   2026-11-13  v5  checklist "check" setting (when_raised / every_story / off): the summary lists the
                   settings and the excluded items, and groups a suggestion or question repeated across
                   stories into one line. (A --context project rules file was tried and dropped.)
+  2026-11-24  v6  report.html (M7 step 6).
 """
 
 from __future__ import annotations
@@ -66,6 +69,7 @@ from harness.checklist import (CACHE_DIR, CHECKLIST_PATH, check_coverage, checkl
                                checklist_results, load_checklist, review_story)
 from harness.judge import call_cost, duplicate_groups, judge_findings, judge_story, marks_from_score_file
 from harness.lints import LINT_NAMES, load_rules, run_lints
+from harness.report import build_html
 
 OUT_DIR = ROOT / "results" / "harness"
 CODE_CHECKS = ("schema", "title", "unknown_ac", "no_ac_linked")
@@ -334,6 +338,7 @@ def write_outputs(result: dict, out_dir: Path, header: str) -> None:
         w.writerow(["story_id", "case_id", "check", "level", "message"])
         w.writerows([[x.story_id, x.case_id, x.check, x.level, x.message] for x in result["findings"]])
     (out_dir / "summary.md").write_text(summary_markdown(result, header), encoding="utf-8")
+    (out_dir / "report.html").write_text(build_html(result, header), encoding="utf-8")
     judged = result.get("judge")
     if judged and judged.get("checklist_rows"):
         with open(out_dir / "checklist.csv", "w", newline="", encoding="utf-8-sig") as f:

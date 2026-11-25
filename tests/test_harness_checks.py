@@ -15,6 +15,7 @@ Change history:
   2026-11-12  v1  first version (M7 step 1).
   2026-11-12  v2  steps with per-step expected results (Roger's review).
   2026-11-12  v3  the command test uses --no-judge (the judge is on by default from step 3).
+  2026-11-24  v4  the command also writes report.html (M7 step 6).
 """
 from __future__ import annotations
 
@@ -160,13 +161,13 @@ def test_a_broken_stories_file_stops_the_run(tmp_path):
 
 
 def test_the_command_writes_its_outputs_and_exit_code(tmp_path):
-    """End to end (free checks only, no model call): the command writes cases.csv, findings.csv and
-    summary.md, and exits 1 when a case fails."""
+    """End to end (free checks only, no model call): the command writes cases.csv, findings.csv,
+    summary.md and report.html, and exits 1 when a case fails."""
     (tmp_path / "s.json").write_text(json.dumps({"stories": [STORY]}), encoding="utf-8")
     (tmp_path / "c.json").write_text(json.dumps({"stories": [{"story_id": "K01", "test_cases": [
         case(), case("TC02", covers=["AC7"])]}]}), encoding="utf-8")
     code = check.main(["--stories", str(tmp_path / "s.json"), "--cases", str(tmp_path / "c.json"),
                        "--lints", "none", "--no-judge", "--out", str(tmp_path / "out")])
     assert code == 1
-    assert {p.name for p in (tmp_path / "out").iterdir()} == {"cases.csv", "findings.csv", "summary.md"}
+    assert {p.name for p in (tmp_path / "out").iterdir()} == {"cases.csv", "findings.csv", "summary.md", "report.html"}
     assert "unknown_ac" in (tmp_path / "out" / "findings.csv").read_text(encoding="utf-8-sig")
