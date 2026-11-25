@@ -21,6 +21,7 @@ Change history:
   2026-11-13  v3  rows carry the question, AC texts and case titles.
   2026-11-13  v4  19 items (C19 files); "check" setting; not_raised and excluded; grouped
                   summary lines; prompts v3. (Project context and not_stated tried and dropped.)
+  2026-11-25  v5  titles and descriptions for people; the judge's wording is unchanged.
 """
 from __future__ import annotations
 
@@ -130,7 +131,7 @@ def test_statuses_findings_and_levels():
     assert sorted(f.level for f in findings) == ["question", "suggestion", "suggestion"]
     msgs = [f.message for f in findings if f.level == "suggestion"]
     assert any('raised by: "Only a compliance analyst can approve"' in m for m in msgs)
-    assert any(m.startswith("C09 Record of the decision (audit trail) (checked in every story): No case") for m in msgs)
+    assert any(m.startswith("C09 Audit trail check (checked in every story): No case") for m in msgs)
     _, rows = checklist_results(STORY, review, coverage, load_checklist(), [CASE])
     c07 = next(r for r in rows if r["item_id"] == "C07")          # the sheet spells out ACs and cases
     assert c07["ac_text"] == "AC2: An approved customer's status changes from pending to active."
@@ -214,8 +215,8 @@ def test_the_summary_names_every_excluded_item_and_the_every_story_items(tmp_pat
     (tmp_path / "s.json").write_text(json.dumps({"stories": [STORY]}), encoding="utf-8")
     result = check.run_checks(tmp_path / "s.json", None, client=FakeClient(), cache_dir=None)
     text = check.summary_markdown(result, "x")
-    assert "Excluded (check = off), NOT checked in any story: C12 Stated performance or volume" in text
-    assert "Checked in every story's test cases (check = every_story): C09 Record of the decision" in text
+    assert "Excluded (check = off), NOT checked in any story: C12 Performance and volume check" in text
+    assert "Checked in every story's test cases (check = every_story): C09 Audit trail check" in text
     assert "Checklist file: checklist.toml (fingerprint " in text
 
 
@@ -241,3 +242,18 @@ def test_a_suggestion_repeated_across_stories_is_one_grouped_line():
                                                     "C17": "Dependent fields and options"})
     assert lines[0] == "- C09 Record of the decision (audit trail): in 2 stories (S01, S06)"
     assert lines[1] == "    - S01: (checked in every story): no record case" and lines[3].startswith("- S02: C17")
+
+
+def test_people_read_the_new_titles_and_the_judge_reads_its_measured_wording():
+    """Every item has a '... check' title and a 'Checks ...' description for people (Roger, 25 Nov);
+    the story review is still sent the judge's original name and question, never the new wording,
+    so the measured agreement and the saved story reviews stay valid."""
+    items = load_checklist()
+    assert all(i["title"].split(" (")[0].endswith("check") and i["description"].startswith("Checks") for i in items)
+    assert items[0]["title"] == "Permissions check (authorisation)"
+    client = FakeClient()
+    review_story(STORY, client, items, cache_dir=None)
+    sent = client.requests[0][1]
+    assert "Authorisation (permissions): who can do what" in sent and "Permissions check" not in sent
+    assert "Checks that a user with the right role" not in sent
+

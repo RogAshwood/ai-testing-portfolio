@@ -45,6 +45,8 @@ Change history:
   2026-11-13  v5  design review with Roger: one "check" setting per item (when_raised, every_story,
                   off); "not applicable" renamed "not raised by the story" (the tool claims only what
                   the story's words raise); excluded items reported; quotes kept short; prompts v3.
+  2026-11-25  v6  each item has a title and description for people (report, glossary, CSV, findings);
+                  the judge still reads the name and question it was measured on (cache unchanged).
 """
 
 from __future__ import annotations
@@ -83,8 +85,9 @@ COVERAGE_SCHEMA = {
 
 # --- loading ----------------------------------------------------------------------
 def load_checklist(path: Path = CHECKLIST_PATH) -> list[dict]:
-    """The checklist items (id, name, check, triggers, question), in file order. 'check' defaults
-    to when_raised; a repeated ID or an unknown check value stops the run with a plain message."""
+    """The checklist items (id, name, title, description, check, triggers, question), in file order.
+    'check' defaults to when_raised; title and description (the wording people read) default to the
+    judge's name and question. A repeated ID or an unknown check value stops the run with a plain message."""
     with open(path, "rb") as f:
         items = tomllib.load(f).get("item", [])
     ids = [i["id"] for i in items]
@@ -92,6 +95,8 @@ def load_checklist(path: Path = CHECKLIST_PATH) -> list[dict]:
         raise ValueError(f"{path}: repeated checklist IDs {ids}")
     for i in items:
         i.setdefault("check", "when_raised")
+        i.setdefault("title", i["name"])
+        i.setdefault("description", " ".join(i["question"].split()))
         if i["check"] not in CHECK_VALUES:
             raise ValueError(f"{path}: {i['id']} check must be one of {', '.join(CHECK_VALUES)}, not {i['check']!r}")
     return items
@@ -233,7 +238,7 @@ def _status(item: dict, answer: dict | None, cov: dict | None, coverage: dict | 
 def checklist_results(story: dict, review: dict | None, coverage: dict | None,
                       items: list[dict], cases: list[dict] | None = None) -> tuple[list[Finding], list[dict]]:
     """Findings (questions and suggestions) for one story, and one report row per checklist item:
-    {story_id, item_id, name, check, question, status, quote, ac_ids, ac_text, case_ids, case_titles,
+    {story_id, item_id, name, title, description, check, question, status, quote, ac_ids, ac_text, case_ids, case_titles,
     note, triggered, disagree, review_cached}. ac_text and case_titles spell out the ACs and cases
     named, so a reviewer can judge each row without looking them up (Roger, 13 Nov). 'disagree' is
     only set for when_raised items (the other two settings do not ask the story)."""
@@ -250,7 +255,8 @@ def checklist_results(story: dict, review: dict | None, coverage: dict | None,
         fired = triggered(story, item)
         note = (c or {}).get("note", "") if status in ("covered", "not_covered") else (a or {}).get("note", "")
         ac_ids, case_ids = (a or {}).get("ac_ids", []), (c or {}).get("case_ids", [])
-        rows.append({"story_id": sid, "item_id": item["id"], "name": item["name"], "check": item["check"],
+        rows.append({"story_id": sid, "item_id": item["id"], "name": item["name"], "title": item["title"],
+                     "description": item["description"], "check": item["check"],
                      "question": " ".join(item["question"].split()), "status": status,
                      "quote": (a or {}).get("quote", ""), "ac_ids": ac_ids,
                      "ac_text": " | ".join(f"{x}: {ac_text.get(x, '?')}" for x in ac_ids),
@@ -260,11 +266,11 @@ def checklist_results(story: dict, review: dict | None, coverage: dict | None,
                      "review_cached": bool((review or {}).get("cached"))})
         if status == "ac_gap":
             findings.append(Finding(sid, "", "checklist", "question",
-                                    f"{item['id']} {item['name']}: {note} [the story says: \"{a.get('quote', '')}\"]"))
+                                    f"{item['id']} {item['title']}: {note} [the story says: \"{a.get('quote', '')}\"]"))
         elif status == "not_covered":
             why = (f"({', '.join(ac_ids)}): {note} [raised by: \"{a.get('quote', '')}\"]" if a
                    else f"(checked in every story): {note}")
-            findings.append(Finding(sid, "", "checklist", "suggestion", f"{item['id']} {item['name']} {why}"))
+            findings.append(Finding(sid, "", "checklist", "suggestion", f"{item['id']} {item['title']} {why}"))
     issues = ((review or {}).get("issues") or []) + ((coverage or {}).get("issues") or [])
     if issues:
         findings.append(Finding(sid, "", "checklist", "warn",

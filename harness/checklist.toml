@@ -22,6 +22,13 @@
 #   excluded      check = off
 # Every "raised" answer quotes the story or AC words that make it apply.
 #
+# Two sets of wording per item:
+#   title, description   what people read: the report, the glossary, checklist.csv and summary.md
+#                        (Roger, 25 Nov: a "... check" title and a "Checks that ..." description).
+#   name, question       what the judge reads. Kept as they were when the judge was measured against
+#                        Roger's marks (90% agreement), so changing the wording people read never
+#                        changes the judge's answers or invalidates saved story reviews.
+#
 # Items are generic (any domain); the content comes from each story's ACs. A team can edit,
 # switch off or add items here, or keep its own items in a second file in the same format
 # (python -m harness.check ... --checklist <file>).
@@ -37,10 +44,13 @@
 #   2026-11-13  v3  "check" setting per item (Roger, design review): C09 every_story (every
 #                   decision in these systems must be traceable), C12 off (performance is tested
 #                   separately). The project rules file and "not stated" were dropped.
+#   2026-11-25  v4  title and description for people (Roger); the judge's name and question unchanged.
 
 [[item]]
 id = "C01"
 name = "Authorisation (permissions): who can do what"
+title = "Permissions check (authorisation)"
+description = "Checks that a user with the right role or permission can carry out the action, and that a user without it is refused."
 triggers = ["only", "authorised", "authorized", "permission", "privilege", "role", "approve", "sign off", "admin", "access"]
 question = """A case where a user with the right role or permission performs the action, AND a case where
 a user without it is refused."""
@@ -48,6 +58,8 @@ a user without it is refused."""
 [[item]]
 id = "C02"
 name = "Create, read, update, delete: the change is saved and can be read back"
+title = "Create, read, update, delete check (CRUD)"
+description = "Checks that a created, updated or deleted record is really saved: it reads back with the right values, only the changed fields change, and a deleted record can no longer be used."
 triggers = ["create", "add", "new", "register", "submit", "record", "save", "update", "change", "amend", "edit", "delete", "remove", "close", "cancel"]
 question = """Create: after creating, a case reads the new record back with the right values. Update: only
 the changed fields changed, and the change can be read back. Delete: the record is gone or can
@@ -56,12 +68,16 @@ no longer be used. Not only that the action was accepted."""
 [[item]]
 id = "C03"
 name = "Required inputs missing"
+title = "Missing required inputs check"
+description = "Checks what happens when each input or document the story requires is missing."
 triggers = ["must", "needs", "requires", "required", "mandatory", "shows the", "includes"]
 question = """For each input or document the story says is required, a case where it is missing."""
 
 [[item]]
 id = "C04"
 name = "Invalid and unusual values"
+title = "Invalid and unusual input values check"
+description = "Checks how text that is too long or too short, special or accented characters, extra spaces, numbers of the wrong type and impossible or badly formatted dates are handled, where the story says how."
 triggers = ["format", "valid", "invalid", "characters", "name", "amount", "number", "date", "text"]
 question = """Only where the story defines how such input is handled: text that is too long or too short,
 has invalid or special characters, leading or trailing spaces, or accented or non-English letters
@@ -71,6 +87,8 @@ positive, non-numeric); impossible or wrongly formatted dates. (Limit values the
 [[item]]
 id = "C05"
 name = "Limits and thresholds, however they are written"
+title = "Limits and thresholds check"
+description = "Checks every limit with a case on the limit and one just the other side, however the limit is written (in digits, in words, or relative to an event)."
 triggers = ["more than", "less than", "at least", "up to", "within", "before", "after", "until", "one or more", "no more than", "limit", "maximum", "minimum"]
 question = """Every limit, whether written in digits ("1,000", "day 182"), in words ("one or more nights",
 "at least two documents") or relative to an event ("before the policy anniversary", "within the
@@ -79,6 +97,8 @@ waiting period"): a case on the limit and a case just on the other side of it.""
 [[item]]
 id = "C06"
 name = "Rule interactions"
+title = "Rule interactions check"
+description = "Checks what happens when two rules apply to the same input: which one takes precedence, exemptions, combined conditions and manual overrides."
 triggers = ["even if", "instead of", "unless", "rather than", "except", "exempt", "takes precedence", "only when"]
 question = """Where two rules can apply to the same input, a case where both apply at once: precedence
 (one rule applies instead of another), exemptions, combined conditions (A and B both needed),
@@ -87,6 +107,8 @@ overrides (a manual decision replaces an automatic one)."""
 [[item]]
 id = "C07"
 name = "State changes of one record"
+title = "Record status changes check"
+description = "Checks that a stored record can make the status moves the story allows, and is refused a move it does not allow."
 triggers = ["status", "state", "pending", "approved", "declined", "rejected", "open", "closed", "suspended", "active", "expired"]
 question = """Applies when the story describes the status of a stored record and how it can move between
 statuses (for example pending -> active, or declined -> approved on appeal). Then: a case for a move
@@ -96,6 +118,8 @@ its own ("routed to manual_review") is not a state change."""
 [[item]]
 id = "C08"
 name = "Date, time and period-end processing"
+title = "Dates, times and period-end check"
+description = "Checks dates and times at the edges that could change the result: month, quarter and year end, 28/29 February, cut-offs, 12- and 24-hour times, midnight and time zones."
 triggers = ["day", "days", "month", "months", "year", "years", "anniversary", "deadline", "end of day", "cut-off", "overnight", "batch", "daily", "monthly", "quarterly", "quarter", "year end", "statement", "accrual", "time zone", "time", "UTC", "midnight", "noon", "24-hour", "12-hour"]
 question = """Where a rule depends on dates, times or a processing cycle: cases at the edges that could
 change this rule's result, such as a month end, quarter end, year end, 28/29 February, or end of
@@ -106,6 +130,8 @@ formats, noon and midnight (12:00 AM / 12:00 PM, 00:00 and 24:00), and time zone
 [[item]]
 id = "C09"
 name = "Record of the decision (audit trail)"
+title = "Audit trail check"
+description = "Checks that a decision or action is recorded (who, what, when and why), not only that it happened."
 check = "every_story"
 triggers = ["recorded", "logged", "audit", "history", "reason", "by whom", "timestamp"]
 question = """Where the story makes, changes or records a decision or action: a case that checks the
@@ -114,12 +140,16 @@ record itself (who, what, when, why), not only the outcome."""
 [[item]]
 id = "C10"
 name = "Must-not rules"
+title = "Must-not rules check"
+description = "Checks that something the story forbids does not happen, and that an excluded item is not accepted."
 triggers = ["never", "must not", "cannot", "not allowed", "excluded", "is not"]
 question = """A case showing the forbidden outcome does not happen (or the excluded item is not accepted)."""
 
 [[item]]
 id = "C11"
 name = "Multi-step workflow, including branches"
+title = "Workflow check (steps and branches)"
+description = "Checks a multi-step process end to end: each branch, changing an earlier choice, stopping and resuming, and skipping a required step."
 triggers = ["step", "stage", "then", "next", "save and continue", "draft", "application", "wizard", "submit for approval", "depending on"]
 question = """An end-to-end case through the steps; each branch (choosing X offers A or B, choosing Y
 offers only B); changing an earlier choice after moving on; stopping part way and resuming (draft);
@@ -128,6 +158,8 @@ skipping or reordering a required step."""
 [[item]]
 id = "C12"
 name = "Stated performance or volume"
+title = "Performance and volume check"
+description = "Checks a response time or volume the story states."
 check = "off"
 triggers = ["seconds", "minutes", "response time", "within", "records", "users", "at the same time"]
 question = """Only when the story states a time or a volume: a case (or a linked non-functional test) that
@@ -137,30 +169,40 @@ never not_covered."""
 [[item]]
 id = "C13"
 name = "Repeat submission"
+title = "Repeat submission check"
+description = "Checks what happens when the same item is submitted twice."
 triggers = ["submit", "send", "pay", "create", "request", "twice", "again", "duplicate"]
 question = """When the story says what happens on a repeat: a case submitting the same item twice."""
 
 [[item]]
 id = "C14"
 name = "Two users at once"
+title = "Two users at once check (concurrency)"
+description = "Checks what happens when two users change the same record at the same time."
 triggers = ["same record", "at the same time", "concurrent", "lock"]
 question = """When the story says what happens: a case with two users changing the same record at once."""
 
 [[item]]
 id = "C15"
 name = "Notifications"
+title = "Notifications check"
+description = "Checks that a notification is sent, to the right person, with the right key content."
 triggers = ["notify", "notification", "email", "sms", "alert", "letter", "message"]
 question = """A case checking the notification is sent, to whom, and its key content."""
 
 [[item]]
 id = "C16"
 name = "Personal data shown or masked"
+title = "Personal data check (shown or masked)"
+description = "Checks who can see which personal data, and that data meant to be hidden stays masked."
 triggers = ["personal data", "masked", "hidden", "redacted", "address", "date of birth", "id number"]
 question = """When the story says what personal data is shown or hidden: a case checking who sees which data."""
 
 [[item]]
 id = "C17"
 name = "Dependent fields and options"
+title = "Dependent fields check"
+description = "Checks that when one value changes what another field offers or requires, the dependent field updates or is cleared."
 triggers = ["depending on", "based on", "shown", "hidden", "enabled", "list of", "select", "choose", "when"]
 question = """Where one value changes what another field offers or requires (for example a country decides
 the list of counties; a field is required only for business customers): a case for each
@@ -170,6 +212,8 @@ update or be cleared)."""
 [[item]]
 id = "C18"
 name = "Authentication (log-in): who can get in"
+title = "Log-in check (authentication)"
+description = "Checks that valid credentials let a user in, and that wrong, expired or locked credentials are refused."
 triggers = ["log in", "login", "sign in", "credentials", "password", "account", "locked", "session"]
 question = """When the story covers logging in: a case with valid credentials AND a case where wrong,
 expired or locked credentials are refused."""
@@ -177,6 +221,8 @@ expired or locked credentials are refused."""
 [[item]]
 id = "C19"
 name = "Files and attachments"
+title = "Files and attachments check"
+description = "Checks how uploads are handled: wrong file type, too large, empty or corrupt, password-protected, poor quality, too many files, and the same file twice."
 triggers = ["upload", "uploads", "attach", "attached", "attachment", "file", "photo", "scan", "document"]
 question = """Applies when the story takes an upload or attachment. Only where the story says how it is
 handled: wrong file type, a file that is too large, an empty or unreadable (corrupt)

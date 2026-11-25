@@ -1,6 +1,6 @@
 """report.py: one self-contained HTML page per harness run (M7 step 6).
 
-What the page shows, in reading order:
+What the page shows, in reading order (overview first, then the detail; v3 order):
   1. Headline figures: cases, cases with a fail or a warning, ACs with no verified test,
      checklist suggestions and questions for the product owner, judge cost and time.
   2. Stories at a glance: one row per story, linked to its sections below.
@@ -30,6 +30,12 @@ Change history:
   2026-11-24  v1  first version (M7 step 6). Kept as results/harness/20261124T171442Z/report_v1.html.
   2026-11-24  v2  Roger's review: glossary with linkable terms, checklist matrix, findings-by-check
                   chart, severity bar per story, filter for the flagged cases, sticky navigation.
+  2026-11-25  v3  Roger's review: total ACs in the headline; all charts together near the top
+                  (Overview), the findings bars coloured by level and clickable (they filter the
+                  flagged cases); coverage map says which claiming cases are not verified and why;
+                  checklist ideas in the glossary; over-claim findings carry the judge's reason.
+  2026-11-25  v4  checklist ideas shown by their title and description (checklist.toml v4);
+                  rebuilt reports of earlier runs take them from the current checklist.
 """
 
 from __future__ import annotations
@@ -42,6 +48,7 @@ from collections import Counter
 from html import escape
 from pathlib import Path
 
+from harness.checklist import load_checklist
 from harness.contract import Finding, actions, case_key, load_cases, load_stories
 from harness.judge import duplicate_groups
 
@@ -121,8 +128,16 @@ def coverage_rows(story: dict, cases: list[dict], findings: list[Finding], recor
                        for cid in claimed)
         flags = [f for f in story_flags if f.check in ("ac_no_tests", "ac_unverified", "boundary_hint")
                  and (f.message.startswith(aid + " ") or f.message.startswith(aid + ":"))]
+        why_not = {}
+        for cid in claimed:
+            if cid in verified or not marks.get(cid):
+                continue
+            m = marks[cid]
+            failed = m.get("verdict") in ("incorrect", "not_in_basis")
+            over = any(cl.get("ac_id") == aid and not cl.get("supported") for cl in m.get("claims", []))
+            why_not[cid] = " and ".join([w for w, on in (("fail", failed), ("over-claim", over)) if on]) or "not verified"
         rows.append({"ac_id": aid, "text": ac["text"], "claimed": claimed, "verified": verified,
-                     "techniques": tech, "flags": flags})
+                     "not_verified": why_not, "techniques": tech, "flags": flags})
     return rows
 
 
@@ -169,8 +184,10 @@ def steps_chart(counts: Counter) -> str:
 
 
 def findings_chart(findings: list[Finding]) -> str:
-    """Horizontal bars: how many fails and warnings each check raised, largest first (inline SVG,
-    one colour; the level is written next to each check name, so colour never carries it alone)."""
+    """Horizontal bars: how many fails and warnings each check raised, largest first (inline SVG).
+    Each bar is its own row, coloured by its level (fail or warning; status colours) with the level
+    also written next to the check name, so colour never carries it alone. Clicking a bar filters
+    the flagged cases to that check (story-level checks jump to the coverage map)."""
     counts = Counter((f.check, f.level) for f in findings if f.level in SEVERITY)
     if not counts:
         return '<p class="muted">No fails or warnings.</p>'
@@ -188,7 +205,8 @@ def findings_chart(findings: list[Finding]) -> str:
         path = (f"M{x0},{y + 4} H{x0 + bw - r:.1f} Q{x0 + bw:.1f},{y + 4} {x0 + bw:.1f},{y + 4 + r} "
                 f"V{y + row - 8 - r} Q{x0 + bw:.1f},{y + row - 8} {x0 + bw - r:.1f},{y + row - 8} H{x0} Z")
         word = "fail" if level == "fail" else "warning"
-        parts.append(f'<g class="bar"><title>{_e(check)} ({word}): {n}</title>'
+        parts.append(f'<g class="bar {level}" data-check="{_e(check)}" data-level="{level}" tabindex="0" role="link">'
+                     f'<title>{_e(check)} ({word}): {n}. Click to see these cases.</title>'
                      f'<rect class="hit" x="0" y="{y}" width="{w}" height="{row}"/>'
                      f'<text class="axis label" x="{left - 8}" y="{y + row / 2 + 2}" text-anchor="end">{_e(check)} · {word}</text>'
                      f'<path d="{path}"/><text class="value" x="{x0 + bw + 6:.1f}" y="{y + row / 2 + 2}">{n}</text></g>')
@@ -240,7 +258,8 @@ pre.case{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);
 .chart .hit{fill:transparent}.chart .bar:hover path{opacity:.8}
 h2,h3,dt{scroll-margin-top:56px}nav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
 a.term{color:inherit;text-decoration:underline dotted;text-underline-offset:3px}a.chip{text-decoration:none}
-.chart.wide{max-width:680px}.chart .label{fill:var(--ink)}
+.chart.wide{max-width:680px}.chart .bar.fail path{fill:var(--fail-bar)}.chart .bar.warn path{fill:var(--warn-bar)}
+.chart .bar[data-check]{cursor:pointer}.chart .bar[data-check]:hover .label{text-decoration:underline}.chart .label{fill:var(--ink)}
 .sev{width:140px;height:10px;display:block;margin-top:4px}.sev .sfail{fill:var(--fail-bar)}.sev .swarn{fill:var(--warn-bar)}.sev .sclean{fill:var(--ok-bar)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink2);margin:6px 0 10px}
 table.matrix{width:auto;font-size:13px}table.matrix th,table.matrix td{padding:3px 6px;text-align:center}
@@ -262,7 +281,8 @@ def _headline(result: dict) -> str:
     n_cases = sum(len(c) for c in result["groups"].values())
     failed = {(x.story_id, x.case_id) for x in f if x.case_id and x.level == "fail"}
     warned = {(x.story_id, x.case_id) for x in f if x.case_id and x.level == "warn"} - failed
-    tiles = [(n_cases, "test cases"), (len(result["stories"]), "stories"),
+    n_acs = sum(len(s["acceptance_criteria"]) for s in result["stories"].values())
+    tiles = [(n_cases, "test cases"), (len(result["stories"]), "stories"), (n_acs, "acceptance criteria"),
              (len(failed), "cases with a fail"), (len(warned), "cases with warnings only"),
              (sum(x.check == "ac_unverified" for x in f) if j else "–", "ACs with no verified test"),
              (sum(x.level == "suggestion" for x in f) if j else "–", "checklist suggestions"),
@@ -315,10 +335,20 @@ def _case_text(c: dict) -> str:
             f"Steps:\n" + "\n".join(steps) + f"\nExpected: {c.get('expected_result', '')}")
 
 
+def _with_reason(x: Finding, records: dict) -> Finding:
+    """An over-claim finding from a run made before 25 Nov has no reason: add the judge's reason for
+    that case from the saved marks, so the reviewer sees why the claim was not supported."""
+    if x.check != "over_claim" or ": " in x.message:
+        return x
+    why = _marks(records, x.story_id).get(x.case_id, {}).get("reason")
+    return Finding(x.story_id, x.case_id, x.check, x.level, f"{x.message}: {why}") if why else x
+
+
 def _flagged(result: dict) -> str:
     """Every case with a fail or a warning, worst first; clean cases folded underneath."""
+    records = (result.get("judge") or {}).get("records") or {}
     by_case: dict[tuple, list[Finding]] = {}
-    for x in result["findings"]:
+    for x in (_with_reason(f, records) for f in result["findings"]):
         if x.case_id and x.level in SEVERITY:
             by_case.setdefault((x.story_id, x.case_id), []).append(x)
     lookup = {(sid, case_key(c, n)): c for sid, cs in result["groups"].items()
@@ -357,11 +387,17 @@ def _coverage(result: dict) -> str:
         rows = []
         for r in coverage_rows(story, result["groups"].get(sid, []), result["findings"], records):
             tech = " ".join(f"{k} {v}" for k, v in sorted(r["techniques"].items())) or "–"
-            ver = (_chip(f"{len(r['verified'])} verified", "ok" if r["verified"] else "warn") if judged else "–")
+            if judged:
+                ver = _chip(f"{len(r['verified'])} of {len(r['claimed'])} verified", "ok" if r["verified"] else "warn", "verified")
+                if r["not_verified"]:
+                    ver += ('<br><span class="muted">not verified: '
+                            + _e(", ".join(f"{c} ({w})" for c, w in r["not_verified"].items())) + "</span>")
+            else:
+                ver = "–"
             flags = "".join(_chip(f.check, f.level, f.check) + f'<span class="muted">{_e(f.message.split(" ", 1)[1] if " " in f.message else "")}</span><br>'
                             for f in r["flags"]) or "–"
             rows.append(f'<tr><td><b>{_e(r["ac_id"])}</b></td><td>{_e(r["text"])}</td>'
-                        f'<td>{_e(", ".join(r["claimed"]) or "none")}</td><td>{ver}<br><span class="muted">{_e(", ".join(r["verified"]))}</span></td>'
+                        f'<td>{_e(", ".join(r["claimed"]) or "none")}</td><td>{ver}</td>'
                         f'<td>{_e(tech)}</td><td>{flags}</td></tr>')
         out.append(f'<h3 id="cov-{_e(sid)}">{_e(sid)} {_e(story["title"])}</h3><table><tr><th>AC</th><th>Criterion</th>'
                    f'<th>Cases claiming it</th><th>{_term("Verified by the judge", "verified")}</th>'
@@ -376,7 +412,7 @@ def _checklist(result: dict) -> str:
     rows = j.get("checklist_rows") or []
     if not rows:
         return '<p class="muted">The checklist did not run.</p>'
-    names = {r["item_id"]: r["name"] for r in rows}
+    names = {r["item_id"]: r.get("title") or r["name"] for r in rows}      # older runs have no title
     checks = {r["item_id"]: r.get("check", "when_raised") for r in rows}
     off = [f"{i} {names[i]}" for i in names if checks[i] == "off"]
     every = [f"{i} {names[i]}" for i in names if checks[i] == "every_story"]
@@ -386,7 +422,7 @@ def _checklist(result: dict) -> str:
              f'<li>Checked in every story\'s test cases (check = every_story): {_e(", ".join(every) or "none")}</li>',
              "<li>All other items: checked when the story raises them.</li>",
              (f"<li class='muted'>Checklist file fingerprint {_e(fp)}</li>" if fp else ""), "</ul>"]
-    parts.append("<h3>Every idea against every story</h3>" + checklist_matrix(rows))
+    parts.append('<p class="muted">The matrix of every idea against every story is in the <a href="#overview">Overview</a>.</p>')
     for level, title in (("question", "Questions for the product owner (AC gaps)"),
                          ("suggestion", "Suggestions for the test cases (not covered)")):
         grouped: dict[str, list[Finding]] = {}
@@ -402,7 +438,7 @@ def _checklist(result: dict) -> str:
             prefix = f"{iid} {names.get(iid, '')}"
             notes = "".join(f"<li><b>{_e(x.story_id)}</b>: {_e(x.message[len(prefix):].lstrip(' :') if x.message.startswith(prefix) else x.message)}</li>"
                             for x in fs)
-            items.append(f'<tr><td><b>{_e(prefix)}</b><br><span class="muted">{len(fs)} stor{"ies" if len(fs) > 1 else "y"}: '
+            items.append(f'<tr><td><b><a class="term" href="#g-{_e(iid)}">{_e(prefix)}</a></b><br><span class="muted">{len(fs)} stor{"ies" if len(fs) > 1 else "y"}: '
                          f'{_e(", ".join(x.story_id for x in fs))}</span></td><td><ul class="msgs">{notes}</ul></td></tr>')
         parts.append("<table><tr><th>Idea</th><th>Per story</th></tr>" + "".join(items) + "</table>")
     return "".join(parts)
@@ -427,7 +463,9 @@ def checklist_matrix(rows: list[dict]) -> str:
             tip = f"{sid} {iid}: {word}" + (f" - {r.get('note')}" if r.get("note") else "")
             cells.append(f'<td><span class="cell {cls}" title="{_e(tip)}">{letter}</span></td>')
         mark = {"every_story": " (every story)", "off": " (off)"}.get(first.get("check", ""), "")
-        body.append(f'<tr><td class="idea">{_e(iid)} {_e(first["name"] if len(first["name"]) <= 44 else first["name"][:42].rsplit(" ", 1)[0] + "…")}{_e(mark)}</td>{"".join(cells)}'
+        label = first.get("title") or first["name"]
+        body.append(f'<tr><td class="idea"><a class="term" href="#g-{_e(iid)}" title="{_e(first.get("description") or first.get("question", ""))}">'
+                    f'{_e(iid)}</a> {_e(label if len(label) <= 44 else label[:42].rsplit(" ", 1)[0] + "…")}{_e(mark)}</td>{"".join(cells)}'
                     f'<td class="num">{tally["covered"]}</td><td class="num">{tally["not_covered"]}</td><td class="num">{tally["ac_gap"]}</td></tr>')
     legend = '<div class="legend">' + "".join(
         f'<span><span class="cell {cls}">{letter}</span> {_term(word, st)}</span>'
@@ -437,17 +475,38 @@ def checklist_matrix(rows: list[dict]) -> str:
 
 
 def _findings_by_check(result: dict) -> str:
-    """The findings-by-check chart, with a note on how to read it."""
+    """The findings-by-check chart, with a legend and a note on how to read it."""
+    legend = ('<div class="legend"><span><svg width="10" height="10"><rect width="10" height="10" rx="2" style="fill:var(--fail-bar)"/></svg> '
+              + _term("fail", "fail") + '</span><span><svg width="10" height="10"><rect width="10" height="10" rx="2" style="fill:var(--warn-bar)"/></svg> '
+              + _term("warning", "warn") + "</span></div>")
     return ('<p class="muted">Each bar counts the fails or warnings one check raised across all cases. '
-            'A long bar is the first thing to raise with the test writer or to fix in the prompt.</p>'
-            + findings_chart(result["findings"]))
+            'A long bar is the first thing to raise with the test writer or to fix in the prompt. '
+            'Click a bar to see those cases.</p>' + legend + findings_chart(result["findings"]))
 
 
-def _glossary() -> str:
-    """Every glossary term, grouped, each with an anchor other pages and messages can link to."""
+def _overview(result: dict) -> str:
+    """All the pictures together: findings by check, steps per case, and the checklist matrix."""
+    rows = (result.get("judge") or {}).get("checklist_rows") or []
+    matrix = ("<h3>Checklist: every test idea against every story</h3>" + checklist_matrix(rows)
+              + '<p class="muted">Questions, suggestions and the settings used are in the '
+                '<a href="#checklist">Checklist</a> section.</p>') if rows else ""
+    return (f"<h3>Findings by check</h3>{_findings_by_check(result)}"
+            f"<h3>Steps per case</h3>{_steps(result)}{matrix}")
+
+
+def _glossary(rows: list[dict] | None = None) -> str:
+    """Every glossary term, grouped, each with an anchor other pages and messages can link to, then
+    the checklist's test ideas (from the checklist the run used, so the wording always matches)."""
     groups: dict[str, list[dict]] = {}
     for g in GLOSSARY.values():
         groups.setdefault(g["group"], []).append(g)
+    ideas = list({r["item_id"]: r for r in (rows or [])}.values())
+    if ideas:
+        groups["Checklist test ideas"] = [
+            {"key": r["item_id"], "term": f'{r["item_id"]} {r.get("title") or r["name"]}',
+             "definition": (r.get("description") or r.get("question") or "") + {"every_story": " Checked in every story.",
+                                                        "off": " Switched off in this run (excluded)."}.get(r.get("check", ""), "")}
+            for r in ideas]
     return ('<p class="muted">Link to a term with report.html#g-&lt;key&gt;, for example #g-atomic. '
             'The wording lives in harness/glossary.toml.</p>'
             + "".join(f"<h3>{_e(grp)}</h3><dl class='gloss'>"
@@ -464,7 +523,12 @@ function run(){var q=x.value.toLowerCase(),shown=0;rows.forEach(function(r){
 var ok=(!s.value||r.dataset.story===s.value)&&(!l.value||r.dataset.level===l.value)&&
 (!c.value||r.dataset.checks.indexOf(' '+c.value+' ')>=0)&&(!q||r.textContent.toLowerCase().indexOf(q)>=0);
 r.style.display=ok?'':'none';if(ok)shown++;});n.textContent=shown+' of '+rows.length+' cases';}
-[s,l,c].forEach(function(e){e.addEventListener('change',run)});x.addEventListener('input',run);run();})();
+[s,l,c].forEach(function(e){e.addEventListener('change',run)});x.addEventListener('input',run);run();
+[].slice.call(document.querySelectorAll('.chart .bar[data-check]')).forEach(function(b){
+function go(){var k=b.dataset.check,has=[].slice.call(c.options).some(function(o){return o.value===k});
+if(has){s.value='';x.value='';c.value=k;l.value=b.dataset.level;run();document.getElementById('flagged').scrollIntoView();}
+else{document.getElementById('coverage').scrollIntoView();}}
+b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter')go();});});})();
 </script>"""
 
 
@@ -490,13 +554,13 @@ def _steps(result: dict) -> str:
 def build_html(result: dict, header: str) -> str:
     """The whole page for one run, as a string."""
     # (anchor, short name for the navigation bar, section heading, content)
-    sections = [("flagged", "Flagged cases", "Flagged cases first", _flagged(result)),
-                ("by-check", "By check", "Findings by check", _findings_by_check(result)),
+    rows = (result.get("judge") or {}).get("checklist_rows") or []
+    sections = [("overview", "Overview", "Overview: the pictures", _overview(result)),
+                ("flagged", "Flagged cases", "Flagged cases first", _flagged(result)),
                 ("coverage", "Coverage", "Coverage map per acceptance criterion", _coverage(result)),
                 ("checklist", "Checklist", "Checklist of test ideas", _checklist(result)),
                 ("duplicates", "Duplicates", "Duplicate groups (judge)", _duplicates(result)),
-                ("steps", "Steps", "Steps per case", _steps(result)),
-                ("glossary", "Glossary", "Glossary", _glossary())]
+                ("glossary", "Glossary", "Glossary", _glossary(rows))]
     nav = '<a href="#stories">Stories</a>' + "".join(f'<a href="#{sid}">{_e(short)}</a>' for sid, short, _, _ in sections)
     body = "".join(f'<h2 id="{sid}">{_e(t)}</h2>{html}' for sid, _, t, html in sections)
     return (f'<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -522,6 +586,11 @@ def result_from_folder(run: Path, stories_path: Path, cases_path: Path) -> dict:
                 judge["checklist_rows"] = [dict(r, ac_ids=[x for x in r["ac_ids"].split(", ") if x],
                                                 case_ids=[x for x in r["case_ids"].split(", ") if x])
                                            for r in csv.DictReader(f)]
+            # runs before 25 Nov saved no title or description: take them from the current checklist
+            wording = {i["id"]: i for i in load_checklist()}
+            for r in judge["checklist_rows"]:
+                if not r.get("title") and r["item_id"] in wording:
+                    r["title"], r["description"] = wording[r["item_id"]]["title"], wording[r["item_id"]]["description"]
     return {"stories": stories, "groups": groups, "findings": findings, "rules": {}, "judge": judge}
 
 

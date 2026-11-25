@@ -13,6 +13,9 @@ without calling the model. No API calls.
 Change history:
   2026-11-24  v1  first version (M7 step 6).
   2026-11-24  v2  glossary links, checklist matrix, findings-by-check chart, severity bars, filter.
+  2026-11-25  v3  total ACs, not-verified reasons, over-claim reasons, checklist ideas in the glossary,
+                  clickable findings bars.
+  2026-11-25  v4  checklist titles and descriptions; older runs take them from the checklist.
 """
 from __future__ import annotations
 
@@ -94,7 +97,8 @@ def test_a_report_can_be_rebuilt_from_an_earlier_run_folder(tmp_path):
     rebuilt = result_from_folder(tmp_path / "run", tmp_path / "s.json", tmp_path / "c.json")
     assert [f.check for f in rebuilt["findings"]] == ["verdict", "ac_unverified"]
     assert rebuilt["judge"]["records"]["K06"]["cases_call"]["parsed"]["cases"][0]["case_id"] == "TC01"
-    assert "C12 Stated performance or volume" in build_html(rebuilt, "x")
+    # rows saved without a title (runs before 25 Nov) take today's title from checklist.toml
+    assert "C12 Performance and volume check" in build_html(rebuilt, "x")
 
 
 # --- v2: glossary, matrix, charts, filter (Roger's review, 24 Nov) --------------------------
@@ -132,3 +136,40 @@ def test_the_flagged_cases_can_be_filtered_without_the_internet():
     html = build_html(result(), "x")
     assert 'data-story="K06" data-level="fail" data-checks=" verdict "' in html
     assert 'id="f-story"' in html and "<script>" in html and "src=" not in html
+
+
+# --- v3: Roger's review of v2 (25 Nov) -------------------------------------------------
+def test_the_headline_shows_the_total_number_of_acceptance_criteria():
+    """Two ACs in the one story -> a tile '2 acceptance criteria'."""
+    html = build_html(result(), "x")
+    assert '<div class="n">2</div><div class="l">acceptance criteria</div>' in html
+
+
+def test_the_coverage_map_says_which_claiming_cases_are_not_verified_and_why():
+    """TC02 claims AC2 but failed, so AC2 is '1 of 2 verified' and TC02 is listed as not verified (fail)."""
+    rows = {r["ac_id"]: r for r in coverage_rows(STORY, CASES, FINDINGS, RECORDS)}
+    assert rows["AC2"]["not_verified"] == {"TC02": "fail"}
+    assert "1 of 2 verified" in build_html(result(), "x") and "TC02 (fail)" in build_html(result(), "x")
+
+
+def test_an_over_claim_from_an_older_run_gets_the_judges_reason():
+    """A saved over-claim message with no reason is shown with the judge's reason for that case."""
+    res = result()
+    res["judge"]["records"]["K06"]["cases_call"]["parsed"]["cases"][0]["reason"] = "Score 70 only sets up the case."
+    res["findings"] = FINDINGS + [Finding("K06", "TC01", "over_claim", "warn", "covers lists AC2 but the case does not really test it")]
+    assert "does not really test it: Score 70 only sets up the case." in build_html(res, "x")
+
+
+def test_checklist_ideas_are_in_the_glossary_and_the_matrix_links_to_them():
+    """Each checklist idea the run used has a glossary entry with its question; matrix rows link to it."""
+    res = result()
+    res["judge"]["checklist_rows"] = [dict(r, question="A case that checks the record itself.") for r in ROWS]
+    html = build_html(res, "x")
+    assert 'id="g-C09"' in html and "A case that checks the record itself. Checked in every story." in html
+    assert 'href="#g-C09"' in html and 'id="g-C12"' in html and "Switched off in this run" in html
+
+
+def test_findings_bars_are_coloured_by_level_and_clickable():
+    """The verdict bar is a fail bar carrying its check, so a click can filter the flagged cases."""
+    from harness.report import findings_chart
+    assert '<g class="bar fail" data-check="verdict" data-level="fail" tabindex="0" role="link">' in findings_chart(FINDINGS)

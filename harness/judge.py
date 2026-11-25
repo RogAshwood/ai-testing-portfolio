@@ -32,6 +32,7 @@ makes the regression check free and exact (same marks in, same findings out).
 Change history:
   2026-11-12  v1  first version (M7 step 3).
   2026-11-12  v2  calendar-edge caution on duplicate warnings (M7 step 4).
+  2026-11-25  v3  over-claim warnings carry the judge's reason (Roger's report review).
 """
 
 from __future__ import annotations
@@ -232,7 +233,7 @@ def judge_findings(story: dict, cases: list[dict], judged: dict) -> tuple[list[F
         if unsupported:
             add(cid, "over_claim", "warn",
                 f"covers lists {', '.join(unsupported)} but the case does not really test "
-                f"{'it' if len(unsupported) == 1 else 'them'}")
+                f"{'it' if len(unsupported) == 1 else 'them'}{why}")
         if m.get("concrete") is False:
             add(cid, "concrete", "warn", f"inputs are described as classes rather than exact values{why}")
 

@@ -101,7 +101,7 @@ def _checklist_meta(path: Path | None, items: list[dict]) -> dict | None:
     if not path or not items:
         return None
     return {"path": str(path), "fingerprint": checklist_fingerprint(path),
-            "settings": {i["id"]: (i["name"], i["check"]) for i in items}}
+            "settings": {i["id"]: (i["title"], i["check"]) for i in items}}
 
 
 def run_judge(stories: dict, groups: dict, client=None, reuse: Path | None = None,
@@ -252,7 +252,7 @@ def checklist_markdown(rows: list[dict], findings: list[Finding], meta: dict | N
     status = Counter(r["status"] for r in rows)
     stories_n = len({r["story_id"] for r in rows})
     cached = len({r["story_id"] for r in rows if r["review_cached"]})
-    settings = (meta or {}).get("settings") or {r["item_id"]: (r["name"], r["check"]) for r in rows}
+    settings = (meta or {}).get("settings") or {r["item_id"]: (r.get("title") or r["name"], r["check"]) for r in rows}
     named = {v: [f"{k} {n}" for k, (n, c) in settings.items() if c == v] for v in ("off", "every_story")}
     lines = ["", "## Checklist settings for this run", ""]
     if meta:
