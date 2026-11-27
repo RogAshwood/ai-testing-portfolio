@@ -27,6 +27,9 @@ Modules
                    a weaker, everyday generator style to check
 - report.py        one HTML page per run (report.html): flagged cases first, coverage map per AC,
                    checklist, duplicate groups, steps per case; can rebuild a page for an earlier run
+- skills/          the team's two skills (M7 step 7): testcase-writer (house rules + checklist) and
+                   testcase-reviewer (review checks), each a SKILL.md folder an assistant could load
+- skill_review.py  runs the review skill on the seeded sets and scores it like the harness
 - generate.py      generates cases for ANY stories file with the Day 4 v1/v2 prompts or the bare
                    prompt (M7 step 5: datasets/aml_kyc_stories.json)
 - measure_lints.py how often each lint flags, and how often it agrees with Roger's
@@ -43,4 +46,5 @@ Change history:
   2026-11-13  v5  two-pass checklist, parallel stories, --stories-only.
   2026-11-24  v6  M7 step 5: generate.py (any stories file); checklist "check" setting (v5 of checklist.py).
   2026-11-24  v7  M7 step 6: report.py (report.html).
+  2026-11-25  v8  M7 step 7: skills/, skill_review.py, generate.py --prompt skill.
 """

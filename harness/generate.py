@@ -10,6 +10,9 @@ runs are the prompt and the stories.
                      contract (bench/testcase_schema.check_cases: technique labels, AC IDs)
   --prompt bare      harness/prompts/testgen_bare.txt ("write test cases" + the JSON format), checked
                      against the harness input contract only
+  --prompt skill     the team skill harness/skills/testcase-writer/ (SKILL.md house rules plus its
+                     reference checklist), sent as the instructions: the skill's CONTENT, not an
+                     assistant's skill runtime (M7 step 7). Checked against the strict Day 4 contract.
 
 Same model (gpt-6-luna), one call per story, the same story card. Stories run in parallel
 (--workers, default 4); the results keep story order.
@@ -17,6 +20,7 @@ Same model (gpt-6-luna), one call per story, the same story card. Stories run in
 Usage (repo root, ai-testing env; one line each; paid, about $0.01-0.02 per prompt for 12 stories):
     python -m harness.generate --prompt v2 --stories-file datasets/aml_kyc_stories.json
     python -m harness.generate --prompt bare --stories-file datasets/aml_kyc_stories.json
+    python -m harness.generate --prompt skill --stories-file datasets/aml_kyc_stories.json
     python -m harness.generate --prompt v2 --stories-file datasets/aml_kyc_stories.json --only K11,K12
 Writes results/m7/gen_<prompt>_<model>_<stories file name>_<UTC time>.json in the Day 4
 generation-file shape, so it can be checked directly:
@@ -24,6 +28,7 @@ generation-file shape, so it can be checked directly:
 
 Change history:
   2026-11-24  v1  first version (M7 step 5).
+  2026-11-25  v2  --prompt skill (M7 step 7: the team's test-writing skill).
 """
 
 from __future__ import annotations
@@ -35,12 +40,27 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from bench import generate as day4
-from bench.golden import ROOT, fingerprint, load_prompt
+from bench.golden import ROOT, fingerprint, fingerprint_text, load_prompt
 from bench.pricing import cost_usd
 from harness import generate_bare
 
 OUT_DIR = ROOT / "results" / "m7"
-PROMPTS = ("v1", "v2", "bare")
+PROMPTS = ("v1", "v2", "bare", "skill")
+SKILLS_DIR = Path(__file__).resolve().parent / "skills"
+
+
+def load_skill(name: str) -> str:
+    """A skill's content as one block of instructions: SKILL.md without its front matter (the
+    name and description an assistant uses to decide when to load it), followed by every file in
+    its reference/ folder under its own heading, as an assistant would read them when needed."""
+    folder = SKILLS_DIR / name
+    text = (folder / "SKILL.md").read_text(encoding="utf-8").replace("\r\n", "\n")
+    if text.startswith("---"):
+        text = text.split("---", 2)[2]
+    parts = [text.strip()]
+    for ref in sorted((folder / "reference").glob("*.md")) if (folder / "reference").exists() else []:
+        parts.append(f"## Reference file: reference/{ref.name}\n\n" + ref.read_text(encoding="utf-8").replace("\r\n", "\n").strip())
+    return "\n\n".join(parts)
 
 
 def load_stories_file(path: Path) -> dict:
@@ -52,10 +72,13 @@ def load_stories_file(path: Path) -> dict:
 
 def prompt_for(name: str) -> tuple[str, str, object]:
     """Prompt text, fingerprint and the function that generates one story with it:
-    the Day 4 one (strict contract) for v1/v2, the harness one for bare."""
+    the Day 4 one (strict contract) for v1/v2 and the skill, the harness one for bare."""
     if name == "bare":
         text, fp = generate_bare.load_bare_prompt()
         return text, fp, generate_bare.generate_story
+    if name == "skill":
+        text = load_skill("testcase-writer")
+        return text, fingerprint_text(text), day4.generate_story
     text, fp = load_prompt(name)
     return text, fp, day4.generate_story
 
@@ -93,7 +116,7 @@ def run(prompt: str, stories_file: Path, only: list[str] | None = None, client=N
 def main(argv: list[str] | None = None) -> int:
     """Parse the command line, generate, and print one line per story and a total."""
     p = argparse.ArgumentParser(description="Generate test cases for a stories file.")
-    p.add_argument("--prompt", required=True, choices=PROMPTS, help="v1, v2 (Day 4 prompts) or bare")
+    p.add_argument("--prompt", required=True, choices=PROMPTS, help="v1, v2 (Day 4 prompts), bare, or skill (the team skill)")
     p.add_argument("--stories-file", required=True, type=Path, help="stories JSON file, e.g. datasets/aml_kyc_stories.json")
     p.add_argument("--only", help="comma-separated story IDs (default: all)")
     p.add_argument("--workers", type=int, default=4, help="stories generated at the same time (default 4)")
